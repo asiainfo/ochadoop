@@ -1,0 +1,3 @@
+[submodule "zookeeper"]
+	path = zookeeper
+	url = https://github.com/cloudera/zookeeper.git
