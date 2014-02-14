@@ -172,6 +172,14 @@ task auditor(dependsOn: auditor_tar) {
 }
 task all() {
     doLast {
+        println ">>>>>>clean>>>>>>"
+        ant.delete(dir: 'auditor/target')
+        ant.delete(dir: 'zookeeper/build')
+        ant.delete(dir: 'hadoop_common/build')
+        ant.delete(dir: 'hadoop_common_mr1/build')
+        ant.delete(dir: 'apache_hbase/target')
+        println "<<<<<<clean<<<<<<"
+
         println ">>>>>>auditor>>>>>>"
         auditor.execute()
         println "<<<<<<auditor<<<<<<"
