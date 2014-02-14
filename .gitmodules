@@ -13,3 +13,6 @@
 [submodule "apache-hive"]
 	path = apache-hive
 	url = https://github.com/apache/hive.git
+[submodule "apache-hive-legacy"]
+	path = apache-hive-legacy
+	url = https://github.com/apache/hive.git
