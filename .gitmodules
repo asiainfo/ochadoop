@@ -1,3 +1,6 @@
 [submodule "zookeeper"]
 	path = zookeeper
 	url = https://github.com/cloudera/zookeeper.git
+[submodule "hadoop-common"]
+	path = hadoop-common
+	url = https://github.com/cloudera/hadoop-common.git
