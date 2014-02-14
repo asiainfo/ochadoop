@@ -4,3 +4,6 @@
 [submodule "hadoop-common"]
 	path = hadoop-common
 	url = https://github.com/cloudera/hadoop-common.git
+[submodule "hadoop-common-mr1"]
+	path = hadoop-common-mr1
+	url = https://github.com/cloudera/hadoop-common.git
