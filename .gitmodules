@@ -16,3 +16,6 @@
 [submodule "apache-hive-legacy"]
 	path = apache-hive-legacy
 	url = https://github.com/apache/hive.git
+[submodule "auditor"]
+	path = auditor
+	url = https://github.com/asiainfo-linkage/auditor.git
