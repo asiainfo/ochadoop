@@ -10,3 +10,6 @@
 [submodule "apache-hbase"]
 	path = apache-hbase
 	url = https://github.com/apache/hbase.git
+[submodule "apache-hive"]
+	path = apache-hive
+	url = https://github.com/apache/hive.git
