@@ -30,6 +30,15 @@ def getFromMaven(src, dest) {
     ant.get(src: srcUrl, dest: "zookeeper/build/tar/b.jar", verbose: true)
 }
 
+task auditor_tar(type: Exec) {
+    workingDir 'auditor'
+    commandLine 'mvn', "clean", "install"
+}
+task auditor(dependsOn: auditor_tar) {
+    doLast {
+        ant.copy(file: "auditor/auditor-server/target/auditor-server-${auditor_version}.jar", todir: "$buildDir/ochadoop/")
+    }
+}
 
 task zookeeper_clean(type: Exec) {
     workingDir 'zookeeper'
@@ -53,9 +62,6 @@ task zookeeper(dependsOn: zookeeper_build_tar) {
         ant.move(file: "zookeeper/build/tar/zookeeper-${zookeeper_version}-${oc_version}.tar.gz", tofile: "$buildDir/ochadoop/zookeeper-${zookeeper_version}-${oc_version}.tar.gz")
     }
 }
-
-
-
 
 task hadoop_common(dependsOn: auditor) {
     doLast() {
@@ -157,15 +163,7 @@ task apache_hbase(dependsOn: [auditor, apache_hbase_tar]) {
         ant.move(file: "apache-hbase/target/tar/hbase-${apache_hbase_version}-${oc_version}.tar.gz", tofile: "$buildDir/ochadoop/hbase-${apache_hbase_version}-${oc_version}.tar.gz")
     }
 }
-task auditor_tar(type: Exec) {
-    workingDir 'auditor'
-    commandLine 'mvn', "clean", "install"
-}
-task auditor(dependsOn: auditor_tar) {
-    doLast {
-        ant.copy(file: "auditor/auditor-server/target/auditor-server-${auditor_version}.jar", todir: "$buildDir/ochadoop/")
-    }
-}
+
 task all(dependsOn: [auditor, zookeeper, hadoop_common, hadoop_common_mr1, apache_hbase]) {
     doLast {
         ant.mkdir(dir: "build/tar/ochadoop-${oc_version}")
