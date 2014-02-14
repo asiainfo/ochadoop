@@ -57,7 +57,7 @@ task zookeeper(dependsOn: zookeeper_build_tar) {
 
 
 
-task hadoop_common() {
+task hadoop_common(dependsOn: auditor) {
     doLast() {
         ant.mkdir(dir: "hadoop-common/build")
         getFromMaven("org.apache.hadoop:hadoop-dist:$hadoop_common_version@tar.gz", "hadoop-common/build/hadoop-dist-${hadoop_common_version}.tar.gz")
@@ -89,8 +89,12 @@ task hadoop_common() {
         ant.move(file: "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}.tar.gz", tofile: "$buildDir/ochadoop/hadoop-${hadoop_common_version}-${oc_version}.tar.gz")
     }
 }
+task hadoop_common_mr1_clean(type: Exec) {
+    workingDir 'hadoop-common-mr1'
+    commandLine 'ant', '-Dreactor.repo=https://repository.cloudera.com/content/repositories/snapshots', '-Dforrest.home=/home/cloudetl/apache-forrest-0.9', "clean"
+}
 
-task hadoop_common_mr1_tar(type: Exec) {
+task hadoop_common_mr1_tar(dependsOn: hadoop_common_mr1_clean, type: Exec) {
     workingDir 'hadoop-common-mr1'
     commandLine 'ant', '-Dreactor.repo=https://repository.cloudera.com/content/repositories/snapshots', '-Dforrest.home=/home/cloudetl/apache-forrest-0.9', 'tar'
 }
@@ -120,20 +124,12 @@ task hadoop_common_mr1(dependsOn: hadoop_common_mr1_tar) {
     }
 }
 
-task hbase(type: Exec) {
-    workingDir 'hbase'
-    commandLine 'mvn', '-Psecurity,dist', '-DskipTests', '-Dtar', '-Dhadoop.profile=mr1', 'clean', 'package'
-}
-task hive(type: Exec) {
-    workingDir 'hive'
-    commandLine 'ant', '-Dreactor.repo=https://repository.cloudera.com/content/repositories/snapshots', 'tar'
-}
 
 task apache_hbase_tar(type: Exec) {
     workingDir 'apache-hbase'
-    commandLine 'mvn', '-Psecurity', '-DskipTests', 'package'
+    commandLine 'mvn', '-Psecurity', '-DskipTests', "clean", 'package'
 }
-task apache_hbase(dependsOn: apache_hbase_tar) {
+task apache_hbase(dependsOn: [auditor, apache_hbase_tar]) {
     doLast {
         ant.delete(dir: 'apache-hbase/target/tar')
         ant.mkdir(dir: "apache-hbase/target/tar")
@@ -170,42 +166,12 @@ task auditor(dependsOn: auditor_tar) {
         ant.copy(file: "auditor/auditor-server/target/auditor-server-${auditor_version}.jar", todir: "$buildDir/ochadoop/")
     }
 }
-task all() {
+task all(dependsOn: [auditor, zookeeper, hadoop_common, hadoop_common_mr1, apache_hbase]) {
     doLast {
-        println ">>>>>>clean>>>>>>"
-        ant.delete(dir: 'auditor/target')
-        ant.delete(dir: 'zookeeper/build')
-        ant.delete(dir: 'hadoop_common/build')
-        ant.delete(dir: 'hadoop_common_mr1/build')
-        ant.delete(dir: 'apache_hbase/target')
-        println "<<<<<<clean<<<<<<"
-
-        println ">>>>>>auditor>>>>>>"
-        auditor.execute()
-        println "<<<<<<auditor<<<<<<"
-
-        println ">>>>>>zookeeper>>>>>>"
-        zookeeper.execute()
-        println "<<<<<<zookeeper<<<<<<"
-
-        println ">>>>>>hadoop_common>>>>>>"
-        hadoop_common.execute()
-        println "<<<<<<hadoop_common<<<<<<"
-
-        println ">>>>>>hadoop_common_mr1>>>>>>"
-        hadoop_common_mr1.execute()
-        println "<<<<<<hadoop_common_mr1<<<<<<"
-
-        println ">>>>>>apache_hbase>>>>>>"
-        apache_hbase.execute()
-        println "<<<<<<apache_hbase<<<<<<"
-
-        println ">>>>>>ochadoop>>>>>>"
         ant.mkdir(dir: "build/tar/ochadoop-${oc_version}")
         ant.move(file: "build/ochadoop", tofile: "build/tar/ochadoop-${oc_version}/ochadoop-${oc_version}")
         ant.tar(basedir: "build/tar/ochadoop-${oc_version}", destfile: "build/tar/ochadoop-${oc_version}.tar")
         ant.gzip(src: "build/tar/ochadoop-${oc_version}.tar", destfile: "build/tar/ochadoop-${oc_version}.tar.gz")
-        println "<<<<<<ochadoop<<<<<<"
     }
 }
 
