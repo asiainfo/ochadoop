@@ -2,6 +2,7 @@ apply plugin: 'java'
 ext {
     privateRepo = 'http://10.1.253.223:8081/nexus/content/groups/ailk/'
     privateDeployRepo = 'http://10.1.253.223:8081/nexus/content/repositories/ailk-snapshots'
+    forrest_home = "/home/cloudetl/apache-forrest-0.9"
     oc_version = 'och2.0.0'
     zookeeper_version = '3.4.5-cdh4.2.1'
     hadoop_common_version = '2.0.0-cdh4.2.1'
@@ -96,12 +97,12 @@ task hadoop_common(dependsOn: auditor) {
 }
 task hadoop_common_mr1_clean(type: Exec) {
     workingDir 'hadoop-common-mr1'
-    commandLine 'ant', '-Dreactor.repo=https://repository.cloudera.com/content/repositories/snapshots', '-Dforrest.home=/home/cloudetl/apache-forrest-0.9', "clean"
+    commandLine 'ant', "-Dmvnrepo=$privateRepo", "-Drepo.maven.org=$privateRepo", "-Dforrest.home=$forrest_home", "clean"
 }
 
 task hadoop_common_mr1_tar(dependsOn: hadoop_common_mr1_clean, type: Exec) {
     workingDir 'hadoop-common-mr1'
-    commandLine 'ant', '-Dreactor.repo=https://repository.cloudera.com/content/repositories/snapshots', '-Dforrest.home=/home/cloudetl/apache-forrest-0.9', 'tar'
+    commandLine 'ant', "-Dmvnrepo=$privateRepo", "-Drepo.maven.org=$privateRepo", "-Dforrest.home=$forrest_home", 'tar'
 }
 task hadoop_common_mr1(dependsOn: hadoop_common_mr1_tar) {
     doLast() {
@@ -165,7 +166,7 @@ task apache_hbase(dependsOn: [auditor, apache_hbase_tar]) {
 
 task apache_hive(type: Exec) {
     workingDir 'apache-hive'
-    commandLine 'ant', 'clean', "-Drepo.maven.org=$privateRepo","-Divy.mvn.repo=$privateRepo", "tar"
+    commandLine 'ant', 'clean', "-Drepo.maven.org=$privateRepo", "-Divy.mvn.repo=$privateRepo", "tar"
 }
 
 task all(dependsOn: [auditor, zookeeper, hadoop_common, hadoop_common_mr1, apache_hbase]) {
