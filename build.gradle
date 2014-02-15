@@ -165,7 +165,7 @@ task apache_hbase(dependsOn: [auditor, apache_hbase_tar]) {
 
 task apache_hive(type: Exec) {
     workingDir 'apache-hive'
-    commandLine 'ant', 'clean', "tar"
+    commandLine 'ant', 'clean', "-Divy.mvn.repo=$privateRepo", "tar"
 }
 
 task all(dependsOn: [auditor, zookeeper, hadoop_common, hadoop_common_mr1, apache_hbase]) {
