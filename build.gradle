@@ -9,6 +9,7 @@ ext {
     hadoop_common_mr1_version = '2.0.0-mr1-cdh4.2.1'
     apache_hbase_version = '0.94.12-security'
     apache_hive_version = '0.12.0'
+    apache_hive_legacy_version = '0.11.0'
     auditor_version = 'och2.2.0-SNAPSHOT'
 }
 
@@ -195,6 +196,71 @@ task apache_hive(dependsOn: [apache_hive_tar]) {
         ant.tar(basedir: "apache-hive/build/tar/hive-${apache_hive_version}-${oc_version}", destfile: "apache-hive/build/tar/hive-${apache_hive_version}-${oc_version}.tar")
         ant.gzip(src: "apache-hive/build/tar/hive-${apache_hive_version}-${oc_version}.tar", destfile: "apache-hive/build/tar/hive-${apache_hive_version}-${oc_version}.tar.gz")
         ant.move(file: "apache-hive/build/tar/hive-${apache_hive_version}-${oc_version}.tar.gz", tofile: "$buildDir/ochadoop/hive-${apache_hive_version}-${oc_version}.tar.gz")
+    }
+}
+
+task apache_hive_tar(type: Exec) {
+    workingDir 'apache-hive'
+    commandLine 'ant', 'clean', "-Drepo.maven.org=$privateRepo", "-Divy.mvn.repo=$privateRepo", "tar"
+}
+task apache_hive(dependsOn: [apache_hive_tar]) {
+    doLast {
+        ant.delete(dir: 'apache-hive/build/tar')
+        ant.mkdir(dir: "apache-hive/build/tar")
+        ant.copy(file: "apache-hive/build/hive-${apache_hive_version}.tar.gz", todir: "apache-hive/build/tar")
+        ant.gunzip(src: "apache-hive/build/tar/hive-${apache_hive_version}.tar.gz")
+        ant.untar(src: "apache-hive/build/tar/hive-${apache_hive_version}.tar", dest: 'apache-hive/build/tar')
+        ant.mkdir(dir: "apache-hive/build/tar/hive-${apache_hive_version}-${oc_version}")
+        rootdir = "apache-hive/build/tar/hive-${apache_hive_version}-${oc_version}/hive-${apache_hive_version}-${oc_version}"
+        ant.move(file: "apache-hive/build/tar/hive-${apache_hive_version}", tofile: rootdir)
+        //replace with custom changes
+
+        ant.copy(file: "apache-hive-oc/bin/hive", todir: "$rootdir/bin/")
+        ant.copy(file: "apache-hive-oc/conf/log4j.properties", todir: "$rootdir/conf/")
+
+        ant.mkdir(dir: "$rootdir/auditor")
+        project.copy({
+            into "$rootdir/auditor/lib"
+            from configurations.auditor_plugin
+        })
+        ant.move(file: "$rootdir/auditor/lib/auditor-plugin-${auditor_version}.jar", toFile: "$rootdir/auditor/auditor-plugin-${auditor_version}.jar")
+
+        //end replace
+        ant.tar(basedir: "apache-hive/build/tar/hive-${apache_hive_version}-${oc_version}", destfile: "apache-hive/build/tar/hive-${apache_hive_version}-${oc_version}.tar")
+        ant.gzip(src: "apache-hive/build/tar/hive-${apache_hive_version}-${oc_version}.tar", destfile: "apache-hive/build/tar/hive-${apache_hive_version}-${oc_version}.tar.gz")
+        ant.move(file: "apache-hive/build/tar/hive-${apache_hive_version}-${oc_version}.tar.gz", tofile: "$buildDir/ochadoop/hive-${apache_hive_version}-${oc_version}.tar.gz")
+    }
+}
+task apache_hive_legacy_tar(type: Exec) {
+    workingDir 'apache-hive-legacy'
+    commandLine 'ant', 'clean', "-Drepo.maven.org=$privateRepo", "-Divy.mvn.repo=$privateRepo", "tar"
+}
+task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar]) {
+    doLast {
+        ant.delete(dir: 'apache-hive-legacy/build/tar')
+        ant.mkdir(dir: "apache-hive-legacy/build/tar")
+        ant.copy(file: "apache-hive-legacy/build/hive-${apache_hive_legacy_version}.tar.gz", todir: "apache-hive-legacy/build/tar")
+        ant.gunzip(src: "apache-hive-legacy/build/tar/hive-${apache_hive_legacy_version}.tar.gz")
+        ant.untar(src: "apache-hive-legacy/build/tar/hive-${apache_hive_legacy_version}.tar", dest: 'apache-hive-legacy/build/tar')
+        ant.mkdir(dir: "apache-hive-legacy/build/tar/hive-${apache_hive_legacy_version}-${oc_version}")
+        rootdir = "apache-hive-legacy/build/tar/hive-${apache_hive_legacy_version}-${oc_version}/hive-${apache_hive_legacy_version}-${oc_version}"
+        ant.move(file: "apache-hive-legacy/build/tar/hive-${apache_hive_legacy_version}", tofile: rootdir)
+        //replace with custom changes
+
+        ant.copy(file: "apache-hive-legacy-oc/bin/hive", todir: "$rootdir/bin/")
+        ant.copy(file: "apache-hive-legacy-oc/conf/log4j.properties", todir: "$rootdir/conf/")
+
+        ant.mkdir(dir: "$rootdir/auditor")
+        project.copy({
+            into "$rootdir/auditor/lib"
+            from configurations.auditor_plugin
+        })
+        ant.move(file: "$rootdir/auditor/lib/auditor-plugin-${auditor_version}.jar", toFile: "$rootdir/auditor/auditor-plugin-${auditor_version}.jar")
+
+        //end replace
+        ant.tar(basedir: "apache-hive-legacy/build/tar/hive-${apache_hive_legacy_version}-${oc_version}", destfile: "apache-hive-legacy/build/tar/hive-${apache_hive_legacy_version}-${oc_version}.tar")
+        ant.gzip(src: "apache-hive-legacy/build/tar/hive-${apache_hive_legacy_version}-${oc_version}.tar", destfile: "apache-hive-legacy/build/tar/hive-${apache_hive_legacy_version}-${oc_version}.tar.gz")
+        ant.move(file: "apache-hive-legacy/build/tar/hive-${apache_hive_legacy_version}-${oc_version}.tar.gz", tofile: "$buildDir/ochadoop/hive-${apache_hive_legacy_version}-${oc_version}.tar.gz")
     }
 }
 
