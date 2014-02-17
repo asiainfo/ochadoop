@@ -232,7 +232,7 @@ task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar]) {
     }
 }
 
-task all(dependsOn: [auditor, zookeeper, hadoop_common, hadoop_common_mr1, apache_hbase]) {
+task all(dependsOn: [auditor, zookeeper, hadoop_common, hadoop_common_mr1, apache_hbase, apache_hive]) {
     doLast {
         ant.mkdir(dir: "build/tar/ochadoop-${oc_version}")
         ant.move(file: "build/ochadoop", tofile: "build/tar/ochadoop-${oc_version}/ochadoop-${oc_version}")
