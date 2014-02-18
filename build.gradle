@@ -106,7 +106,7 @@ task hadoop_common_mr1_clean(type: Exec) {
 task hadoop_common_mr1_tar(dependsOn: hadoop_common_mr1_clean, type: Exec) {
     workingDir 'hadoop-common-mr1'
     commandLine 'ant', "-Dmvnrepo=$privateRepo", "-Drepo.maven.org=$privateRepo", "-Dforrest.home=$forrest_home", 'tar'
-    environment JAVA_HOME: "/home/cloudetl/app/jdk1.7.0"
+    environment JAVA_HOME: "/home/cloudetl/bin/jdk1.6.0_21"
 }
 task hadoop_common_mr1(dependsOn: hadoop_common_mr1_tar) {
     doLast() {
