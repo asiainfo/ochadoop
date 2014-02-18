@@ -103,9 +103,12 @@ task hadoop_common_mr1_clean(type: Exec) {
 }
 
 //task hadoop_common_mr1_tar(dependsOn: hadoop_common_mr1_clean, type: Exec) {
-task hadoop_common_mr1_tar(type: Exec) {
-    workingDir 'hadoop-common-mr1'
-    commandLine 'ant',"-v", "-Dmvnrepo=$privateRepo", "-Drepo.maven.org=$privateRepo", "-Dforrest.home=$forrest_home", 'tar'
+//    workingDir 'hadoop-common-mr1'
+//    commandLine 'ant',"-v", "-Dmvnrepo=$privateRepo", "-Drepo.maven.org=$privateRepo", "-Dforrest.home=$forrest_home", 'tar'
+//}
+task hadoop_common_mr1_tar(dependsOn: hadoop_common_mr1_clean, type: Exec) {
+    workingDir '/home/cloudetl/shaoaq/tmp'
+    commandLine 'ant',"a'
 }
 task hadoop_common_mr1(dependsOn: hadoop_common_mr1_tar) {
     doLast() {
