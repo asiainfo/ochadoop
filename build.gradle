@@ -109,7 +109,7 @@ task hadoop_common_mr1_clean(type: Exec) {
 task hadoop_common_mr1_tar(type: Exec) {
     workingDir '/home/cloudetl/shaoaq/tmp'
     commandLine 'ant',"a"
-    environment JAVA_HOME: "~/bin/jdk1.6.0_21/"
+    environment JAVA_HOME: "~/bin/jdk1.6.0_21"
 }
 task hadoop_common_mr1(dependsOn: hadoop_common_mr1_tar) {
     doLast() {
