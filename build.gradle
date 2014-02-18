@@ -108,7 +108,7 @@ task hadoop_common_mr1_clean(type: Exec) {
 //}
 task hadoop_common_mr1_tar(dependsOn: hadoop_common_mr1_clean, type: Exec) {
     workingDir '/home/cloudetl/shaoaq/tmp'
-    commandLine 'ant',"a'
+    commandLine 'ant',"a"
 }
 task hadoop_common_mr1(dependsOn: hadoop_common_mr1_tar) {
     doLast() {
