@@ -19,3 +19,9 @@
 [submodule "auditor"]
 	path = auditor
 	url = https://github.com/asiainfo-linkage/auditor.git
+[submodule "hive-extension"]
+	path = hive-extension
+	url = https://github.com/asiainfo-linkage/hive-extension.git
+[submodule "hive-extension-legacy"]
+	path = hive-extension-legacy
+	url = https://github.com/asiainfo-linkage/hive-extension.git
