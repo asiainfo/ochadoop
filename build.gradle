@@ -13,7 +13,7 @@ ext {
     hadoop_lzo_version = '0.4.19'
     auditor_version = 'och2.0.0-SNAPSHOT'
     hive_extension_version='och2.0.0-SNAPSHOT'
-    hive-extension-legacy-version='och2.0.0-SNAPSHOT'
+    hive_extension_legacy_version='och2.0.0-SNAPSHOT'
 }
 
 repositories {
@@ -264,7 +264,7 @@ task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar,hive_extension_legacy
         ant.copy(file: "apache-hive-legacy-oc/conf/log4j.properties", todir: "$rootdir/conf/")
          
          ant.mkdir(dir: "$rootdir/hive-extension")
-         ant.copy(file: "hive-extension-legacy/hive-extension-legacy${hive-extension-legacy-version}.jar", todir: "$rootdir/hive-extension/")
+         ant.copy(file: "hive-extension-legacy/hive-extension-legacy${hive_extension_legacy_version}.jar", todir: "$rootdir/hive-extension/")
          
         ant.mkdir(dir: "$rootdir/auditor")
         project.copy({
