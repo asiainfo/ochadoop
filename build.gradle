@@ -65,11 +65,11 @@ task zookeeper(dependsOn: zookeeper_build_tar) {
         ant.move(file: "zookeeper/build/tar/zookeeper-${zookeeper_version}-${oc_version}.tar.gz", tofile: "$buildDir/ochadoop/zookeeper-${zookeeper_version}-${oc_version}.tar.gz")
     }
 }
-task hadoop_common_native(type:Exec){
+task hadoop_common_native(type: Exec) {
     workingDir 'hadoop-common'
-    commandLine 'mvn', "-Pdist,native","-DskipTests","-Dtar", "clean","package"
+    commandLine 'mvn', "-Pdist,native", "-DskipTests", "-Dtar", "clean", "package"
 }
-task hadoop_common(dependsOn: auditor) {
+task hadoop_common(dependsOn: auditor, hadoop_common_native) {
     doLast() {
         ant.mkdir(dir: "hadoop-common/build")
         getFromMaven("org.apache.hadoop:hadoop-dist:$hadoop_common_version@tar.gz", "hadoop-common/build/hadoop-dist-${hadoop_common_version}.tar.gz")
@@ -80,6 +80,13 @@ task hadoop_common(dependsOn: auditor) {
         rootdir = "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}/hadoop-${hadoop_common_version}-${oc_version}"
         ant.move(file: "hadoop-common/build/tar/hadoop-${hadoop_common_version}", tofile: rootdir)
         //replace with custom changes
+
+        ant.delete(dir: 'hadoop-common/build/native_tar')
+        ant.copy(file: "hadoop-common/hadoop-dist/target/hadoop-${hadoop_common_version}.tar.gz", todir: "hadoop-common/build/native_tar/")
+        ant.gunzip(src: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}.tar.gz")
+        ant.untar(src: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}.tar", dest: 'hadoop-common/build/native_tar')
+
+
 
         ant.copy(file: "hadoop-common-oc/etc/hadoop/core-site.xml", todir: "$rootdir/etc/hadoop/")
         ant.copy(file: "hadoop-common-oc/etc/hadoop/mapred-site.xml", todir: "$rootdir/etc/hadoop/")
