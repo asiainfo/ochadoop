@@ -69,7 +69,7 @@ task hadoop_common_native(type: Exec) {
     workingDir 'hadoop-common'
     commandLine 'mvn', "-Pdist,native", "-DskipTests", "-Dtar", "clean", "package"
 }
-task hadoop_common(dependsOn: auditor, hadoop_common_native) {
+task hadoop_common(dependsOn: [auditor, hadoop_common_native]) {
     doLast() {
         ant.mkdir(dir: "hadoop-common/build")
         getFromMaven("org.apache.hadoop:hadoop-dist:$hadoop_common_version@tar.gz", "hadoop-common/build/hadoop-dist-${hadoop_common_version}.tar.gz")
