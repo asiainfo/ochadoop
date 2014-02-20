@@ -10,6 +10,7 @@ ext {
     apache_hbase_version = '0.94.12-security'
     apache_hive_version = '0.12.0'
     apache_hive_legacy_version = '0.11.0'
+    hadoop_lzo_version = '0.4.19'
     auditor_version = 'och2.2.0-SNAPSHOT'
 }
 
@@ -90,6 +91,8 @@ task hadoop_common(dependsOn: auditor) {
             from configurations.auditor_plugin
         })
         ant.move(file: "$rootdir/share/hadoop/auditor/lib/auditor-plugin-${auditor_version}.jar", toFile: "$rootdir/share/hadoop/auditor/auditor-plugin-${auditor_version}.jar")
+
+        getFromMaven("com.hadoop.gplcompression:hadoop-lzo:$hadoop_lzo_version@jar", "$rootdir/share/hadoop/common/hadoop-lzo-${hadoop_lzo_version}.jar")
 
         //end replace
         ant.tar(basedir: "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}", destfile: "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}.tar")
