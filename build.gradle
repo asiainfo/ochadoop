@@ -88,8 +88,9 @@ task hadoop_common(dependsOn: [auditor, hadoop_common_native]) {
         ant.gunzip(src: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}.tar.gz")
         ant.untar(src: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}.tar", dest: 'hadoop-common/build/native_tar')
         ant.delete(dir: "$rootdir/lib/native")
-        ant.copy(file: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}/lib/native", todir: "$rootdir/lib")
-
+        ant.copy(todir: "$rootdir/lib") {
+            fileset(dir: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}/lib/native")
+        }
 
         ant.copy(file: "hadoop-common-oc/etc/hadoop/core-site.xml", todir: "$rootdir/etc/hadoop/")
         ant.copy(file: "hadoop-common-oc/etc/hadoop/mapred-site.xml", todir: "$rootdir/etc/hadoop/")
