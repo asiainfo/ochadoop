@@ -65,7 +65,10 @@ task zookeeper(dependsOn: zookeeper_build_tar) {
         ant.move(file: "zookeeper/build/tar/zookeeper-${zookeeper_version}-${oc_version}.tar.gz", tofile: "$buildDir/ochadoop/zookeeper-${zookeeper_version}-${oc_version}.tar.gz")
     }
 }
-
+task hadoop_common_native(type:Exec){
+    workingDir 'hadoop-common'
+    commandLine 'mvn', "-Pdist,native","-DskipTests","-Dtar", "clean","package"
+}
 task hadoop_common(dependsOn: auditor) {
     doLast() {
         ant.mkdir(dir: "hadoop-common/build")
