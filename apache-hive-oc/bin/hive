@@ -89,6 +89,11 @@ if [ ! -f ${HIVE_LIB}/hive-cli-*.jar ]; then
   exit 3;
 fi
 
+# Add hive-extension libs to CLASSPATH
+for f in ${HIVE_HOME}/hive-extension/*.jar; do
+  CLASSPATH=${CLASSPATH}:$f;
+done
+
 for f in ${HIVE_LIB}/*.jar; do
   CLASSPATH=${CLASSPATH}:$f;
 done
