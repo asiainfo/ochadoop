@@ -10,6 +10,7 @@ ext {
     apache_hbase_version = '0.94.12-security'
     apache_hive_version = '0.12.0'
     apache_hive_legacy_version = '0.11.0'
+    hadoop_lzo_version = '0.4.19'
     auditor_version = 'och2.0.0-SNAPSHOT'
     hive_extension_version='och2.0.0-SNAPSHOT'
     hive-extension-legacy-version='och2.0.0-SNAPSHOT'
@@ -66,8 +67,11 @@ task zookeeper(dependsOn: zookeeper_build_tar) {
         ant.move(file: "zookeeper/build/tar/zookeeper-${zookeeper_version}-${oc_version}.tar.gz", tofile: "$buildDir/ochadoop/zookeeper-${zookeeper_version}-${oc_version}.tar.gz")
     }
 }
-
-task hadoop_common(dependsOn: auditor) {
+task hadoop_common_native(type: Exec) {
+    workingDir 'hadoop-common'
+    commandLine 'mvn', "-Pdist,native", "-DskipTests", "-Dtar", "clean", "package"
+}
+task hadoop_common(dependsOn: [auditor, hadoop_common_native]) {
     doLast() {
         ant.mkdir(dir: "hadoop-common/build")
         getFromMaven("org.apache.hadoop:hadoop-dist:$hadoop_common_version@tar.gz", "hadoop-common/build/hadoop-dist-${hadoop_common_version}.tar.gz")
@@ -78,6 +82,14 @@ task hadoop_common(dependsOn: auditor) {
         rootdir = "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}/hadoop-${hadoop_common_version}-${oc_version}"
         ant.move(file: "hadoop-common/build/tar/hadoop-${hadoop_common_version}", tofile: rootdir)
         //replace with custom changes
+
+        ant.delete(dir: 'hadoop-common/build/native_tar')
+        ant.copy(file: "hadoop-common/hadoop-dist/target/hadoop-${hadoop_common_version}.tar.gz", todir: "hadoop-common/build/native_tar/")
+        ant.gunzip(src: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}.tar.gz")
+        ant.untar(src: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}.tar", dest: 'hadoop-common/build/native_tar')
+        ant.delete(dir: "$rootdir/lib/native")
+        ant.copy(file: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}/lib/native", todir: "$rootdir/lib")
+
 
         ant.copy(file: "hadoop-common-oc/etc/hadoop/core-site.xml", todir: "$rootdir/etc/hadoop/")
         ant.copy(file: "hadoop-common-oc/etc/hadoop/mapred-site.xml", todir: "$rootdir/etc/hadoop/")
@@ -92,6 +104,8 @@ task hadoop_common(dependsOn: auditor) {
             from configurations.auditor_plugin
         })
         ant.move(file: "$rootdir/share/hadoop/auditor/lib/auditor-plugin-${auditor_version}.jar", toFile: "$rootdir/share/hadoop/auditor/auditor-plugin-${auditor_version}.jar")
+
+        getFromMaven("com.hadoop.gplcompression:hadoop-lzo:$hadoop_lzo_version@jar", "$rootdir/share/hadoop/common/hadoop-lzo-${hadoop_lzo_version}.jar")
 
         //end replace
         ant.tar(basedir: "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}", destfile: "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}.tar")
