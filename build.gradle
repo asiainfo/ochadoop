@@ -79,7 +79,7 @@ task hadoop_lzo(type: Exec) {
 //./configure --enable-shared --prefix /home/cloudetl/app/lzo-2.06
 //make && sudo make install
     workingDir 'hadoop-lzo'
-    commandLine 'mvn', "clean", "package"
+    commandLine 'mvn', "-DskipTests", "clean", "package"
     environment C_INCLUDE_PATH: System.getProperty('LZO_HOME', "/home/cloudetl/app/lzo-2.06") + "/include"
     environment LIBRARY_PATH: System.getProperty('LZO_HOME', "/home/cloudetl/app/lzo-2.06") + "/lib"
 }
