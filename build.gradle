@@ -100,7 +100,7 @@ task hadoop_common(dependsOn: [auditor, hadoop_common_native, hadoop_lzo]) {
         ant.gunzip(src: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}.tar.gz")
         ant.untar(src: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}.tar", dest: 'hadoop-common/build/native_tar')
         ant.delete(dir: "$rootdir/lib/native")
-        ant.copy(todir: "$rootdir/lib") {
+        ant.copy(todir: "$rootdir/lib/native") {
             fileset(dir: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}/lib/native")
         }
         ant.copy(todir: "$rootdir/lib/native") {
