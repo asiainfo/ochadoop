@@ -121,7 +121,7 @@ task hadoop_common(dependsOn: [auditor, hadoop_common_native, hadoop_lzo]) {
         })
         ant.move(file: "$rootdir/share/hadoop/auditor/lib/auditor-plugin-${auditor_version}.jar", toFile: "$rootdir/share/hadoop/auditor/auditor-plugin-${auditor_version}.jar")
 
-        ant.copy(file: "hadoop-lzo/target/hadoop-lzo-$hadoop_lzo_version.jar", todir: "$rootdir/share/hadoop/common/")
+        ant.copy(file: "hadoop-lzo/target/hadoop-lzo-${hadoop_lzo_version}.jar", todir: "$rootdir/share/hadoop/common/")
 
         //end replace
         ant.tar(basedir: "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}", destfile: "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}.tar")
