@@ -80,8 +80,8 @@ task hadoop_lzo(type: Exec) {
 //make && sudo make install
     workingDir 'hadoop-lzo'
     commandLine 'mvn', "clean", "package"
-    environment C_INCLUDE_PATH: System.getProperty('LZO_HOME', "/home/jenkins/app/lzo-2.06") + "/include"
-    environment LIBRARY_PATH: System.getProperty('LZO_HOME', "/home/jenkins/app/lzo-2.06") + "/lib"
+    environment C_INCLUDE_PATH: System.getProperty('LZO_HOME', "/home/cloudetl/app/lzo-2.06") + "/include"
+    environment LIBRARY_PATH: System.getProperty('LZO_HOME', "/home/cloudetl/app/lzo-2.06") + "/lib"
 }
 task hadoop_common(dependsOn: [auditor, hadoop_common_native, hadoop_lzo]) {
     doLast() {
