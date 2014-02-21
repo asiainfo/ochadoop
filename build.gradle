@@ -207,7 +207,7 @@ task apache_hive_extension_tar(type: Exec) {
 
 task apache_hive_tar(type: Exec) {
     workingDir 'apache-hive'
-    commandLine 'ant', 'clean', "-Drepo.maven.org=$privateRepo", "-Divy.mvn.repo=$privateRepo", "tar"
+    commandLine 'ant', 'clean', "-Drepo.maven.org=$privateRepo", "-Divy.mvn.repo=$privateRepo", "-Dmvnrepo=$privateRepo", "tar"
 }
 task apache_hive(dependsOn: [apache_hive_tar, apache_hive_extension_tar]) {
     doLast {
