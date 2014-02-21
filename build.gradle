@@ -12,8 +12,8 @@ ext {
     apache_hive_legacy_version = '0.11.0'
     hadoop_lzo_version = '0.4.19'
     auditor_version = 'och2.0.0-SNAPSHOT'
-    hive_extension_version='och2.0.0-SNAPSHOT'
-    hive_extension_legacy_version='och2.0.0-SNAPSHOT'
+    hive_extension_version = 'och2.0.0-SNAPSHOT'
+    hive_extension_legacy_version = 'och2.0.0-SNAPSHOT'
 }
 
 repositories {
@@ -71,7 +71,19 @@ task hadoop_common_native(type: Exec) {
     workingDir 'hadoop-common'
     commandLine 'mvn', "-Pdist,native", "-DskipTests", "-Dtar", "clean", "package"
 }
-task hadoop_common(dependsOn: [auditor, hadoop_common_native]) {
+
+task hadoop_lzo(type: Exec) {
+//wget http://www.oberhumer.com/opensource/lzo/download/lzo-2.06.tar.gz
+//tar -xvzf lzo-2.06.tar.gz
+//cd lzo-2.06
+//./configure --enable-shared --prefix /home/cloudetl/app/lzo-2.06
+//make && sudo make install
+    workingDir 'hadoop-lzo'
+    commandLine 'mvn', "clean", "package"
+    environment C_INCLUDE_PATH: System.getProperty('LZO_HOME', "/home/jenkins/app/lzo-2.06") + "/include"
+    environment LIBRARY_PATH: System.getProperty('LZO_HOME', "/home/jenkins/app/lzo-2.06") + "/lib"
+}
+task hadoop_common(dependsOn: [auditor, hadoop_common_native, hadoop_lzo]) {
     doLast() {
         ant.mkdir(dir: "hadoop-common/build")
         getFromMaven("org.apache.hadoop:hadoop-dist:$hadoop_common_version@tar.gz", "hadoop-common/build/hadoop-dist-${hadoop_common_version}.tar.gz")
@@ -91,6 +103,9 @@ task hadoop_common(dependsOn: [auditor, hadoop_common_native]) {
         ant.copy(todir: "$rootdir/lib") {
             fileset(dir: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}/lib/native")
         }
+        ant.copy(todir: "$rootdir/lib/native") {
+            fileset(dir: "hadoop-lzo/target/native/Linux-amd64-64/lib")
+        }
 
         ant.copy(file: "hadoop-common-oc/etc/hadoop/core-site.xml", todir: "$rootdir/etc/hadoop/")
         ant.copy(file: "hadoop-common-oc/etc/hadoop/mapred-site.xml", todir: "$rootdir/etc/hadoop/")
@@ -106,7 +121,7 @@ task hadoop_common(dependsOn: [auditor, hadoop_common_native]) {
         })
         ant.move(file: "$rootdir/share/hadoop/auditor/lib/auditor-plugin-${auditor_version}.jar", toFile: "$rootdir/share/hadoop/auditor/auditor-plugin-${auditor_version}.jar")
 
-        getFromMaven("com.hadoop.gplcompression:hadoop-lzo:$hadoop_lzo_version@jar", "$rootdir/share/hadoop/common/hadoop-lzo-${hadoop_lzo_version}.jar")
+        ant.copy(file: "hadoop-lzo/target/hadoop-lzo-$hadoop_lzo_version.jar", todir: "$rootdir/share/hadoop/common/")
 
         //end replace
         ant.tar(basedir: "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}", destfile: "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}.tar")
@@ -200,7 +215,7 @@ task apache_hive_tar(type: Exec) {
     workingDir 'apache-hive'
     commandLine 'ant', 'clean', "-Drepo.maven.org=$privateRepo", "-Divy.mvn.repo=$privateRepo", "tar"
 }
-task apache_hive(dependsOn: [apache_hive_tar,hive_extension]) {
+task apache_hive(dependsOn: [apache_hive_tar, hive_extension]) {
     doLast {
         ant.delete(dir: 'apache-hive/build/tar')
         ant.mkdir(dir: "apache-hive/build/tar")
@@ -214,10 +229,10 @@ task apache_hive(dependsOn: [apache_hive_tar,hive_extension]) {
 
         ant.copy(file: "apache-hive-oc/bin/hive", todir: "$rootdir/bin/")
         ant.copy(file: "apache-hive-oc/conf/log4j.properties", todir: "$rootdir/conf/")
-        
+
         ant.mkdir(dir: "$rootdir/hive-extension")
         ant.copy(file: "hive-extension/hive-extension-${hive_extension_version}.jar", todir: "$rootdir/hive-extension/")
-        
+
         ant.mkdir(dir: "$rootdir/auditor")
         project.copy({
             into "$rootdir/auditor/lib"
@@ -225,7 +240,6 @@ task apache_hive(dependsOn: [apache_hive_tar,hive_extension]) {
         })
         ant.move(file: "$rootdir/auditor/lib/auditor-plugin-${auditor_version}.jar", toFile: "$rootdir/auditor/auditor-plugin-${auditor_version}.jar")
 
-   
         //end replace
         ant.tar(basedir: "apache-hive/build/tar/hive-${apache_hive_version}-${oc_version}", destfile: "apache-hive/build/tar/hive-${apache_hive_version}-${oc_version}.tar")
         ant.gzip(src: "apache-hive/build/tar/hive-${apache_hive_version}-${oc_version}.tar", destfile: "apache-hive/build/tar/hive-${apache_hive_version}-${oc_version}.tar.gz")
@@ -239,7 +253,7 @@ task hive_extension_legacy_tar(type: Exec) {
 }
 task hive_extension_legacy(dependsOn: hive_extension_legacy_tar) {
     doLast {
-       // ant.copy(file: "hive_extension_legacy/hive-extension-legacy${hive-extension-legacy-version}.jar", todir: "$buildDir/ochadoop/")
+        // ant.copy(file: "hive_extension_legacy/hive-extension-legacy${hive-extension-legacy-version}.jar", todir: "$buildDir/ochadoop/")
     }
 }
 
@@ -248,7 +262,7 @@ task apache_hive_legacy_tar(type: Exec) {
     commandLine 'ant', 'clean', "-Drepo.maven.org=$privateRepo", "-Divy.mvn.repo=$privateRepo", "tar"
     environment JAVA_HOME: System.getProperty('JAVA6_HOME', "/home/cloudetl/bin/jdk1.6.0_21")
 }
-task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar,hive_extension_legacy]) {
+task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar, hive_extension_legacy]) {
     doLast {
         ant.delete(dir: 'apache-hive-legacy/build/tar')
         ant.mkdir(dir: "apache-hive-legacy/build/tar")
@@ -262,10 +276,10 @@ task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar,hive_extension_legacy
 
         ant.copy(file: "apache-hive-legacy-oc/bin/hive", todir: "$rootdir/bin/")
         ant.copy(file: "apache-hive-legacy-oc/conf/log4j.properties", todir: "$rootdir/conf/")
-         
-         ant.mkdir(dir: "$rootdir/hive-extension")
-         ant.copy(file: "hive-extension-legacy/hive-extension-legacy${hive_extension_legacy_version}.jar", todir: "$rootdir/hive-extension/")
-         
+
+        ant.mkdir(dir: "$rootdir/hive-extension")
+        ant.copy(file: "hive-extension-legacy/hive-extension-legacy${hive_extension_legacy_version}.jar", todir: "$rootdir/hive-extension/")
+
         ant.mkdir(dir: "$rootdir/auditor")
         project.copy({
             into "$rootdir/auditor/lib"
