@@ -25,3 +25,6 @@
 [submodule "hive-extension-legacy"]
 	path = hive-extension-legacy
 	url = https://github.com/asiainfo-linkage/hive-extension.git
+[submodule "hadoop-lzo"]
+	path = hadoop-lzo
+	url = https://github.com/twitter/hadoop-lzo.git
