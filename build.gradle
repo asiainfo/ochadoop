@@ -267,7 +267,7 @@ task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar, apache_hive_extensio
         ant.copy(file: "apache-hive-legacy-oc/conf/log4j.properties", todir: "$rootdir/conf/")
 
         ant.mkdir(dir: "$rootdir/hive-extension")
-        ant.copy(file: "hive-extension-legacy/hive-extension-legacy${apache_hive_extension_legacy_version}.jar", todir: "$rootdir/hive-extension/")
+        ant.copy(file: "hive-extension-legacy/target/hive-extension-legacy-${apache_hive_extension_legacy_version}.jar", todir: "$rootdir/hive-extension/")
 
         ant.mkdir(dir: "$rootdir/auditor")
         project.copy({
