@@ -1,6 +1,6 @@
 apply plugin: 'java'
 ext {
-    privateRepo = 'http://10.1.253.223:8081/nexus/content/groups/ailk/'
+    privateRepo = 'http://10.1.253.223:8081/nexus/content/groups/ailk'
     privateDeployRepo = 'http://10.1.253.223:8081/nexus/content/repositories/ailk-snapshots'
     forrest_home = "/home/cloudetl/apache-forrest-0.9"
     oc_version = 'och2.0.0'
@@ -30,7 +30,7 @@ dependencies {
 
 def getFromMaven(src, dest) {
     s = src.split(":")
-    srcUrl = privateRepo + s[0].replace('.', '/') + '/' + s[1] + '/' + s[2].split('@')[0] + '/' + s[1] + '-' + s[2].replace('@', '.')
+    srcUrl = privateRepo + "/" + s[0].replace('.', '/') + '/' + s[1] + '/' + s[2].split('@')[0] + '/' + s[1] + '-' + s[2].replace('@', '.')
     ant.echo("downloading:$srcUrl to:$dest")
     ant.get(src: srcUrl, dest: dest, verbose: true)
 }
@@ -52,7 +52,7 @@ task zookeeper_clean(type: Exec) {
 
 task zookeeper_build_tar(dependsOn: zookeeper_clean, type: Exec) {
     workingDir 'zookeeper'
-    commandLine 'ant', "-Dversion=$zookeeper_version", 'tar'
+    commandLine 'ant', "-Dversion=$zookeeper_version", "-Divy.url=$privateRepo/org/apache/ivy/ivy", 'tar'
 }
 
 task zookeeper(dependsOn: zookeeper_build_tar) {
