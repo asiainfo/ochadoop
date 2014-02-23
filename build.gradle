@@ -248,7 +248,7 @@ task apache_hive_extension_legacy_tar(type: Exec) {
 
 task apache_hive_legacy_tar(type: Exec) {
     workingDir 'apache-hive-legacy'
-    commandLine 'ant', 'clean', "-Drepo.maven.org=$privateRepo", "-Divy.mvn.repo=$privateRepo", "tar"
+    commandLine 'ant', 'clean', "-Drepo.maven.org=$privateRepo", "-Divy.mvn.repo=$privateRepo", "-Dmvnrepo=$privateRepo", "tar"
     environment JAVA_HOME: System.getProperty('JAVA6_HOME', "/home/cloudetl/bin/jdk1.6.0_21")
 }
 task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar, apache_hive_extension_legacy_tar]) {
