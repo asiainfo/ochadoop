@@ -17,6 +17,29 @@
 <!-- Put site-specific property overrides in this file. -->
 
 <configuration>
+    <!--
+	<property>
+	  <name>fs.defaultFS</name>
+	    <value>hdfs://OCNoSQLBJ</value>
+	    <description>The name of the default file system.Either the literal string 鈥渓ocal鈥?or a host:port for NDFS.</description>
+	    <final>true</final>
+	</property>
+	<property>
+	   <name>io.native.lib.available</name>
+	   <value>true</value>
+	</property>
+	<property>
+	   <name>hadoop.tmp.dir</name>
+	   <value>/hdfs/data1/tmp</value> 
+	   <description>A base for other temporary directories.</description>
+	</property>
+	
+	<property>
+	  <name>io.compression.codecs</name>
+	  <value>org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.SnappyCodec</value>
+	</property>
+       -->
+
     <property>
         <name>fs.trash.interval</name>
         <value>1440</value>
