@@ -110,7 +110,7 @@ task hadoop_common(dependsOn: [auditor, hadoop_common_native, hadoop_lzo]) {
         ant.copy(file: "hadoop-common-oc/etc/hadoop/core-site.xml", todir: "$rootdir/etc/hadoop/")
         ant.copy(file: "hadoop-common-oc/etc/hadoop/mapred-site.xml", todir: "$rootdir/etc/hadoop/")
         ant.copy(file: "hadoop-common-oc/etc/hadoop/log4j.properties", todir: "$rootdir/etc/hadoop/")
-        ant.copy(file: "hadoop-common-oc/etc/hadoop/navigator.client.properties", todir: "$rootdir/etc/hadoop/")
+        ant.copy(file: "hadoop-common-oc/etc/hadoop/auditor.client.properties", todir: "$rootdir/etc/hadoop/")
         ant.copy(file: "hadoop-common-oc/libexec/hadoop-config.sh", todir: "$rootdir/libexec/")
 
 
