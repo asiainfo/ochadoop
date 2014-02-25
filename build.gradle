@@ -28,17 +28,17 @@ dependencies {
     auditor_plugin "com.ailk.oci.auditor:auditor-plugin:$auditor_version"
 }
 
-def getFromMaven(src, dest) {
-    s = src.split(":")
-    srcUrl = privateRepo + "/" + s[0].replace('.', '/') + '/' + s[1] + '/' + s[2].split('@')[0] + '/' + s[1] + '-' + s[2].replace('@', '.')
-    ant.echo("downloading:$srcUrl to:$dest")
-    ant.get(src: srcUrl, dest: dest, verbose: true)
+def getFromMaven(src, destDir) {
+    s = src.split("[:@]")
+    srcUrl = "http://10.1.253.223:8081/nexus/service/local/artifact/maven/redirect?r=ailk&g=${s[0]}&a=${s[1]}&v=${s[2]}&e=${s[3]}"
+    ant.echo("downloading:$srcUrl to:$destDir/${s[1]}-${s[2]}.${s[3]}")
+    ant.get(src: srcUrl, dest: "$destDir/${s[1]}-${s[2]}.${s[3]}", verbose: true)
 }
 
 
 task auditor() {
     doLast {
-        getFromMaven("com.ailk.oci.auditor:auditor-server:$auditor_version@jar", "$buildDir/ochadoop/auditor-server-${auditor_version}.jar")
+        getFromMaven("com.ailk.oci.auditor:auditor-server:$auditor_version@jar", "$buildDir/ochadoop")
     }
 }
 
@@ -57,7 +57,7 @@ task zookeeper(dependsOn: zookeeper_build_tar) {
         ant.delete(dir: 'zookeeper/build/tar')
         ant.gunzip(src: "zookeeper/build/zookeeper-${zookeeper_version}.tar.gz")
         ant.untar(src: "zookeeper/build/zookeeper-${zookeeper_version}.tar", dest: 'zookeeper/build/tar')
-        getFromMaven("org.apache.zookeeper:zookeeper:$zookeeper_version@jar", "zookeeper/build/tar/zookeeper-${zookeeper_version}/zookeeper-${zookeeper_version}.jar")
+        getFromMaven("org.apache.zookeeper:zookeeper:$zookeeper_version@jar", "zookeeper/build/tar/zookeeper-${zookeeper_version}")
         ant.move(file: "zookeeper/build/tar/zookeeper-${zookeeper_version}", tofile: "zookeeper/build/tar/zookeeper-${zookeeper_version}-${oc_version}")
         ant.tar(basedir: "zookeeper/build/tar/zookeeper-${zookeeper_version}-${oc_version}", destfile: "zookeeper/build/tar/zookeeper-${zookeeper_version}-${oc_version}.tar")
         ant.gzip(src: "zookeeper/build/tar/zookeeper-${zookeeper_version}-${oc_version}.tar", destfile: "zookeeper/build/tar/zookeeper-${zookeeper_version}-${oc_version}.tar.gz")
@@ -83,7 +83,7 @@ task hadoop_lzo(type: Exec) {
 task hadoop_common(dependsOn: [auditor, hadoop_common_native, hadoop_lzo]) {
     doLast() {
         ant.mkdir(dir: "hadoop-common/build")
-        getFromMaven("org.apache.hadoop:hadoop-dist:$hadoop_common_version@tar.gz", "hadoop-common/build/hadoop-dist-${hadoop_common_version}.tar.gz")
+        getFromMaven("org.apache.hadoop:hadoop-dist:$hadoop_common_version@tar.gz", "hadoop-common/build")
         ant.delete(dir: 'hadoop-common/build/tar')
         ant.gunzip(src: "hadoop-common/build/hadoop-dist-${hadoop_common_version}.tar.gz")
         ant.untar(src: "hadoop-common/build/hadoop-dist-${hadoop_common_version}.tar", dest: 'hadoop-common/build/tar')
@@ -151,10 +151,10 @@ task hadoop_common_mr1(dependsOn: hadoop_common_mr1_tar) {
 
         ant.copy(file: "hadoop-common-mr1-oc/conf/core-site.xml", todir: "$rootdir/conf/")
         ant.copy(file: "hadoop-common-mr1-oc/conf/log4j.properties", todir: "$rootdir/conf/")
-        getFromMaven("org.apache.hadoop:hadoop-core:$hadoop_common_mr1_version@jar", "$rootdir/hadoop-core-${hadoop_common_mr1_version}.jar")
-        getFromMaven("org.apache.hadoop:hadoop-examples:$hadoop_common_mr1_version@jar", "$rootdir/hadoop-examples-${hadoop_common_mr1_version}.jar")
-        getFromMaven("org.apache.hadoop:hadoop-test:$hadoop_common_mr1_version@jar", "$rootdir/hadoop-test-${hadoop_common_mr1_version}.jar")
-        getFromMaven("org.apache.hadoop:hadoop-tools:$hadoop_common_mr1_version@jar", "$rootdir/hadoop-tools-${hadoop_common_mr1_version}.jar")
+        getFromMaven("org.apache.hadoop:hadoop-core:$hadoop_common_mr1_version@jar", "$rootdir")
+        getFromMaven("org.apache.hadoop:hadoop-examples:$hadoop_common_mr1_version@jar", "$rootdir")
+        getFromMaven("org.apache.hadoop:hadoop-test:$hadoop_common_mr1_version@jar", "$rootdir")
+        getFromMaven("org.apache.hadoop:hadoop-tools:$hadoop_common_mr1_version@jar", "$rootdir")
 
         //end replace
         ant.tar(basedir: "hadoop-common-mr1/build/tar/hadoop-${hadoop_common_mr1_version}-${oc_version}", destfile: "hadoop-common-mr1/build/tar/hadoop-${hadoop_common_mr1_version}-${oc_version}.tar")
@@ -217,7 +217,7 @@ task apache_hive(dependsOn: [apache_hive_tar]) {
         ant.copy(file: "apache-hive-oc/conf/log4j.properties", todir: "$rootdir/conf/")
 
         ant.mkdir(dir: "$rootdir/hive-extension")
-        getFromMaven("com.ailk.oci.hive:hive-extension:$apache_hive_extension_version@jar", "$rootdir/hive-extension/hive-extension-${apache_hive_extension_version}.jar")
+        getFromMaven("com.ailk.oci.hive:hive-extension:$apache_hive_extension_version@jar", "$rootdir")
 
         ant.mkdir(dir: "$rootdir/auditor")
         project.copy({
@@ -254,7 +254,7 @@ task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar]) {
         ant.copy(file: "apache-hive-legacy-oc/conf/log4j.properties", todir: "$rootdir/conf/")
 
         ant.mkdir(dir: "$rootdir/hive-extension")
-        getFromMaven("com.ailk.oci.hive:hive-extension:$apache_hive_extension_legacy_version@jar", "$rootdir/hive-extension/hive-extension-${apache_hive_extension_legacy_version}.jar")
+        getFromMaven("com.ailk.oci.hive:hive-extension:$apache_hive_extension_legacy_version@jar", "$rootdir/hive-extension")
 
         ant.mkdir(dir: "$rootdir/auditor")
         project.copy({
