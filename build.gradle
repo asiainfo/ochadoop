@@ -36,7 +36,7 @@ def getFromMaven(src, dest) {
 }
 
 
-task auditor(dependsOn: auditor_tar) {
+task auditor() {
     doLast {
         getFromMaven("com.ailk.oci.auditor:auditor-server:$auditor_version@jar", "$buildDir/ochadoop/auditor-server-${auditor_version}.jar")
     }
