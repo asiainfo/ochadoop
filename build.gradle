@@ -35,13 +35,10 @@ def getFromMaven(src, dest) {
     ant.get(src: srcUrl, dest: dest, verbose: true)
 }
 
-task auditor_tar(type: Exec) {
-    workingDir 'auditor'
-    commandLine 'mvn', "clean", "install"
-}
+
 task auditor(dependsOn: auditor_tar) {
     doLast {
-        ant.copy(file: "auditor/auditor-server/target/auditor-server-${auditor_version}.jar", todir: "$buildDir/ochadoop/")
+        getFromMaven("com.ailk.oci.auditor:auditor-server:$auditor_version@jar", "$buildDir/ochadoop/auditor-server-${auditor_version}.jar")
     }
 }
 
@@ -200,16 +197,11 @@ task apache_hbase(dependsOn: [auditor, apache_hbase_tar]) {
     }
 }
 
-task apache_hive_extension_tar(type: Exec) {
-    workingDir 'hive-extension'
-    commandLine 'mvn', "clean", "install"
-}
-
 task apache_hive_tar(type: Exec) {
     workingDir 'apache-hive'
     commandLine 'ant', 'clean', "-Drepo.maven.org=$privateRepo", "-Divy.mvn.repo=$privateRepo", "-Dmvnrepo=$privateRepo", "tar"
 }
-task apache_hive(dependsOn: [apache_hive_tar, apache_hive_extension_tar]) {
+task apache_hive(dependsOn: [apache_hive_tar]) {
     doLast {
         ant.delete(dir: 'apache-hive/build/tar')
         ant.mkdir(dir: "apache-hive/build/tar")
@@ -225,7 +217,7 @@ task apache_hive(dependsOn: [apache_hive_tar, apache_hive_extension_tar]) {
         ant.copy(file: "apache-hive-oc/conf/log4j.properties", todir: "$rootdir/conf/")
 
         ant.mkdir(dir: "$rootdir/hive-extension")
-        ant.copy(file: "hive-extension/target/hive-extension-${apache_hive_extension_version}.jar", todir: "$rootdir/hive-extension/")
+        getFromMaven("com.ailk.oci.hive:hive-extension:$apache_hive_extension_version@jar", "$rootdir/hive-extension/hive-extension-${apache_hive_extension_version}.jar")
 
         ant.mkdir(dir: "$rootdir/auditor")
         project.copy({
@@ -241,17 +233,12 @@ task apache_hive(dependsOn: [apache_hive_tar, apache_hive_extension_tar]) {
     }
 }
 
-task apache_hive_extension_legacy_tar(type: Exec) {
-    workingDir 'hive-extension-legacy'
-    commandLine 'mvn', "clean", "install"
-}
-
 task apache_hive_legacy_tar(type: Exec) {
     workingDir 'apache-hive-legacy'
     commandLine 'ant', 'clean', "-Drepo.maven.org=$privateRepo", "-Divy.mvn.repo=$privateRepo", "-Dmvnrepo=$privateRepo", "tar"
     environment JAVA_HOME: System.getProperty('JAVA6_HOME', "/home/cloudetl/bin/jdk1.6.0_21")
 }
-task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar, apache_hive_extension_legacy_tar]) {
+task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar]) {
     doLast {
         ant.delete(dir: 'apache-hive-legacy/build/tar')
         ant.mkdir(dir: "apache-hive-legacy/build/tar")
@@ -267,7 +254,7 @@ task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar, apache_hive_extensio
         ant.copy(file: "apache-hive-legacy-oc/conf/log4j.properties", todir: "$rootdir/conf/")
 
         ant.mkdir(dir: "$rootdir/hive-extension")
-        ant.copy(file: "hive-extension-legacy/target/hive-extension-${apache_hive_extension_legacy_version}.jar", todir: "$rootdir/hive-extension/")
+        getFromMaven("com.ailk.oci.hive:hive-extension:$apache_hive_extension_legacy_version@jar", "$rootdir/hive-extension/hive-extension-${apache_hive_extension_legacy_version}.jar")
 
         ant.mkdir(dir: "$rootdir/auditor")
         project.copy({
