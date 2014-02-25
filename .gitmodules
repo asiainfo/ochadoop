@@ -16,15 +16,6 @@
 [submodule "apache-hive-legacy"]
 	path = apache-hive-legacy
 	url = https://github.com/apache/hive.git
-[submodule "auditor"]
-	path = auditor
-	url = https://github.com/asiainfo-linkage/auditor.git
-[submodule "hive-extension"]
-	path = hive-extension
-	url = https://github.com/asiainfo-linkage/hive-extension.git
-[submodule "hive-extension-legacy"]
-	path = hive-extension-legacy
-	url = https://github.com/asiainfo-linkage/hive-extension.git
 [submodule "hadoop-lzo"]
 	path = hadoop-lzo
 	url = https://github.com/twitter/hadoop-lzo.git
