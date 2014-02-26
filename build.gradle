@@ -226,7 +226,8 @@ task apache_hive(dependsOn: [apache_hive_tar]) {
         ant.copy(file: "apache-hive-oc/conf/hive-site.xml", todir: "$rootdir/conf/")
 
         ant.mkdir(dir: "$rootdir/hive-extension")
-        getFromMaven("com.ailk.oci.hive:hive-extension:$apache_hive_extension_version@jar", "$rootdir")
+        //getFromMaven("com.ailk.oci.hive:hive-extension:$apache_hive_extension_version@jar", "$rootdir")
+        getFromMaven("com.ailk.oci.hive:hive-extension:$apache_hive_extension_version@jar", "$rootdir/hive-extension")
 
         ant.mkdir(dir: "$rootdir/auditor")
         project.copy({
