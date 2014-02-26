@@ -243,9 +243,16 @@ task apache_hive(dependsOn: [apache_hive_tar]) {
     }
 }
 
-task apache_hive_legacy_tar(type: Exec) {
+task apache_hive_legacy_skip_doc() {
+    doLast {
+        String contents = new File('apache-hive-legacy/build.xml').getText('UTF-8')
+        contents = contents.replaceAll('<target name="javadoc"', '<target name="javadoc" unless="skip.javadoc"')
+        new File('apache-hive-legacy/build.skip.javadoc.xml').write(contents, 'UTF-8')
+    }
+}
+task apache_hive_legacy_tar(dependsOn: [apache_hive_legacy_skip_doc], type: Exec) {
     workingDir 'apache-hive-legacy'
-    commandLine 'ant', 'clean', "-Drepo.maven.org=$privateRepo", "-Divy.mvn.repo=$privateRepo", "-Dmvnrepo=$privateRepo", "tar"
+    commandLine 'ant', "-buildfile", "build.skip.javadoc.xml", 'clean', "-Drepo.maven.org=$privateRepo", "-Divy.mvn.repo=$privateRepo", "-Dmvnrepo=$privateRepo", "-Dskip.javadoc=true", "tar"
     environment JAVA_HOME: System.getProperty('JAVA6_HOME', "/home/cloudetl/bin/jdk1.6.0_21")
 }
 task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar]) {
