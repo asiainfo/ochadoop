@@ -2,7 +2,7 @@ apply plugin: 'java'
 ext {
     privateRepo = 'http://10.1.253.223:8081/nexus/content/groups/ailk'
     privateDeployRepo = 'http://10.1.253.223:8081/nexus/content/repositories/ailk-snapshots'
-    forrest_home =  System.getProperty('FORREST_HOME', "/home/cloudetl/apache-forrest-0.9")
+    forrest_home = System.getProperty('FORREST_HOME', "/home/cloudetl/apache-forrest-0.9")
     oc_version = 'och2.0.0'
     zookeeper_version = '3.4.5-cdh4.2.1'
     hadoop_common_version = '2.0.0-cdh4.2.1'
@@ -67,7 +67,7 @@ task zookeeper(dependsOn: zookeeper_build_tar) {
 }
 task hadoop_common_native(type: Exec) {
     workingDir 'hadoop-common'
-    commandLine 'mvn', "-Pdist,native", "-DskipTests", "-Dtar", "clean", "package"
+    commandLine 'mvn', "-T", "2C", "-Pdist,native", "-DskipTests", "-Dmaven.javadoc.skip=true", "-Dtar", "clean", "package"
 }
 
 task hadoop_lzo(type: Exec) {
@@ -107,9 +107,9 @@ task hadoop_common(dependsOn: [auditor, hadoop_common_native, hadoop_lzo]) {
 
         ant.copy(file: "hadoop-common-oc/etc/hadoop/core-site.xml", todir: "$rootdir/etc/hadoop/")
         ant.copy(file: "hadoop-common-oc/etc/hadoop/mapred-site.xml", todir: "$rootdir/etc/hadoop/")
-        ant.copy(file: "hadoop-common-oc/etc/hadoop/log4j.properties", todir: "$rootdir/etc/hadoop/")       
+        ant.copy(file: "hadoop-common-oc/etc/hadoop/log4j.properties", todir: "$rootdir/etc/hadoop/")
         ant.copy(file: "hadoop-common-oc/etc/hadoop/hadoop-env.sh", todir: "$rootdir/etc/hadoop/")
-        ant.copy(file: "hadoop-common-oc/etc/hadoop/hdfs-site.xml", todir: "$rootdir/etc/hadoop/")        
+        ant.copy(file: "hadoop-common-oc/etc/hadoop/hdfs-site.xml", todir: "$rootdir/etc/hadoop/")
         ant.copy(file: "hadoop-common-oc/etc/hadoop/auditor.client.properties", todir: "$rootdir/etc/hadoop/")
         ant.copy(file: "hadoop-common-oc/libexec/hadoop-config.sh", todir: "$rootdir/libexec/")
 
@@ -188,7 +188,7 @@ task apache_hbase(dependsOn: [auditor, apache_hbase_tar]) {
         ant.copy(file: "apache-hbase-oc/conf/auditor.client.properties", todir: "$rootdir/conf/")
         ant.copy(file: "apache-hbase-oc/conf/hbase-site.xml", todir: "$rootdir/conf/")
         ant.copy(file: "apache-hbase-oc/conf/hbase-env.sh", todir: "$rootdir/conf/")
-        
+
         ant.mkdir(dir: "$rootdir/auditor")
         project.copy({
             into "$rootdir/auditor/lib"
