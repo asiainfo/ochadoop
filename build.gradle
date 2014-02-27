@@ -67,7 +67,7 @@ task zookeeper(dependsOn: zookeeper_build_tar) {
 }
 task hadoop_common_native(type: Exec) {
     workingDir 'hadoop-common'
-    commandLine 'mvn', "-T", "2C", "-Pdist,native", "-DskipTests", "-Dmaven.javadoc.skip=true", "-Dtar", "clean", "package"
+    commandLine 'mvn', "-Pdist,native", "-DskipTests", "-Dmaven.javadoc.skip=true", "-Dtar", "clean", "package"
 }
 
 task hadoop_lzo(type: Exec) {
