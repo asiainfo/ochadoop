@@ -36,6 +36,9 @@ export HBASE_MANAGES_ZK=false
 # Extra Java CLASSPATH elements.  Optional.
 # export HBASE_CLASSPATH=
 
+#hadoop home
+# export HBASE_HADOOP_HOME=
+
 # The maximum amount of heap to use, in MB. Default is 1000.
  export HBASE_HEAPSIZE=4096
 
