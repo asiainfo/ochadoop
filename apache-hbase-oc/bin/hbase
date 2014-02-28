@@ -194,6 +194,28 @@ for f in $HBASE_HOME/auditor/lib/*.jar; do
   CLASSPATH=${CLASSPATH}:$f;
 done
 
+#add hadoop path to CLASSPATH
+for f in $HBASE_HADOOP_HOME/share/hadoop/common/*.jar; do
+  CLASSPATH=${CLASSPATH}:$f;
+done
+for f in $HBASE_HADOOP_HOME/share/hadoop/hdfs/*.jar; do
+  CLASSPATH=${CLASSPATH}:$f;
+done
+for f in $HBASE_HADOOP_HOME/share/hadoop/mapreduce/*.jar; do
+  CLASSPATH=${CLASSPATH}:$f;
+done
+for f in $HBASE_HADOOP_HOME/share/hadoop/yarn/*.jar; do
+  CLASSPATH=${CLASSPATH}:$f;
+done
+for f in $HBASE_HADOOP_HOME/share/hadoop/yarn/lib/*.jar; do
+  CLASSPATH=${CLASSPATH}:$f;
+done
+
+for f in $HBASE_HADOOP_MR1_HOME/lib/*.jar; do
+  CLASSPATH=${CLASSPATH}:$f;
+done
+
+
 # Add user-specified CLASSPATH first
 if [ "$HBASE_CLASSPATH" != "" ]; then
   CLASSPATH=${HBASE_CLASSPATH}:${CLASSPATH}
