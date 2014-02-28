@@ -38,6 +38,7 @@ export HBASE_MANAGES_ZK=false
 
 #hadoop home
 # export HBASE_HADOOP_HOME=
+# export HBASE_HADOOP_MR1_HOME=
 
 # The maximum amount of heap to use, in MB. Default is 1000.
  export HBASE_HEAPSIZE=4096
