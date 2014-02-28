@@ -182,7 +182,13 @@ task apache_hbase(dependsOn: [auditor, apache_hbase_tar]) {
         rootdir = "apache-hbase/target/tar/hbase-${apache_hbase_version}-${oc_version}/hbase-${apache_hbase_version}-${oc_version}"
         ant.move(file: "apache-hbase/target/tar/hbase-${apache_hbase_version}", tofile: rootdir)
         //replace with custom changes
-
+        
+        ant.delete(file: "apache-hbase-oc/bin/hbase")
+        ant.delete(file: "apache-hbase-oc/conf/log4j.properties")
+        ant.delete(file: "apache-hbase-oc/conf/auditor.client.properties")
+        ant.delete(file: "apache-hbase-oc/conf/hbase-site.xml")
+        ant.delete(file: "apache-hbase-oc/conf/hbase-env.sh")
+        
         ant.copy(file: "apache-hbase-oc/bin/hbase", todir: "$rootdir/bin/")
         ant.copy(file: "apache-hbase-oc/conf/log4j.properties", todir: "$rootdir/conf/")
         ant.copy(file: "apache-hbase-oc/conf/auditor.client.properties", todir: "$rootdir/conf/")
@@ -287,45 +293,6 @@ task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar]) {
         ant.tar(basedir: "apache-hive-legacy/build/tar/hive-${apache_hive_legacy_version}-${oc_version}", destfile: "apache-hive-legacy/build/tar/hive-${apache_hive_legacy_version}-${oc_version}.tar")
         ant.gzip(src: "apache-hive-legacy/build/tar/hive-${apache_hive_legacy_version}-${oc_version}.tar", destfile: "apache-hive-legacy/build/tar/hive-${apache_hive_legacy_version}-${oc_version}.tar.gz")
         ant.move(file: "apache-hive-legacy/build/tar/hive-${apache_hive_legacy_version}-${oc_version}.tar.gz", tofile: "$buildDir/ochadoop/hive-${apache_hive_legacy_version}-${oc_version}.tar.gz")
-    }
-}
-
-
-ask apache_hbase_test(dependsOn: [auditor, apache_hbase_tar]) {
-    doLast {
-        ant.delete(dir: 'apache-hbase/target/tar')
-        ant.mkdir(dir: "apache-hbase/target/tar")
-        ant.copy(file: "apache-hbase/target/hbase-${apache_hbase_version}.tar.gz", todir: "apache-hbase/target/tar")
-        ant.gunzip(src: "apache-hbase/target/tar/hbase-${apache_hbase_version}.tar.gz")
-        ant.untar(src: "apache-hbase/target/tar/hbase-${apache_hbase_version}.tar", dest: 'apache-hbase/target/tar')
-        ant.mkdir(dir: "apache-hbase/target/tar/hbase-${apache_hbase_version}-${oc_version}")
-        rootdir = "apache-hbase/target/tar/hbase-${apache_hbase_version}-${oc_version}/hbase-${apache_hbase_version}-${oc_version}"
-        ant.move(file: "apache-hbase/target/tar/hbase-${apache_hbase_version}", tofile: rootdir)
-        //replace with custom changes
-
-        ant.delete(file: "apache-hbase-oc/bin/hbase")
-        ant.delete(file: "apache-hbase-oc/conf/log4j.properties")
-        ant.delete(file: "apache-hbase-oc/conf/auditor.client.properties")
-        ant.delete(file: "apache-hbase-oc/conf/hbase-site.xml")
-        ant.delete(file: "apache-hbase-oc/conf/hbase-env.sh")
-        
-        ant.copy(file: "apache-hbase-oc/bin/hbase", todir: "$rootdir/bin/")
-        ant.copy(file: "apache-hbase-oc/conf/log4j.properties", todir: "$rootdir/conf/")
-        ant.copy(file: "apache-hbase-oc/conf/auditor.client.properties", todir: "$rootdir/conf/")
-        ant.copy(file: "apache-hbase-oc/conf/hbase-site.xml", todir: "$rootdir/conf/")
-        ant.copy(file: "apache-hbase-oc/conf/hbase-env.sh", todir: "$rootdir/conf/")
-
-        ant.mkdir(dir: "$rootdir/auditor")
-        project.copy({
-            into "$rootdir/auditor/lib"
-            from configurations.auditor_plugin
-        })
-        ant.move(file: "$rootdir/auditor/lib/auditor-plugin-${auditor_version}.jar", toFile: "$rootdir/auditor/auditor-plugin-${auditor_version}.jar")
-
-        //end replace
-        ant.tar(basedir: "apache-hbase/target/tar/hbase-${apache_hbase_version}-${oc_version}", destfile: "apache-hbase/target/tar/hbase-${apache_hbase_version}-${oc_version}.tar")
-        ant.gzip(src: "apache-hbase/target/tar/hbase-${apache_hbase_version}-${oc_version}.tar", destfile: "apache-hbase/target/tar/hbase-${apache_hbase_version}-${oc_version}.tar.gz")
-        ant.move(file: "apache-hbase/target/tar/hbase-${apache_hbase_version}-${oc_version}.tar.gz", tofile: "$buildDir/ochadoop/hbase-${apache_hbase_version}-${oc_version}.tar.gz")
     }
 }
 
