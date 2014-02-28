@@ -183,11 +183,11 @@ task apache_hbase(dependsOn: [auditor, apache_hbase_tar]) {
         ant.move(file: "apache-hbase/target/tar/hbase-${apache_hbase_version}", tofile: rootdir)
         //replace with custom changes
 
-        //ant.copy(file: "apache-hbase-oc/bin/hbase", todir: "$rootdir/bin/")
-        //ant.copy(file: "apache-hbase-oc/conf/log4j.properties", todir: "$rootdir/conf/")
-        //ant.copy(file: "apache-hbase-oc/conf/auditor.client.properties", todir: "$rootdir/conf/")
-        //ant.copy(file: "apache-hbase-oc/conf/hbase-site.xml", todir: "$rootdir/conf/")
-        //ant.copy(file: "apache-hbase-oc/conf/hbase-env.sh", todir: "$rootdir/conf/")
+        ant.copy(file: "apache-hbase-oc/bin/hbase", todir: "$rootdir/bin/")
+        ant.copy(file: "apache-hbase-oc/conf/log4j.properties", todir: "$rootdir/conf/")
+        ant.copy(file: "apache-hbase-oc/conf/auditor.client.properties", todir: "$rootdir/conf/")
+        ant.copy(file: "apache-hbase-oc/conf/hbase-site.xml", todir: "$rootdir/conf/")
+        ant.copy(file: "apache-hbase-oc/conf/hbase-env.sh", todir: "$rootdir/conf/")
         
         ant.copy(file: "apache-hbase-oc/bin/hbase", todir: "$rootdir/tmp/")
         ant.copy(file: "apache-hbase-oc/conf/log4j.properties", todir: "$rootdir/tmp/")
