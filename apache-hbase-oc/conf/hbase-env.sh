@@ -40,6 +40,9 @@ export HBASE_MANAGES_ZK=false
 # export HBASE_HADOOP_HOME=
 # export HBASE_HADOOP_MR1_HOME=
 
+#hdfs-site.xml dir
+#export HDFS_CONF_DIR=
+
 # The maximum amount of heap to use, in MB. Default is 1000.
  export HBASE_HEAPSIZE=4096
 

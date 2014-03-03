@@ -128,6 +128,7 @@ IFS=
 
 # CLASSPATH initially contains $HBASE_CONF_DIR
 CLASSPATH="${HBASE_CONF_DIR}"
+CLASSPATH=${CLASSPATH}:$HDFS_CONF_DIR
 CLASSPATH=${CLASSPATH}:$JAVA_HOME/lib/tools.jar
 
 add_maven_deps_to_classpath() {

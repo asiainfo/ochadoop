@@ -105,6 +105,14 @@ task hadoop_common(dependsOn: [auditor, hadoop_common_native, hadoop_lzo]) {
             fileset(dir: "hadoop-lzo/target/native/Linux-amd64-64/lib")
         }
 
+        ant.delete(file: "$rootdir/etc/hadoop/core-site.xml")
+        ant.delete(file: "$rootdir/etc/hadoop/mapred-site.xml")
+        ant.delete(file: "$rootdir/etc/hadoop/log4j.properties")
+        ant.delete(file: "$rootdir/etc/hadoop/hadoop-env.sh")
+        ant.delete(file: "$rootdir/etc/hadoop/hdfs-site.xml")
+        ant.delete(file: "$rootdir/etc/hadoop/auditor.client.properties")
+        ant.delete(file: "$rootdir/libexec/hadoop-config.sh")
+        
         ant.copy(file: "hadoop-common-oc/etc/hadoop/core-site.xml", todir: "$rootdir/etc/hadoop/")
         ant.copy(file: "hadoop-common-oc/etc/hadoop/mapred-site.xml", todir: "$rootdir/etc/hadoop/")
         ant.copy(file: "hadoop-common-oc/etc/hadoop/log4j.properties", todir: "$rootdir/etc/hadoop/")
@@ -151,9 +159,14 @@ task hadoop_common_mr1(dependsOn: hadoop_common_mr1_tar) {
         ant.move(file: "hadoop-common-mr1/build/tar/hadoop-${hadoop_common_mr1_version}", tofile: rootdir)
         //replace with custom changes
 
+        ant.delete(file: "$rootdir/conf/core-site.xml")
+        ant.delete(file: "$rootdir/conf/log4j.properties")
+        ant.delete(file: "$rootdir/conf/hdfs-site.xml")
+
         ant.copy(file: "hadoop-common-mr1-oc/conf/core-site.xml", todir: "$rootdir/conf/")
         ant.copy(file: "hadoop-common-mr1-oc/conf/log4j.properties", todir: "$rootdir/conf/")
         ant.copy(file: "hadoop-common-mr1-oc/conf/hdfs-site.xml", todir: "$rootdir/conf/")
+        
         getFromMaven("org.apache.hadoop:hadoop-core:$hadoop_common_mr1_version@jar", "$rootdir")
         getFromMaven("org.apache.hadoop:hadoop-examples:$hadoop_common_mr1_version@jar", "$rootdir")
         getFromMaven("org.apache.hadoop:hadoop-test:$hadoop_common_mr1_version@jar", "$rootdir")
@@ -225,6 +238,12 @@ task apache_hive(dependsOn: [apache_hive_tar]) {
         ant.move(file: "apache-hive/build/tar/hive-${apache_hive_version}", tofile: rootdir)
         //replace with custom changes
 
+        ant.delete(file: "$rootdir/bin/hive")
+        ant.delete(file: "$rootdir/conf/log4j.properties")
+        ant.delete(file: "$rootdir/conf/auditor.exec.properties")
+        ant.delete(file: "$rootdir/conf/auditor.meta.properties")
+        ant.delete(file: "$rootdir/conf/hive-site.xml")
+        
         ant.copy(file: "apache-hive-oc/bin/hive", todir: "$rootdir/bin/")
         ant.copy(file: "apache-hive-oc/conf/log4j.properties", todir: "$rootdir/conf/")
         ant.copy(file: "apache-hive-oc/conf/auditor.exec.properties", todir: "$rootdir/conf/")
@@ -273,6 +292,12 @@ task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar]) {
         ant.move(file: "apache-hive-legacy/build/tar/hive-${apache_hive_legacy_version}", tofile: rootdir)
         //replace with custom changes
 
+        ant.delete(file: "$rootdir/bin/hive")
+        ant.delete(file: "$rootdir/conf/log4j.properties")
+        ant.delete(file: "$rootdir/conf/auditor.exec.properties")
+        ant.delete(file: "$rootdir/conf/auditor.meta.properties")
+        ant.delete(file: "$rootdir/conf/hive-site.xml")
+        
         ant.copy(file: "apache-hive-legacy-oc/bin/hive", todir: "$rootdir/bin/")
         ant.copy(file: "apache-hive-legacy-oc/conf/log4j.properties", todir: "$rootdir/conf/")
         ant.copy(file: "apache-hive-legacy-oc/conf/auditor.exec.properties", todir: "$rootdir/conf/")
