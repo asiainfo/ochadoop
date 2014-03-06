@@ -95,8 +95,6 @@ task hadoop_common(dependsOn: [auditor, hadoop_common_native, hadoop_lzo]) {
 
         ant.delete(dir: 'hadoop-common/build/native_tar')
         ant.copy(file: "hadoop-common/hadoop-dist/target/hadoop-${hadoop_common_version}.tar.gz", todir: "hadoop-common/build/native_tar/")
-        //ant.gunzip(src: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}.tar.gz")
-        //ant.untar(src: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}.tar", dest: 'hadoop-common/build/native_tar')
         cmd= "tar -xvzf hadoop-common/build/hadoop-dist-${hadoop_common_version}.tar.gz -C ./hadoop-common/build/native_tar"
         project.exec {
             commandLine = cmd.split().toList()
@@ -110,8 +108,8 @@ task hadoop_common(dependsOn: [auditor, hadoop_common_native, hadoop_lzo]) {
         //}
         
          project.copy({
-            into "$rootdir/share/hadoop/auditor/lib"
-            from configurations.auditor_plugin
+            into  "$rootdir/lib/native"
+            from "hadoop-lzo/target/native/Linux-amd64-64/lib"
         })
         
         ant.delete(file: "$rootdir/etc/hadoop/core-site.xml")
