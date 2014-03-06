@@ -97,12 +97,12 @@ task hadoop_common(dependsOn: [auditor, hadoop_common_native, hadoop_lzo]) {
         ant.copy(file: "hadoop-common/hadoop-dist/target/hadoop-${hadoop_common_version}.tar.gz", todir: "hadoop-common/build/native_tar/")
         //ant.gunzip(src: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}.tar.gz")
         //ant.untar(src: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}.tar", dest: 'hadoop-common/build/native_tar')
-        cmd= "tar -xvzf hadoop-common/build/hadoop-dist-${hadoop_common_version}.tar.gz"
+        cmd= "tar -xvzf hadoop-common/build/hadoop-dist-${hadoop_common_version}.tar.gz -C ./native_tar"
         project.exec {
             commandLine = cmd.split().toList()
         }
         ant.delete(dir: "$rootdir/lib/native")
-        ant.copy(todir: "$rootdir/lib/native") {
+        ant.copy(todir: "$rootdir/lib/native") { hadoop-2.0.0-cdh4.2.1/lib/native
             fileset(dir: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}/lib/native")
         }
         //ant.copy(todir: "$rootdir/lib/native") {
