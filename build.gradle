@@ -3,7 +3,7 @@ ext {
     privateRepo = 'http://10.1.253.223:8081/nexus/content/groups/ailk'
     privateDeployRepo = 'http://10.1.253.223:8081/nexus/content/repositories/ailk-snapshots'
     forrest_home = System.getProperty('FORREST_HOME', "/home/cloudetl/apache-forrest-0.9")
-    oc_version = 'och2.0.0-beta'
+    oc_version = 'och2.0.0-SNAPSHOT'
     zookeeper_version = '3.4.5-cdh4.2.1'
     hadoop_common_version = '2.0.0-cdh4.2.1'
     hadoop_common_mr1_version = '2.0.0-mr1-cdh4.2.1'
@@ -95,16 +95,25 @@ task hadoop_common(dependsOn: [auditor, hadoop_common_native, hadoop_lzo]) {
 
         ant.delete(dir: 'hadoop-common/build/native_tar')
         ant.copy(file: "hadoop-common/hadoop-dist/target/hadoop-${hadoop_common_version}.tar.gz", todir: "hadoop-common/build/native_tar/")
-        ant.gunzip(src: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}.tar.gz")
-        ant.untar(src: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}.tar", dest: 'hadoop-common/build/native_tar')
+        //ant.gunzip(src: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}.tar.gz")
+        //ant.untar(src: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}.tar", dest: 'hadoop-common/build/native_tar')
+        cmd= "tar -xvzf hadoop-common/build/hadoop-dist-${hadoop_common_version}.tar.gz"
+        project.exec {
+            commandLine = cmd.split().toList()
+        }
         ant.delete(dir: "$rootdir/lib/native")
         ant.copy(todir: "$rootdir/lib/native") {
             fileset(dir: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}/lib/native")
         }
-        ant.copy(todir: "$rootdir/lib/native") {
-            fileset(dir: "hadoop-lzo/target/native/Linux-amd64-64/lib")
-        }
-
+        //ant.copy(todir: "$rootdir/lib/native") {
+        //    fileset(dir: "hadoop-lzo/target/native/Linux-amd64-64/lib")
+        //}
+        
+         project.copy({
+            into "$rootdir/share/hadoop/auditor/lib"
+            from configurations.auditor_plugin
+        })
+        
         ant.delete(file: "$rootdir/etc/hadoop/core-site.xml")
         ant.delete(file: "$rootdir/etc/hadoop/mapred-site.xml")
         ant.delete(file: "$rootdir/etc/hadoop/log4j.properties")
