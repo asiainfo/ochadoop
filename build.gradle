@@ -102,7 +102,7 @@ task hadoop_common(dependsOn: [auditor, hadoop_common_native, hadoop_lzo]) {
             commandLine = cmd.split().toList()
         }
         ant.delete(dir: "$rootdir/lib/native")
-        ant.copy(todir: "$rootdir/lib/native") { hadoop-2.0.0-cdh4.2.1/lib/native
+        ant.copy(todir: "$rootdir/lib/native") {
             fileset(dir: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}/lib/native")
         }
         //ant.copy(todir: "$rootdir/lib/native") {
