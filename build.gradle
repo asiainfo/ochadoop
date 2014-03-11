@@ -189,7 +189,7 @@ task hadoop_common_mr1(dependsOn: hadoop_common_mr1_tar) {
 
 task apache_hbase_tar(type: Exec) {
     workingDir 'apache-hbase'
-    commandLine 'mvn', "clean", 'package','-DskipTests', "-Dmaven.javadoc.skip=true",'-Dhadoop.profile=2.0'
+    commandLine 'mvn',"-T","2C", "clean", 'package','-DskipTests', "-Dmaven.javadoc.skip=true",'-Dhadoop.profile=2.0'
 }
 task apache_hbase(dependsOn: [auditor, apache_hbase_tar]) {
     doLast {
