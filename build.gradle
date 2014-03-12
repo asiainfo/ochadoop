@@ -169,10 +169,12 @@ task hadoop_common_mr1(dependsOn: hadoop_common_mr1_tar) {
         ant.delete(file: "$rootdir/conf/core-site.xml")
         ant.delete(file: "$rootdir/conf/log4j.properties")
         ant.delete(file: "$rootdir/conf/hdfs-site.xml")
+         ant.delete(file: "$rootdir/conf/mapred-site.xml")
 
         ant.copy(file: "hadoop-common-mr1-oc/conf/core-site.xml", todir: "$rootdir/conf/")
         ant.copy(file: "hadoop-common-mr1-oc/conf/log4j.properties", todir: "$rootdir/conf/")
         ant.copy(file: "hadoop-common-mr1-oc/conf/hdfs-site.xml", todir: "$rootdir/conf/")
+        ant.copy(file: "hadoop-common-mr1-oc/conf/mapred-site.xml", todir: "$rootdir/conf/")
         
         getFromMaven("org.apache.hadoop:hadoop-core:$hadoop_common_mr1_version@jar", "$rootdir")
         getFromMaven("org.apache.hadoop:hadoop-examples:$hadoop_common_mr1_version@jar", "$rootdir")
@@ -202,7 +204,12 @@ task apache_hbase(dependsOn: [auditor, apache_hbase_tar]) {
         rootdir = "apache-hbase/target/tar/hbase-${apache_hbase_version}-${oc_version}/hbase-${apache_hbase_version}-${oc_version}"
         ant.move(file: "apache-hbase/target/tar/hbase-${apache_hbase_version}", tofile: rootdir)
         //replace with custom changes
-        
+         
+         //ant.delete(file: "$rootdir/lib/hbase")
+         ant.delete{
+         	 fileset(dir: "$rootdir/lib/hbase", includes: 'hadoop*.jar')
+         }                 
+         
         ant.delete(file: "$rootdir/bin/hbase")
         ant.delete(file: "$rootdir/conf/log4j.properties")
         ant.delete(file: "$rootdir/conf/auditor.client.properties")
