@@ -207,7 +207,7 @@ task apache_hbase(dependsOn: [auditor, apache_hbase_tar]) {
          
          //ant.delete(file: "$rootdir/lib/hbase")
          ant.delete{
-         	 fileset(dir: "$rootdir/lib/hbase", includes: 'hadoop*.jar')
+         	 fileset(dir: "$rootdir/lib", includes: 'hadoop*.jar')
          }                 
          
         ant.delete(file: "$rootdir/bin/hbase")
