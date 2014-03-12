@@ -10,6 +10,7 @@ ext {
     apache_hbase_version = '0.94.12-security'
     apache_hive_version = '0.12.0'
     apache_hive_legacy_version = '0.11.0'
+    amplab_hive_version = '0.11.0-shark-0.9.1'
     hadoop_lzo_version = '0.4.19'
     auditor_version = 'och2.0.0-beta'
     apache_hive_extension_version = '0.12.0-och2.0.0-beta'
@@ -325,6 +326,59 @@ task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar]) {
         ant.tar(basedir: "apache-hive-legacy/build/tar/hive-${apache_hive_legacy_version}-${oc_version}", destfile: "apache-hive-legacy/build/tar/hive-${apache_hive_legacy_version}-${oc_version}.tar")
         ant.gzip(src: "apache-hive-legacy/build/tar/hive-${apache_hive_legacy_version}-${oc_version}.tar", destfile: "apache-hive-legacy/build/tar/hive-${apache_hive_legacy_version}-${oc_version}.tar.gz")
         ant.move(file: "apache-hive-legacy/build/tar/hive-${apache_hive_legacy_version}-${oc_version}.tar.gz", tofile: "$buildDir/ochadoop/hive-${apache_hive_legacy_version}-${oc_version}.tar.gz")
+    }
+}
+
+task amplab_hive_skip_doc() {
+    doLast {
+        String contents = new File('amplab-hive/build.xml').getText('UTF-8')
+        contents = contents.replaceAll('<target name="javadoc"', '<target name="javadoc" unless="skip.javadoc"')
+        new File('amplab-hive/build.skip.javadoc.xml').write(contents, 'UTF-8')
+    }
+}
+task amplab_hive_tar(dependsOn: [amplab_hive_skip_doc], type: Exec) {
+    workingDir 'amplab-hive'
+    commandLine 'ant', "-buildfile", "build.skip.javadoc.xml", 'clean', "-Drepo.maven.org=$privateRepo", "-Divy.mvn.repo=$privateRepo", "-Dmvnrepo=$privateRepo", "-Dskip.javadoc=true", "tar"
+    environment JAVA_HOME: System.getProperty('JAVA6_HOME', "/home/cloudetl/bin/jdk1.6.0_21")
+}
+task amplab_hive(dependsOn: [amplab_hive_tar]) {
+    doLast {
+        ant.delete(dir: 'amplab-hive/build/tar')
+        ant.mkdir(dir: "amplab-hive/build/tar")
+        ant.copy(file: "amplab-hive/build/hive-${amplab_hive_version}.tar.gz", todir: "amplab-hive/build/tar")
+        ant.gunzip(src: "amplab-hive/build/tar/hive-${amplab_hive_version}.tar.gz")
+        ant.untar(src: "amplab-hive/build/tar/hive-${amplab_hive_version}.tar", dest: 'amplab-hive/build/tar')
+        ant.mkdir(dir: "amplab-hive/build/tar/hive-${amplab_hive_version}-${oc_version}")
+        rootdir = "amplab-hive/build/tar/hive-${amplab_hive_version}-${oc_version}/hive-${amplab_hive_version}-${oc_version}"
+        ant.move(file: "amplab-hive/build/tar/hive-${amplab_hive_version}", tofile: rootdir)
+        //replace with custom changes
+
+        ant.delete(file: "$rootdir/bin/hive")
+        ant.delete(file: "$rootdir/conf/log4j.properties")
+        ant.delete(file: "$rootdir/conf/auditor.exec.properties")
+        ant.delete(file: "$rootdir/conf/auditor.meta.properties")
+        ant.delete(file: "$rootdir/conf/hive-site.xml")
+
+        ant.copy(file: "apache-hive-legacy-oc/bin/hive", todir: "$rootdir/bin/")
+        ant.copy(file: "apache-hive-legacy-oc/conf/log4j.properties", todir: "$rootdir/conf/")
+        ant.copy(file: "apache-hive-legacy-oc/conf/auditor.exec.properties", todir: "$rootdir/conf/")
+        ant.copy(file: "apache-hive-legacy-oc/conf/auditor.meta.properties", todir: "$rootdir/conf/")
+        ant.copy(file: "apache-hive-legacy-oc/conf/hive-site.xml", todir: "$rootdir/conf/")
+
+        ant.mkdir(dir: "$rootdir/hive-extension")
+        getFromMaven("com.ailk.oci.hive:hive-extension:$apache_hive_extension_legacy_version@jar", "$rootdir/hive-extension")
+
+        ant.mkdir(dir: "$rootdir/auditor")
+        project.copy({
+            into "$rootdir/auditor/lib"
+            from configurations.auditor_plugin
+        })
+        ant.move(file: "$rootdir/auditor/lib/auditor-plugin-${auditor_version}.jar", toFile: "$rootdir/auditor/auditor-plugin-${auditor_version}.jar")
+
+        //end replace
+        ant.tar(basedir: "amplab-hive/build/tar/hive-${amplab_hive_version}-${oc_version}", destfile: "amplab-hive/build/tar/hive-${amplab_hive_version}-${oc_version}.tar")
+        ant.gzip(src: "amplab-hive/build/tar/hive-${amplab_hive_version}-${oc_version}.tar", destfile: "amplab-hive/build/tar/hive-${amplab_hive_version}-${oc_version}.tar.gz")
+        ant.move(file: "amplab-hive/build/tar/hive-${amplab_hive_version}-${oc_version}.tar.gz", tofile: "$buildDir/ochadoop/hive-${amplab_hive_version}-${oc_version}.tar.gz")
     }
 }
 
