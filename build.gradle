@@ -67,7 +67,7 @@ task zookeeper(dependsOn: zookeeper_build_tar) {
 }
 task hadoop_common_native(type: Exec) {
     workingDir 'hadoop-common'
-    commandLine 'mvn', "-Pdist,native", "-DskipTests", "-Dmaven.javadoc.skip=true", "-Dprotoc.path=" + System.getProperty('PROTOBUF_HOME', "/home/jenkins/app/protobuf-2.5.0") + "/bin/protoc", "-Dtar", "clean", "package"
+    commandLine 'mvn', "-Pdist,native", "-DskipTests", "-Dmaven.javadoc.skip=true", "-Dprotoc.path=" + System.getProperty('PROTOBUF_HOME', "/home/jenkins/app/protobuf-2.5.0") + "/bin/protoc", "-Dtar", "clean", "install"
 }
 
 task hadoop_lzo(type: Exec) {
