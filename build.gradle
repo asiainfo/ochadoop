@@ -11,7 +11,7 @@ ext {
     apache_hive_version = '0.12.0'
     apache_hive_legacy_version = '0.11.0'
     hadoop_lzo_version = '0.4.19'
-    auditor_version = 'och2.0.0-beta'
+    auditor_version = 'och2.0.0-SNAPSHOT'
     apache_hive_extension_version = '0.12.0-och2.0.0-beta'
     apache_hive_extension_legacy_version = '0.11.0-och2.0.0-beta'
 }
@@ -41,6 +41,18 @@ task auditor() {
     doLast {
         getFromMaven("com.ailk.oci.auditor:auditor-server:$auditor_version@jar", "$buildDir/ochadoop")
     }
+}
+
+task auditor_tar(dependsOn:auditor){
+	workingDir 'auditor-server'
+        ant.mkdir(dir: "auditor-server/build/tar/auditor-server-${auditor_version}")
+        ant.move(file: "$buildDir/ochadoop/auditor-server-${auditor_version}.jar", tofile: "auditor-server/build/tar/auditor-server-${auditor_version}/")
+        ant.copy(file: "auditor-server-oc/application.properties", todir:  "auditor-server/build/tar/auditor-server-${auditor_version}/")
+        ant.copy(file: "auditor-server-oc/pipeline.properties", todir:  "auditor-server/build/tar/auditor-server-${auditor_version}/")
+        
+        ant.tar(basedir: "auditor-server/build/tar/auditor-server-${auditor_version}", destfile: "zookeeper/build/tar/auditor-server-${auditor_version}.tar")
+        ant.gzip(src: "auditor-server/build/tar/auditor-server-${auditor_version}.tar", destfile: "zookeeper/build/tar/auditor-server-${auditor_version}.tar.gz")
+        ant.move(file: "auditor-server/build/tar/auditor-server-${auditor_version}.tar.gz", tofile: "$buildDir/ochadoop/auditor-server-${auditor_version}.tar.gz")
 }
 
 task zookeeper_clean(type: Exec) {

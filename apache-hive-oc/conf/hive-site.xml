@@ -29,12 +29,12 @@
    <value>com.ailk.oci.auditor.plugin.audit.hive.HiveMetaStoreEventListener</value>
   </property>
     <property>
-     <name>oci.navigator.com.ailk.oci.navigator.pipeline.hive.exec.config</name>
-     <value>${user.home}/app/hive-0.12.0-bin/conf/auditor.exec.properties</value>
+     <name>oci.auditor.com.ailk.oci.auditor.pipeline.hive.exec.config</name>
+     <value>${user.home}/app/hive-0.11.0-bin/conf/auditor.exec.properties</value>
   </property>
   <property>
-      <name>oci.navigator.com.ailk.oci.navigator.pipeline.hive.meta.config</name>
-      <value>${user.home}/app/hive-0.12.0-bin/conf/auditor.meta.properties</value>
+      <name>oci.auditor.com.ailk.oci.auditor.pipeline.hive.meta.config</name>
+      <value>${user.home}/app/hive-0.11.0-bin/conf/auditor.meta.properties</value>
    </property>
    -->
 </configuration>
