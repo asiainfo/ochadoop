@@ -3,7 +3,7 @@ ext {
     privateRepo = 'http://10.1.253.223:8081/nexus/content/groups/ailk'
     privateDeployRepo = 'http://10.1.253.223:8081/nexus/content/repositories/ailk-snapshots'
     forrest_home = System.getProperty('FORREST_HOME', "/home/cloudetl/apache-forrest-0.9")
-    oc_version = 'och2.0.0-SNAPSHOT'
+    oc_version = 'och3.0.0-SNAPSHOT'
     zookeeper_version = '3.4.5-cdh4.2.1'
     hadoop_common_version = '2.0.0-cdh4.2.1'
     hadoop_common_mr1_version = '2.0.0-mr1-cdh4.2.1'
