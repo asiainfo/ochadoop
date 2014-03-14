@@ -344,7 +344,7 @@ task hbase(type: Exec) {
 
 task hive(type: Exec) {
     workingDir 'hive'
-    commandLine 'mvn', "-T", "2C", "clean", 'install'
+    commandLine 'mvn', "-T", "2C", "-Phadoop-2", "-Dcdh.hadoop.version=2.2.0-cdh5.0.0-beta-2", "clean", 'install'
 }
 
 task all(dependsOn: [auditor, zookeeper, hadoop_common, hadoop_common_mr1, apache_hbase, apache_hive, apache_hive_legacy]) {
