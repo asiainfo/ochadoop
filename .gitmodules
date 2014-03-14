@@ -19,3 +19,6 @@
 [submodule "hadoop-lzo"]
 	path = hadoop-lzo
 	url = https://github.com/twitter/hadoop-lzo.git
+[submodule "hbase"]
+	path = hbase
+	url = https://github.com/cloudera/hbase.git
