@@ -339,7 +339,12 @@ task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar]) {
 
 task hbase(type: Exec) {
     workingDir 'hbase'
-    commandLine 'mvn', "-T", "2C", "clean", 'package', "-Psecurity", '-DskipTests', "-Dmaven.javadoc.skip=true", '-Dhadoop.profile=2.0'
+    commandLine 'mvn', "-T", "2C", "clean", 'install', "-Psecurity", '-DskipTests', "-Dmaven.javadoc.skip=true", '-Dhadoop.profile=2.0'
+}
+
+task hive(type: Exec) {
+    workingDir 'hive'
+    commandLine 'mvn', "-T", "2C", "clean", 'install'
 }
 
 task all(dependsOn: [auditor, zookeeper, hadoop_common, hadoop_common_mr1, apache_hbase, apache_hive, apache_hive_legacy]) {
