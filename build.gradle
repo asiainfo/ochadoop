@@ -67,7 +67,7 @@ task zookeeper(dependsOn: zookeeper_build_tar) {
 }
 task hadoop_common_native(type: Exec) {
     workingDir 'hadoop-common'
-    commandLine 'mvn', "-Pdist,native", "-DskipTests", "-Dmaven.javadoc.skip=true","-Dprotoc.path="+System.getProperty('PROTOBUF_HOME', "/home/jenkins/app/protobuf-2.5.0")+"/bin/protoc", "-Dtar", "clean", "package"
+    commandLine 'mvn', "-Pdist,native", "-DskipTests", "-Dmaven.javadoc.skip=true", "-Dprotoc.path=" + System.getProperty('PROTOBUF_HOME', "/home/jenkins/app/protobuf-2.5.0") + "/bin/protoc", "-Dtar", "clean", "package"
 }
 
 task hadoop_lzo(type: Exec) {
@@ -95,7 +95,7 @@ task hadoop_common(dependsOn: [auditor, hadoop_common_native, hadoop_lzo]) {
 
         ant.delete(dir: 'hadoop-common/build/native_tar')
         ant.copy(file: "hadoop-common/hadoop-dist/target/hadoop-${hadoop_common_version}.tar.gz", todir: "hadoop-common/build/native_tar/")
-        cmd= "tar -xvzf hadoop-common/build/hadoop-dist-${hadoop_common_version}.tar.gz -C ./hadoop-common/build/native_tar"
+        cmd = "tar -xvzf hadoop-common/build/hadoop-dist-${hadoop_common_version}.tar.gz -C ./hadoop-common/build/native_tar"
         project.exec {
             commandLine = cmd.split().toList()
         }
@@ -106,12 +106,12 @@ task hadoop_common(dependsOn: [auditor, hadoop_common_native, hadoop_lzo]) {
         //ant.copy(todir: "$rootdir/lib/native") {
         //    fileset(dir: "hadoop-lzo/target/native/Linux-amd64-64/lib")
         //}
-        
-         project.copy({
-            into  "$rootdir/lib/native"
+
+        project.copy({
+            into "$rootdir/lib/native"
             from "hadoop-lzo/target/native/Linux-amd64-64/lib"
         })
-        
+
         ant.delete(file: "$rootdir/etc/hadoop/core-site.xml")
         ant.delete(file: "$rootdir/etc/hadoop/mapred-site.xml")
         ant.delete(file: "$rootdir/etc/hadoop/log4j.properties")
@@ -120,7 +120,7 @@ task hadoop_common(dependsOn: [auditor, hadoop_common_native, hadoop_lzo]) {
         ant.delete(file: "$rootdir/etc/hadoop/auditor.client.properties")
         ant.delete(file: "$rootdir/libexec/hadoop-config.sh")
         ant.delete(file: "$rootdir/bin/hdfs")
-         
+
         ant.copy(file: "hadoop-common-oc/etc/hadoop/core-site.xml", todir: "$rootdir/etc/hadoop/")
         ant.copy(file: "hadoop-common-oc/etc/hadoop/mapred-site.xml", todir: "$rootdir/etc/hadoop/")
         ant.copy(file: "hadoop-common-oc/etc/hadoop/log4j.properties", todir: "$rootdir/etc/hadoop/")
@@ -171,13 +171,13 @@ task hadoop_common_mr1(dependsOn: hadoop_common_mr1_tar) {
         ant.delete(file: "$rootdir/conf/core-site.xml")
         ant.delete(file: "$rootdir/conf/log4j.properties")
         ant.delete(file: "$rootdir/conf/hdfs-site.xml")
-         ant.delete(file: "$rootdir/conf/mapred-site.xml")
+        ant.delete(file: "$rootdir/conf/mapred-site.xml")
 
         ant.copy(file: "hadoop-common-mr1-oc/conf/core-site.xml", todir: "$rootdir/conf/")
         ant.copy(file: "hadoop-common-mr1-oc/conf/log4j.properties", todir: "$rootdir/conf/")
         ant.copy(file: "hadoop-common-mr1-oc/conf/hdfs-site.xml", todir: "$rootdir/conf/")
         ant.copy(file: "hadoop-common-mr1-oc/conf/mapred-site.xml", todir: "$rootdir/conf/")
-        
+
         getFromMaven("org.apache.hadoop:hadoop-core:$hadoop_common_mr1_version@jar", "$rootdir")
         getFromMaven("org.apache.hadoop:hadoop-examples:$hadoop_common_mr1_version@jar", "$rootdir")
         getFromMaven("org.apache.hadoop:hadoop-test:$hadoop_common_mr1_version@jar", "$rootdir")
@@ -193,7 +193,7 @@ task hadoop_common_mr1(dependsOn: hadoop_common_mr1_tar) {
 
 task apache_hbase_tar(type: Exec) {
     workingDir 'apache-hbase'
-    commandLine 'mvn',"-T","2C", "clean", 'package',"-Psecurity",'-DskipTests', "-Dmaven.javadoc.skip=true",'-Dhadoop.profile=2.0'
+    commandLine 'mvn', "-T", "2C", "clean", 'package', "-Psecurity", '-DskipTests', "-Dmaven.javadoc.skip=true", '-Dhadoop.profile=2.0'
 }
 task apache_hbase(dependsOn: [auditor, apache_hbase_tar]) {
     doLast {
@@ -206,18 +206,18 @@ task apache_hbase(dependsOn: [auditor, apache_hbase_tar]) {
         rootdir = "apache-hbase/target/tar/hbase-${apache_hbase_version}-${oc_version}/hbase-${apache_hbase_version}-${oc_version}"
         ant.move(file: "apache-hbase/target/tar/hbase-${apache_hbase_version}", tofile: rootdir)
         //replace with custom changes
-         
-         //ant.delete(file: "$rootdir/lib/hbase")
-         ant.delete{
-         	 fileset(dir: "$rootdir/lib", includes: 'hadoop*.jar')
-         }                 
-         
+
+        //ant.delete(file: "$rootdir/lib/hbase")
+        ant.delete {
+            fileset(dir: "$rootdir/lib", includes: 'hadoop*.jar')
+        }
+
         ant.delete(file: "$rootdir/bin/hbase")
         ant.delete(file: "$rootdir/conf/log4j.properties")
         ant.delete(file: "$rootdir/conf/auditor.client.properties")
         ant.delete(file: "$rootdir/conf/hbase-site.xml")
         ant.delete(file: "$rootdir/conf/hbase-env.sh")
-        
+
         ant.copy(file: "apache-hbase-oc/bin/hbase", todir: "$rootdir/bin/")
         ant.copy(file: "apache-hbase-oc/conf/log4j.properties", todir: "$rootdir/conf/")
         ant.copy(file: "apache-hbase-oc/conf/auditor.client.properties", todir: "$rootdir/conf/")
@@ -259,7 +259,7 @@ task apache_hive(dependsOn: [apache_hive_tar]) {
         ant.delete(file: "$rootdir/conf/auditor.exec.properties")
         ant.delete(file: "$rootdir/conf/auditor.meta.properties")
         ant.delete(file: "$rootdir/conf/hive-site.xml")
-        
+
         ant.copy(file: "apache-hive-oc/bin/hive", todir: "$rootdir/bin/")
         ant.copy(file: "apache-hive-oc/conf/log4j.properties", todir: "$rootdir/conf/")
         ant.copy(file: "apache-hive-oc/conf/auditor.exec.properties", todir: "$rootdir/conf/")
@@ -313,7 +313,7 @@ task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar]) {
         ant.delete(file: "$rootdir/conf/auditor.exec.properties")
         ant.delete(file: "$rootdir/conf/auditor.meta.properties")
         ant.delete(file: "$rootdir/conf/hive-site.xml")
-        
+
         ant.copy(file: "apache-hive-legacy-oc/bin/hive", todir: "$rootdir/bin/")
         ant.copy(file: "apache-hive-legacy-oc/conf/log4j.properties", todir: "$rootdir/conf/")
         ant.copy(file: "apache-hive-legacy-oc/conf/auditor.exec.properties", todir: "$rootdir/conf/")
@@ -337,6 +337,10 @@ task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar]) {
     }
 }
 
+task hbase(type: Exec) {
+    workingDir 'hbase'
+    commandLine 'mvn', "-T", "2C", "clean", 'package', "-Psecurity", '-DskipTests', "-Dmaven.javadoc.skip=true", '-Dhadoop.profile=2.0'
+}
 
 task all(dependsOn: [auditor, zookeeper, hadoop_common, hadoop_common_mr1, apache_hbase, apache_hive, apache_hive_legacy]) {
     doLast {
