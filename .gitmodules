@@ -25,3 +25,6 @@
 [submodule "hive"]
 	path = hive
 	url = https://github.com/cloudera/hive.git
+[submodule "parquet-mr"]
+	path = parquet-mr
+	url = https://github.com/cloudera/parquet-mr.git
