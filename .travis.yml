@@ -1,10 +1,10 @@
 language: java
 
 before_install:
-  - git submodule update --init --recursive
+  - git submodule update hive
   - sudo apt-get update >/dev/null
   - sudo apt-get -q install cmake libcppunit-dev valgrind
 install:
   - TERM=dumb gradle tasks
 script:
-  - TERM=dumb mvn -Dmaven.javadoc.skip=true -Phadoop-2 -Dcdh.hadoop.version=2.2.0-cdh5.0.0-beta-2 clean package -f hive/pom.xml
+  - TERM=dumb mvn -Dmaven.javadoc.skip=true -Dmaven.test.skip=true -Phadoop-2 -Dcdh.hadoop.version=2.2.0-cdh5.0.0-beta-2 clean package -f hive/pom.xml
