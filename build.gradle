@@ -354,18 +354,30 @@ task hive_tar(type: Exec) {
 //task hive(dependsOn: [hive_tar]) {
 task hive() {
     doLast {
-        githubPages {
-            repoUri = 'git@github.com:asiainfo-linkage/release.git'
-            pages {
-                from("/home/travis/build/asiainfo-linkage/ochadoop/hive/pom.xml") {
-                    into './'
-                }
-            }
-            credentials {
-                username = System.getenv('GH_TOKEN')
-                password = ''
-            }
+//        githubPages {
+//            repoUri = 'git@github.com:asiainfo-linkage/release.git'
+//            pages {
+//                from("/home/travis/build/asiainfo-linkage/ochadoop/hive/pom.xml") {
+//                    into './'
+//                }
+//            }
+//            credentials {
+//                username = System.getenv('GH_TOKEN')
+//                password = ''
+//            }
+//        }
+    }
+}
+githubPages {
+    repoUri = 'git@github.com:asiainfo-linkage/release.git'
+    pages {
+        from("/home/travis/build/asiainfo-linkage/ochadoop/hive/pom.xml") {
+            into './'
         }
+    }
+    credentials {
+        username = System.getenv('GH_TOKEN')
+        password = ''
     }
 }
 task all(dependsOn: [auditor, zookeeper, hadoop_common, hadoop_common_mr1, apache_hbase, apache_hive, apache_hive_legacy]) {
