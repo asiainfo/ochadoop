@@ -1,4 +1,9 @@
+buildscript {
+    repositories { mavenCentral() }
+    dependencies { classpath 'org.ajoberstar:gradle-git:0.6.3' }
+}
 apply plugin: 'java'
+apply plugin: 'github-pages'
 ext {
     privateRepo = 'http://10.1.253.223:8081/nexus/content/groups/ailk'
     privateDeployRepo = 'http://10.1.253.223:8081/nexus/content/repositories/ailk-snapshots'
