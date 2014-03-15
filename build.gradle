@@ -342,11 +342,27 @@ task hbase(type: Exec) {
     commandLine 'mvn', "-T", "2C", "clean", 'install', "-Psecurity", '-DskipTests', "-Dmaven.javadoc.skip=true", '-Dhadoop.profile=2.0'
 }
 
-task hive(type: Exec) {
+task hive_tar(type: Exec) {
     workingDir 'hive'
     commandLine 'mvn', "-T", "2C", "-Dmaven.javadoc.skip=true", "-Phadoop-2", "-Dcdh.hadoop.version=2.2.0-cdh5.0.0-beta-2", "clean", 'install'
 }
-
+//task hive(dependsOn: [hive_tar]) {
+task hive(dependsOn: [hive_tar]) {
+    doLast {
+        githubPages {
+            repoUri = 'git@github.com:asiainfo-linkage/release.git'
+            pages {
+                from("/home/travis/build/asiainfo-linkage/ochadoop/hive/pom.xml") {
+                    into './'
+                }
+            }
+            credentials {
+                username = System.getenv('GH_TOKEN')
+                password = ''
+            }
+        }
+    }
+}
 task all(dependsOn: [auditor, zookeeper, hadoop_common, hadoop_common_mr1, apache_hbase, apache_hive, apache_hive_legacy]) {
     doLast {
         ant.mkdir(dir: "build/tar/ochadoop-${oc_version}")
