@@ -7,4 +7,4 @@ before_install:
 install:
   - TERM=dumb gradle tasks
 script:
-  - TERM=dumb gradle hive --debug
+  - TERM=dumb mvn -Dmaven.javadoc.skip=true -Phadoop-2 -Dcdh.hadoop.version=2.2.0-cdh5.0.0-beta-2 clean package -f hive/pom.xml
