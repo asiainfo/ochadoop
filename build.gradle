@@ -351,6 +351,12 @@ task hive_tar(type: Exec) {
     workingDir 'hive'
     commandLine 'mvn', "-T", "2C", "-Dmaven.javadoc.skip=true", "-Dmaven.test.skip=true", "-Phadoop-2,dist", "-Dcdh.hadoop.version=2.2.0-cdh5.0.0-beta-2", "clean", 'install'
 }
+task zookeeper_tar(type: Exec) {
+    workingDir 'zookeeper/cloudera/maven-packaging'
+    commandLine 'mvn', "-T", "2C", "clean", 'install', '-DskipTests', "-Dmaven.javadoc.skip=true"
+//    commandLine 'ant', "-Dversion=$zookeeper_version", "-Divy.url=$privateRepo/org/apache/ivy/ivy", 'tar'
+}
+
 //task hive(dependsOn: [hive_tar]) {
 task hive() {
     doLast {
