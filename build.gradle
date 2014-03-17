@@ -353,8 +353,8 @@ task hive_tar(type: Exec) {
 }
 task zookeeper_tar(type: Exec) {
     workingDir 'zookeeper/cloudera/maven-packaging'
-    commandLine 'mvn', "-T", "2C", "clean", 'install', '-DskipTests', "-Dmaven.javadoc.skip=true"
-//    commandLine 'ant', "-Dversion=$zookeeper_version", "-Divy.url=$privateRepo/org/apache/ivy/ivy", 'tar'
+//    commandLine 'mvn', "-T", "2C", "clean", 'install', '-DskipTests', "-Dmaven.javadoc.skip=true"
+    commandLine 'ant', 'tar'
 }
 
 //task hive(dependsOn: [hive_tar]) {
