@@ -215,7 +215,7 @@ task apache_hbase(dependsOn: [auditor, apache_hbase_tar]) {
          
         ant.delete(file: "$rootdir/bin/hbase")
         ant.delete(file: "$rootdir/conf/log4j.properties")
-        ant.delete(file: "$rootdir/conf/auditor.client.properties")
+        //ant.delete(file: "$rootdir/conf/auditor.client.properties")
         ant.delete(file: "$rootdir/conf/hbase-site.xml")
         ant.delete(file: "$rootdir/conf/hbase-env.sh")
         
