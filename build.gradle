@@ -129,7 +129,7 @@ task hadoop_common(dependsOn: [auditor, hadoop_common_native, hadoop_lzo]) {
         ant.copy(file: "hadoop-common-oc/etc/hadoop/hdfs-site.xml", todir: "$rootdir/etc/hadoop/")
         ant.copy(file: "hadoop-common-oc/etc/hadoop/auditor.client.properties", todir: "$rootdir/etc/hadoop/")
         ant.copy(file: "hadoop-common-oc/libexec/hadoop-config.sh", todir: "$rootdir/libexec/")
-        ant.copy(file: "hadoop-common-oc/bin/hdfs", todir: "$rootdir/bin//")
+        ant.copy(file: "hadoop-common-oc/bin/hdfs", todir: "$rootdir/bin/")
 
         ant.mkdir(dir: "$rootdir/share/hadoop/auditor")
         project.copy({
