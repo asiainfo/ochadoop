@@ -344,7 +344,7 @@ task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar]) {
 
 task hbase(type: Exec) {
     workingDir 'hbase'
-    commandLine 'mvn', "-T", "2C", "clean", 'install', '-DskipTests', "-Dmaven.javadoc.skip=true"
+    commandLine 'mvn', "-T", "2C", "clean", 'install', '-DskipTests', "-Dmaven.javadoc.skip=true", "-Pcdh5", "-Dhadoop.profile=false"
 }
 
 task hive_tar(type: Exec) {
