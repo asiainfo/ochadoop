@@ -43,16 +43,6 @@ task auditor() {
     }
 }
 
-task auditor_tar(dependsOn:auditor){
-        ant.mkdir(dir: "auditor-server/build/tar/auditor-server-${auditor_version}")
-        ant.move(file: "$buildDir/ochadoop/auditor-server-${auditor_version}.jar", tofile: "auditor-server/build/tar/auditor-server-${auditor_version}/")
-        ant.copy(file: "auditor-server-oc/application.properties", todir:  "auditor-server/build/tar/auditor-server-${auditor_version}/")
-        ant.copy(file: "auditor-server-oc/pipeline.properties", todir:  "auditor-server/build/tar/auditor-server-${auditor_version}/")
-        
-        ant.tar(basedir: "auditor-server/build/tar/auditor-server-${auditor_version}", destfile: "zookeeper/build/tar/auditor-server-${auditor_version}.tar")
-        ant.gzip(src: "auditor-server/build/tar/auditor-server-${auditor_version}.tar", destfile: "zookeeper/build/tar/auditor-server-${auditor_version}.tar.gz")
-        ant.move(file: "auditor-server/build/tar/auditor-server-${auditor_version}.tar.gz", tofile: "$buildDir/ochadoop/auditor-server-${auditor_version}.tar.gz")
-}
 
 task zookeeper_clean(type: Exec) {
     workingDir 'zookeeper'
@@ -351,7 +341,7 @@ task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar]) {
 }
 
 
-task all(dependsOn: [auditor_tar, zookeeper, hadoop_common, hadoop_common_mr1, apache_hbase, apache_hive, apache_hive_legacy]) {
+task all(dependsOn: [auditor, zookeeper, hadoop_common, hadoop_common_mr1, apache_hbase, apache_hive, apache_hive_legacy]) {
     doLast {
         ant.mkdir(dir: "build/tar/ochadoop-${oc_version}")
         ant.move(file: "build/ochadoop", tofile: "build/tar/ochadoop-${oc_version}/ochadoop-${oc_version}")
