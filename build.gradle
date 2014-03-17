@@ -5,8 +5,8 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'github-pages'
 ext {
-    privateRepo = 'http://10.1.253.223:8081/nexus/content/groups/ailk'
-    privateDeployRepo = 'http://10.1.253.223:8081/nexus/content/repositories/ailk-snapshots'
+    privateRepo = 'http://103.31.200.123:8081/nexus/content/groups/ailk'
+    privateDeployRepo = 'http://103.31.200.123:8081/nexus/content/repositories/ailk-snapshots'
     forrest_home = System.getProperty('FORREST_HOME', "/home/cloudetl/apache-forrest-0.9")
     oc_version = 'och3.0.0-SNAPSHOT'
     zookeeper_version = '3.4.5-cdh4.2.1'
@@ -354,7 +354,7 @@ task hive_tar(type: Exec) {
 task zookeeper_tar(type: Exec) {
     workingDir 'zookeeper/cloudera/maven-packaging'
 //    commandLine 'mvn', "-T", "2C", "clean", 'install', '-DskipTests', "-Dmaven.javadoc.skip=true"
-    commandLine 'ant', 'tar'
+    commandLine 'ant', "-Dversion=$zookeeper_version", "-Divy.url=$privateRepo/org/apache/ivy/ivy", 'tar'
 }
 
 //task hive(dependsOn: [hive_tar]) {
