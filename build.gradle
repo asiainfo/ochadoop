@@ -67,7 +67,7 @@ task zookeeper() {
         ant.move(file: "zookeeper/build/och/zookeeper-${zookeeper_version}", tofile: "zookeeper/build/och/zookeeper-${zookeeper_version}-${oc_version}")
         project.exec {
             workingDir 'zookeeper/build/och'
-            commandLine "tar -cvzf  zookeeper-${zookeeper_version}-${oc_version}".split().toList()
+            commandLine "tar -cvzf zookeeper-${zookeeper_version}-${oc_version}.tar.gz zookeeper-${zookeeper_version}-${oc_version}".split().toList()
         }
         ant.mkdir(dir: "build/ochadoop")
         ant.move(file: "zookeeper/build/och/zookeeper-${zookeeper_version}-${oc_version}.tar.gz", todir: "build/ochadoop")
