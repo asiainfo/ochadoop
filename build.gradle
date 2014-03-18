@@ -62,7 +62,7 @@ task zookeeper() {
         ant.mkdir(dir: 'zookeeper/build/och')
         project.exec {
             workingDir 'zookeeper/build'
-            commandLine "tar -xvzf  zookeeper-${zookeeper_version}.tar.gz -C .och/".split().toList()
+            commandLine "tar -xvzf  zookeeper-${zookeeper_version}.tar.gz -C ./och".split().toList()
         }
         ant.move(file: "zookeeper/build/och/zookeeper-${zookeeper_version}", tofile: "zookeeper/build/och/zookeeper-${zookeeper_version}-${oc_version}")
         project.exec {
