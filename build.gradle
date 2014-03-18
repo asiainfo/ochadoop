@@ -342,9 +342,13 @@ task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar]) {
     }
 }
 
-task hbase(type: Exec) {
+task hbase_base(type: Exec) {
     workingDir 'hbase'
-    commandLine 'mvn', "-T", "2C", "clean", 'install', '-DskipTests', "-Dmaven.javadoc.skip=true", "-Pcdh5", "-Dhadoop.profile=false"
+    commandLine 'mvn', "-T", "2C", "clean", 'install', '-DskipTests', "-Dmaven.javadoc.skip=true", "-Dcdh.hadoop.version=2.2.0-cdh5.0.0-beta-2", "-Dhadoop.profile=false"
+}
+task hbase(dependsOn: [hbase_base], type: Exec) {
+    workingDir 'hbase/hbase-assembly'
+    commandLine 'mvn', "assembly:single"
 }
 
 task hive_tar(type: Exec) {
