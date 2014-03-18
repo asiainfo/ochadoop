@@ -59,6 +59,7 @@ task zookeeper() {
             commandLine 'ant', "-Dversion=$zookeeper_version", "-Divy.url=$privateRepo/org/apache/ivy/ivy", 'tar'
         }
         ant.delete(dir: 'zookeeper/build/och')
+        ant.mkdir(dir: 'zookeeper/build/och')
         project.exec {
             workingDir 'zookeeper/build'
             commandLine "tar -xvzf  zookeeper-${zookeeper_version}.tar.gz -C .och/".split().toList()
