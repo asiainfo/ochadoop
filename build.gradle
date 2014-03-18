@@ -9,7 +9,7 @@ ext {
     privateDeployRepo = 'http://103.31.200.123:8081/nexus/content/repositories/ailk-snapshots'
     forrest_home = System.getProperty('FORREST_HOME', "/home/cloudetl/apache-forrest-0.9")
     oc_version = 'och3.0.0-SNAPSHOT'
-    zookeeper_version = '3.4.5-cdh4.2.1'
+    zookeeper_version = '3.4.5-cdh5.0.0-beta-2'
     hadoop_common_version = '2.0.0-cdh4.2.1'
     hadoop_common_mr1_version = '2.0.0-mr1-cdh4.2.1'
     apache_hbase_version = '0.94.12-security'
@@ -344,7 +344,7 @@ task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar]) {
 
 task hbase_base(type: Exec) {
     workingDir 'hbase'
-    commandLine 'mvn', "-T", "2C", "clean", 'install', '-DskipTests', "-Dmaven.javadoc.skip=true", "-Dcdh.hadoop.version=2.2.0-cdh5.0.0-beta-2", "-Dhadoop.profile=false"
+    commandLine 'mvn', "-T", "2C", "clean", 'install', '-DskipTests', "-Pcdh5", "-Dmaven.javadoc.skip=true", "-Dhadoop.profile=false", "-Dcdh.hadoop.version=2.2.0-cdh5.0.0-beta-2"
 }
 task hbase(dependsOn: [hbase_base], type: Exec) {
     workingDir 'hbase/hbase-assembly'
