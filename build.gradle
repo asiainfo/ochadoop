@@ -60,14 +60,22 @@ task zookeeper_build_tar(dependsOn: zookeeper_clean, type: Exec) {
 
 task zookeeper(dependsOn: zookeeper_build_tar) {
     doLast() {
-        ant.delete(dir: 'zookeeper/build/tar')
-        ant.gunzip(src: "zookeeper/build/zookeeper-${zookeeper_version}.tar.gz")
-        ant.untar(src: "zookeeper/build/zookeeper-${zookeeper_version}.tar", dest: 'zookeeper/build/tar')
-        getFromMaven("org.apache.zookeeper:zookeeper:$zookeeper_version@jar", "zookeeper/build/tar/zookeeper-${zookeeper_version}")
-        ant.move(file: "zookeeper/build/tar/zookeeper-${zookeeper_version}", tofile: "zookeeper/build/tar/zookeeper-${zookeeper_version}-${oc_version}")
-        ant.tar(basedir: "zookeeper/build/tar/zookeeper-${zookeeper_version}-${oc_version}", destfile: "zookeeper/build/tar/zookeeper-${zookeeper_version}-${oc_version}.tar")
-        ant.gzip(src: "zookeeper/build/tar/zookeeper-${zookeeper_version}-${oc_version}.tar", destfile: "zookeeper/build/tar/zookeeper-${zookeeper_version}-${oc_version}.tar.gz")
-        ant.move(file: "zookeeper/build/tar/zookeeper-${zookeeper_version}-${oc_version}.tar.gz", tofile: "$buildDir/ochadoop/zookeeper-${zookeeper_version}-${oc_version}.tar.gz")
+        project.exec {
+            workingDir 'zookeeper'
+            commandLine 'ant', "-Dversion=$zookeeper_version", "-Divy.url=$privateRepo/org/apache/ivy/ivy", 'tar'
+        }
+        ant.delete(dir: 'zookeeper/build/och')
+        project.exec {
+            workingDir 'zookeeper/build'
+            commandLine "tar -xvzf  zookeeper-${zookeeper_version}.tar.gz -C .och/".split().toList()
+        }
+        ant.move(file: "zookeeper/build/och/zookeeper-${zookeeper_version}", tofile: "zookeeper/build/och/zookeeper-${zookeeper_version}-${oc_version}")
+        project.exec {
+            workingDir 'zookeeper/build/och'
+            commandLine "tar -cvzf  zookeeper-${zookeeper_version}-${oc_version}".split().toList()
+        }
+        ant.mkdir(dir: "build/ochadoop")
+        ant.move(file: "zookeeper/build/och/zookeeper-${zookeeper_version}-${oc_version}.tar.gz", todir: "build/ochadoop")
     }
 }
 task hadoop_common_native(type: Exec) {
