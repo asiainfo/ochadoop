@@ -52,7 +52,11 @@ task zookeeper() {
     doLast() {
         project.exec {
             workingDir 'zookeeper'
-            commandLine 'ant', "-Dversion=$zookeeper_version", "-Divy.url=$privateRepo/org/apache/ivy/ivy", "clean", 'tar'
+            commandLine 'ant', "-Dversion=$zookeeper_version", "-Divy.url=$privateRepo/org/apache/ivy/ivy", "clean"
+        }
+        project.exec {
+            workingDir 'zookeeper'
+            commandLine 'ant', "-Dversion=$zookeeper_version", "-Divy.url=$privateRepo/org/apache/ivy/ivy", 'tar'
         }
         ant.delete(dir: 'zookeeper/build/och')
         project.exec {
