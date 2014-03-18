@@ -12,6 +12,7 @@ ext {
     zookeeper_version = '3.4.5-cdh5.0.0-beta-2'
     hadoop_common_version = '2.2.0-cdh5.0.0-beta-2'
     hbase_version = '0.96.1.1-cdh5.0.0-beta-2'
+    hive_version = '0.12.0-cdh5.0.0-beta-2'
     hadoop_common_mr1_version = '2.0.0-mr1-cdh4.2.1'
     apache_hbase_version = '0.94.12-security'
     apache_hive_version = '0.12.0'
@@ -74,7 +75,7 @@ task zookeeper() {
         ant.move(file: "zookeeper/build/och/zookeeper-${zookeeper_version}-${oc_version}.tar.gz", todir: "build/ochadoop")
     }
 }
-task hadoop_common(){
+task hadoop_common() {
     doLast() {
         project.exec {
             workingDir 'hadoop-common'
@@ -95,7 +96,7 @@ task hadoop_common(){
         ant.move(file: "hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}-${oc_version}.tar.gz", todir: "build/ochadoop")
     }
 }
-task hbase(){
+task hbase() {
     doLast() {
         project.exec {
             workingDir 'hbase'
@@ -120,14 +121,34 @@ task hbase(){
         ant.move(file: "hbase/hbase-assembly/target/och/hbase-${hbase_version}-${oc_version}.tar.gz", todir: "build/ochadoop")
     }
 }
-//task hbase_base(type: Exec) {
-//    workingDir 'hbase'
-//    commandLine 'mvn', "-T", "2C", "clean", 'install', '-DskipTests', "-Pcdh5", "-Dmaven.javadoc.skip=false", "-Dhadoop.profile=2.0", "-Dcdh.hadoop.version=2.2.0-cdh5.0.0-beta-2"
+
+task hive() {
+    doLast() {
+        project.exec {
+            workingDir 'hive'
+            commandLine 'mvn', "-T", "2C", "-Dmaven.javadoc.skip=true", "-Dmaven.test.skip=true", "-Phadoop-2,dist", "-Dcdh.hadoop.version=$hadoop_common_version", "clean", 'install'
+        }
+
+        ant.delete(dir: 'hive/packaging/target/och')
+        ant.mkdir(dir: 'hive/packaging/target/och')
+        project.exec {
+            workingDir 'hive/packaging/target'
+            commandLine "tar -xvzf  apache-hive-${hive_version}-bin.tar.gz -C ./och".split().toList()
+        }
+        ant.move(file: "hive/packaging/target/och/apache-hive-${hive_version}-bin", tofile: "hive/packaging/target/och/hive-${hive_version}-${oc_version}")
+        project.exec {
+            workingDir 'hive/packaging/target/och'
+            commandLine "tar -cvzf hive-${hive_version}-${oc_version}.tar.gz hive-${hive_version}-${oc_version}".split().toList()
+        }
+        ant.mkdir(dir: "build/ochadoop")
+        ant.move(file: "hive/packaging/target/och/hive-${hive_version}-${oc_version}.tar.gz", todir: "build/ochadoop")
+    }
+}
+//task hive_tar(type: Exec) {
+//    workingDir 'hive'
+//    commandLine 'mvn', "-T", "2C", "-Dmaven.javadoc.skip=true", "-Dmaven.test.skip=true", "-Phadoop-2,dist", "-Dcdh.hadoop.version=2.2.0-cdh5.0.0-beta-2", "clean", 'install'
 //}
-//task hbase(dependsOn: [hbase_base], type: Exec) {
-//    workingDir 'hbase/hbase-assembly'
-//    commandLine 'mvn', "assembly:single"
-//}
+
 task hadoop_common_native(type: Exec) {
     workingDir 'hadoop-common'
     commandLine 'mvn', "-Pdist,native", "-DskipTests", "-Dmaven.javadoc.skip=true", "-Dprotoc.path=" + System.getProperty('PROTOBUF_HOME', "/home/jenkins/app/protobuf-2.5.0") + "/bin/protoc", "-Dtar", "clean", "install"
@@ -402,10 +423,7 @@ task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar]) {
 
 
 
-task hive_tar(type: Exec) {
-    workingDir 'hive'
-    commandLine 'mvn', "-T", "2C", "-Dmaven.javadoc.skip=true", "-Dmaven.test.skip=true", "-Phadoop-2,dist", "-Dcdh.hadoop.version=2.2.0-cdh5.0.0-beta-2", "clean", 'install'
-}
+
 task zookeeper_tar(type: Exec) {
 //    workingDir 'zookeeper/cloudera/maven-packaging'
 //    commandLine 'mvn', "-T", "2C", "clean", 'install', '-DskipTests', "-Dmaven.javadoc.skip=true"
