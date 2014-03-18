@@ -432,22 +432,22 @@ task zookeeper_tar(type: Exec) {
 }
 
 //task hive(dependsOn: [hive_tar]) {
-task hive() {
-    doLast {
-//        githubPages {
-//            repoUri = 'git@github.com:asiainfo-linkage/release.git'
-//            pages {
-//                from("/home/travis/build/asiainfo-linkage/ochadoop/hive/pom.xml") {
-//                    into './'
-//                }
-//            }
-//            credentials {
-//                username = System.getenv('GH_TOKEN')
-//                password = ''
-//            }
-//        }
-    }
-}
+//task hive() {
+//    doLast {
+////        githubPages {
+////            repoUri = 'git@github.com:asiainfo-linkage/release.git'
+////            pages {
+////                from("/home/travis/build/asiainfo-linkage/ochadoop/hive/pom.xml") {
+////                    into './'
+////                }
+////            }
+////            credentials {
+////                username = System.getenv('GH_TOKEN')
+////                password = ''
+////            }
+////        }
+//    }
+//}
 githubPages {
     repoUri = 'git@github.com:asiainfo-linkage/release.git'
     pages {
