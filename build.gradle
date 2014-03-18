@@ -48,21 +48,11 @@ task auditor() {
     }
 }
 
-task zookeeper_clean(type: Exec) {
-    workingDir 'zookeeper'
-    commandLine 'ant', '-Dversion=' + zookeeper_version, 'clean'
-}
-
-task zookeeper_build_tar(dependsOn: zookeeper_clean, type: Exec) {
-    workingDir 'zookeeper'
-    commandLine 'ant', "-Dversion=$zookeeper_version", "-Divy.url=$privateRepo/org/apache/ivy/ivy", 'tar'
-}
-
-task zookeeper(dependsOn: zookeeper_build_tar) {
+task zookeeper() {
     doLast() {
         project.exec {
             workingDir 'zookeeper'
-            commandLine 'ant', "-Dversion=$zookeeper_version", "-Divy.url=$privateRepo/org/apache/ivy/ivy", 'tar'
+            commandLine 'ant', "-Dversion=$zookeeper_version", "-Divy.url=$privateRepo/org/apache/ivy/ivy", "clean", 'tar'
         }
         ant.delete(dir: 'zookeeper/build/och')
         project.exec {
