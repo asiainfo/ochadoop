@@ -110,70 +110,70 @@ task hadoop_lzo(type: Exec) {
     environment C_INCLUDE_PATH: System.getProperty('LZO_HOME', "/home/cloudetl/app/lzo-2.06") + "/include"
     environment LIBRARY_PATH: System.getProperty('LZO_HOME', "/home/cloudetl/app/lzo-2.06") + "/lib"
 }
-task hadoop_common(dependsOn: [auditor, hadoop_common_native, hadoop_lzo]) {
-    doLast() {
-        ant.mkdir(dir: "hadoop-common/build")
-        getFromMaven("org.apache.hadoop:hadoop-dist:$hadoop_common_version@tar.gz", "hadoop-common/build")
-        ant.delete(dir: 'hadoop-common/build/tar')
-        ant.gunzip(src: "hadoop-common/build/hadoop-dist-${hadoop_common_version}.tar.gz")
-        ant.untar(src: "hadoop-common/build/hadoop-dist-${hadoop_common_version}.tar", dest: 'hadoop-common/build/tar')
-        ant.mkdir(dir: "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}")
-        rootdir = "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}/hadoop-${hadoop_common_version}-${oc_version}"
-        ant.move(file: "hadoop-common/build/tar/hadoop-${hadoop_common_version}", tofile: rootdir)
-        //replace with custom changes
-
-        ant.delete(dir: 'hadoop-common/build/native_tar')
-        ant.copy(file: "hadoop-common/hadoop-dist/target/hadoop-${hadoop_common_version}.tar.gz", todir: "hadoop-common/build/native_tar/")
-        cmd = "tar -xvzf hadoop-common/build/hadoop-dist-${hadoop_common_version}.tar.gz -C ./hadoop-common/build/native_tar"
-        project.exec {
-            commandLine = cmd.split().toList()
-        }
-        ant.delete(dir: "$rootdir/lib/native")
-        ant.copy(todir: "$rootdir/lib/native") {
-            fileset(dir: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}/lib/native")
-        }
-        //ant.copy(todir: "$rootdir/lib/native") {
-        //    fileset(dir: "hadoop-lzo/target/native/Linux-amd64-64/lib")
-        //}
-
-        project.copy({
-            into "$rootdir/lib/native"
-            from "hadoop-lzo/target/native/Linux-amd64-64/lib"
-        })
-
-        ant.delete(file: "$rootdir/etc/hadoop/core-site.xml")
-        ant.delete(file: "$rootdir/etc/hadoop/mapred-site.xml")
-        ant.delete(file: "$rootdir/etc/hadoop/log4j.properties")
-        ant.delete(file: "$rootdir/etc/hadoop/hadoop-env.sh")
-        ant.delete(file: "$rootdir/etc/hadoop/hdfs-site.xml")
-        ant.delete(file: "$rootdir/etc/hadoop/auditor.client.properties")
-        ant.delete(file: "$rootdir/libexec/hadoop-config.sh")
-        ant.delete(file: "$rootdir/bin/hdfs")
-
-        ant.copy(file: "hadoop-common-oc/etc/hadoop/core-site.xml", todir: "$rootdir/etc/hadoop/")
-        ant.copy(file: "hadoop-common-oc/etc/hadoop/mapred-site.xml", todir: "$rootdir/etc/hadoop/")
-        ant.copy(file: "hadoop-common-oc/etc/hadoop/log4j.properties", todir: "$rootdir/etc/hadoop/")
-        ant.copy(file: "hadoop-common-oc/etc/hadoop/hadoop-env.sh", todir: "$rootdir/etc/hadoop/")
-        ant.copy(file: "hadoop-common-oc/etc/hadoop/hdfs-site.xml", todir: "$rootdir/etc/hadoop/")
-        ant.copy(file: "hadoop-common-oc/etc/hadoop/auditor.client.properties", todir: "$rootdir/etc/hadoop/")
-        ant.copy(file: "hadoop-common-oc/libexec/hadoop-config.sh", todir: "$rootdir/libexec/")
-        ant.copy(file: "hadoop-common-oc/bin/hdfs", todir: "$rootdir/bin//")
-
-        ant.mkdir(dir: "$rootdir/share/hadoop/auditor")
-        project.copy({
-            into "$rootdir/share/hadoop/auditor/lib"
-            from configurations.auditor_plugin
-        })
-        ant.move(file: "$rootdir/share/hadoop/auditor/lib/auditor-plugin-${auditor_version}.jar", toFile: "$rootdir/share/hadoop/auditor/auditor-plugin-${auditor_version}.jar")
-
-        ant.copy(file: "hadoop-lzo/target/hadoop-lzo-${hadoop_lzo_version}.jar", todir: "$rootdir/share/hadoop/common/")
-
-        //end replace
-        ant.tar(basedir: "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}", destfile: "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}.tar")
-        ant.gzip(src: "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}.tar", destfile: "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}.tar.gz")
-        ant.move(file: "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}.tar.gz", tofile: "$buildDir/ochadoop/hadoop-${hadoop_common_version}-${oc_version}.tar.gz")
-    }
-}
+//task hadoop_common(dependsOn: [auditor, hadoop_common_native, hadoop_lzo]) {
+//    doLast() {
+//        ant.mkdir(dir: "hadoop-common/build")
+//        getFromMaven("org.apache.hadoop:hadoop-dist:$hadoop_common_version@tar.gz", "hadoop-common/build")
+//        ant.delete(dir: 'hadoop-common/build/tar')
+//        ant.gunzip(src: "hadoop-common/build/hadoop-dist-${hadoop_common_version}.tar.gz")
+//        ant.untar(src: "hadoop-common/build/hadoop-dist-${hadoop_common_version}.tar", dest: 'hadoop-common/build/tar')
+//        ant.mkdir(dir: "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}")
+//        rootdir = "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}/hadoop-${hadoop_common_version}-${oc_version}"
+//        ant.move(file: "hadoop-common/build/tar/hadoop-${hadoop_common_version}", tofile: rootdir)
+//        //replace with custom changes
+//
+//        ant.delete(dir: 'hadoop-common/build/native_tar')
+//        ant.copy(file: "hadoop-common/hadoop-dist/target/hadoop-${hadoop_common_version}.tar.gz", todir: "hadoop-common/build/native_tar/")
+//        cmd = "tar -xvzf hadoop-common/build/hadoop-dist-${hadoop_common_version}.tar.gz -C ./hadoop-common/build/native_tar"
+//        project.exec {
+//            commandLine = cmd.split().toList()
+//        }
+//        ant.delete(dir: "$rootdir/lib/native")
+//        ant.copy(todir: "$rootdir/lib/native") {
+//            fileset(dir: "hadoop-common/build/native_tar/hadoop-${hadoop_common_version}/lib/native")
+//        }
+//        //ant.copy(todir: "$rootdir/lib/native") {
+//        //    fileset(dir: "hadoop-lzo/target/native/Linux-amd64-64/lib")
+//        //}
+//
+//        project.copy({
+//            into "$rootdir/lib/native"
+//            from "hadoop-lzo/target/native/Linux-amd64-64/lib"
+//        })
+//
+//        ant.delete(file: "$rootdir/etc/hadoop/core-site.xml")
+//        ant.delete(file: "$rootdir/etc/hadoop/mapred-site.xml")
+//        ant.delete(file: "$rootdir/etc/hadoop/log4j.properties")
+//        ant.delete(file: "$rootdir/etc/hadoop/hadoop-env.sh")
+//        ant.delete(file: "$rootdir/etc/hadoop/hdfs-site.xml")
+//        ant.delete(file: "$rootdir/etc/hadoop/auditor.client.properties")
+//        ant.delete(file: "$rootdir/libexec/hadoop-config.sh")
+//        ant.delete(file: "$rootdir/bin/hdfs")
+//
+//        ant.copy(file: "hadoop-common-oc/etc/hadoop/core-site.xml", todir: "$rootdir/etc/hadoop/")
+//        ant.copy(file: "hadoop-common-oc/etc/hadoop/mapred-site.xml", todir: "$rootdir/etc/hadoop/")
+//        ant.copy(file: "hadoop-common-oc/etc/hadoop/log4j.properties", todir: "$rootdir/etc/hadoop/")
+//        ant.copy(file: "hadoop-common-oc/etc/hadoop/hadoop-env.sh", todir: "$rootdir/etc/hadoop/")
+//        ant.copy(file: "hadoop-common-oc/etc/hadoop/hdfs-site.xml", todir: "$rootdir/etc/hadoop/")
+//        ant.copy(file: "hadoop-common-oc/etc/hadoop/auditor.client.properties", todir: "$rootdir/etc/hadoop/")
+//        ant.copy(file: "hadoop-common-oc/libexec/hadoop-config.sh", todir: "$rootdir/libexec/")
+//        ant.copy(file: "hadoop-common-oc/bin/hdfs", todir: "$rootdir/bin//")
+//
+//        ant.mkdir(dir: "$rootdir/share/hadoop/auditor")
+//        project.copy({
+//            into "$rootdir/share/hadoop/auditor/lib"
+//            from configurations.auditor_plugin
+//        })
+//        ant.move(file: "$rootdir/share/hadoop/auditor/lib/auditor-plugin-${auditor_version}.jar", toFile: "$rootdir/share/hadoop/auditor/auditor-plugin-${auditor_version}.jar")
+//
+//        ant.copy(file: "hadoop-lzo/target/hadoop-lzo-${hadoop_lzo_version}.jar", todir: "$rootdir/share/hadoop/common/")
+//
+//        //end replace
+//        ant.tar(basedir: "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}", destfile: "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}.tar")
+//        ant.gzip(src: "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}.tar", destfile: "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}.tar.gz")
+//        ant.move(file: "hadoop-common/build/tar/hadoop-${hadoop_common_version}-${oc_version}.tar.gz", tofile: "$buildDir/ochadoop/hadoop-${hadoop_common_version}-${oc_version}.tar.gz")
+//    }
+//}
 task hadoop_common_mr1_clean(type: Exec) {
     workingDir 'hadoop-common-mr1'
     commandLine 'ant', "-Dmvnrepo=$privateRepo", "-Drepo.maven.org=$privateRepo", "-Dforrest.home=$forrest_home", "clean"
