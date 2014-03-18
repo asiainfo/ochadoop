@@ -10,7 +10,7 @@ ext {
     forrest_home = System.getProperty('FORREST_HOME', "/home/cloudetl/apache-forrest-0.9")
     oc_version = 'och3.0.0-SNAPSHOT'
     zookeeper_version = '3.4.5-cdh5.0.0-beta-2'
-    hadoop_common_version = '2.0.0-cdh4.2.1'
+    hadoop_common_version = '2.2.0-cdh5.0.0-beta-2'
     hadoop_common_mr1_version = '2.0.0-mr1-cdh4.2.1'
     apache_hbase_version = '0.94.12-security'
     apache_hive_version = '0.12.0'
@@ -71,6 +71,27 @@ task zookeeper() {
         }
         ant.mkdir(dir: "build/ochadoop")
         ant.move(file: "zookeeper/build/och/zookeeper-${zookeeper_version}-${oc_version}.tar.gz", todir: "build/ochadoop")
+    }
+}
+task hadoop_common(){
+    doLast() {
+        project.exec {
+            workingDir 'hadoop-common'
+            commandLine 'mvn', "-Pdist,native", "-DskipTests", "-Dmaven.javadoc.skip=true", "-Dprotoc.path=" + System.getProperty('PROTOBUF_HOME', "/home/jenkins/app/protobuf-2.5.0") + "/bin/protoc", "-Dtar", "clean", "install"
+        }
+        ant.delete(dir: 'hadoop-common/hadoop-dist/target/och')
+        ant.mkdir(dir: 'hadoop-common/hadoop-dist/target/och')
+        project.exec {
+            workingDir 'hadoop-common/hadoop-dist/target'
+            commandLine "tar -xvzf  hadoop-${hadoop_common_version}.tar.gz -C ./och".split().toList()
+        }
+        ant.move(file: "hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}", tofile: "hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}-${oc_version}")
+        project.exec {
+            workingDir 'hadoop-common/hadoop-dist/target/och'
+            commandLine "tar -cvzf hadoop-${hadoop_common_version}-${oc_version}.tar.gz hadoop-${hadoop_common_version}-${oc_version}".split().toList()
+        }
+        ant.mkdir(dir: "build/ochadoop")
+        ant.move(file: "hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}-${oc_version}.tar.gz", todir: "build/ochadoop")
     }
 }
 task hadoop_common_native(type: Exec) {
