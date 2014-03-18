@@ -11,6 +11,7 @@ ext {
     oc_version = 'och3.0.0-SNAPSHOT'
     zookeeper_version = '3.4.5-cdh5.0.0-beta-2'
     hadoop_common_version = '2.2.0-cdh5.0.0-beta-2'
+    hbase_version = '0.96.1.1-cdh5.0.0-beta-2'
     hadoop_common_mr1_version = '2.0.0-mr1-cdh4.2.1'
     apache_hbase_version = '0.94.12-security'
     apache_hive_version = '0.12.0'
@@ -92,6 +93,39 @@ task hadoop_common(){
         }
         ant.mkdir(dir: "build/ochadoop")
         ant.move(file: "hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}-${oc_version}.tar.gz", todir: "build/ochadoop")
+    }
+}
+task hbase_base(type: Exec) {
+    workingDir 'hbase'
+    commandLine 'mvn', "-T", "2C", "clean", 'install', '-DskipTests', "-Pcdh5", "-Dmaven.javadoc.skip=false", "-Dhadoop.profile=2.0", "-Dcdh.hadoop.version=2.2.0-cdh5.0.0-beta-2"
+}
+task hbase(dependsOn: [hbase_base], type: Exec) {
+    workingDir 'hbase/hbase-assembly'
+    commandLine 'mvn', "assembly:single"
+}
+task hbase(){
+    doLast() {
+        project.exec {
+            workingDir 'hbase'
+            commandLine 'mvn', "-T", "2C", "clean", 'install', '-DskipTests', "-Pcdh5", "-Dmaven.javadoc.skip=false", "-Dhadoop.profile=2.0", "-Dcdh.hadoop.version=$hadoop_common_version"
+        }
+        project.exec {
+            workingDir 'hbase/hbase-assembly'
+            commandLine 'mvn', "assembly:single"
+        }
+        ant.delete(dir: 'hbase/hbase-assembly/target/och')
+        ant.mkdir(dir: 'hbase/hbase-assembly/target/och')
+        project.exec {
+            workingDir 'hbase/hbase-assembly/target'
+            commandLine "tar -xvzf  hbase-${hbase_version}-bin.tar.gz -C ./och".split().toList()
+        }
+        ant.move(file: "hbase/hbase-assembly/target/och/hbase-${hbase_version}", tofile: "hbase/hbase-assembly/target/och/hbase-${hbase_version}-${oc_version}")
+        project.exec {
+            workingDir 'hbase/hbase-assembly/target/och'
+            commandLine "tar -cvzf hbase-${hbase_version}-${oc_version}.tar.gz hbase-${hbase_version}-${oc_version}".split().toList()
+        }
+        ant.mkdir(dir: "build/ochadoop")
+        ant.move(file: "hbase/hbase-assembly/target/och/hbase-${hbase_version}-${oc_version}.tar.gz", todir: "build/ochadoop")
     }
 }
 task hadoop_common_native(type: Exec) {
@@ -366,14 +400,7 @@ task apache_hive_legacy(dependsOn: [apache_hive_legacy_tar]) {
     }
 }
 
-task hbase_base(type: Exec) {
-    workingDir 'hbase'
-    commandLine 'mvn', "-T", "2C", "clean", 'install', '-DskipTests', "-Pcdh5", "-Dmaven.javadoc.skip=false", "-Dhadoop.profile=2.0", "-Dcdh.hadoop.version=2.2.0-cdh5.0.0-beta-2"
-}
-task hbase(dependsOn: [hbase_base], type: Exec) {
-    workingDir 'hbase/hbase-assembly'
-    commandLine 'mvn', "assembly:single"
-}
+
 
 task hive_tar(type: Exec) {
     workingDir 'hive'
