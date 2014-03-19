@@ -100,11 +100,7 @@ task hbase() {
     doLast() {
         project.exec {
             workingDir 'hbase'
-            commandLine 'mvn', "-T", "2C", "clean", 'install', '-DskipTests', "-Pcdh5", "-Dmaven.javadoc.skip=false", "-Dhadoop.profile=2.0", "-Dcdh.hadoop.version=$hadoop_common_version"
-        }
-        project.exec {
-            workingDir 'hbase/hbase-assembly'
-            commandLine 'mvn', "assembly:single"
+            commandLine "mvn -DskipTests -Pcdh5 -Dmaven.javadoc.skip=false -Dhadoop.profile=2.0 -Dcdh.hadoop.version=$hadoop_common_version clean install assembly:single".split().toList()
         }
         ant.delete(dir: 'hbase/hbase-assembly/target/och')
         ant.mkdir(dir: 'hbase/hbase-assembly/target/och')
