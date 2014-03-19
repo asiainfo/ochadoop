@@ -28,3 +28,6 @@
 [submodule "parquet-mr"]
 	path = parquet-mr
 	url = https://github.com/cloudera/parquet-mr.git
+[submodule "spark"]
+	path = spark
+	url = https://github.com/cloudera/spark.git
