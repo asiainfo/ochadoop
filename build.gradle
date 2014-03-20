@@ -157,6 +157,15 @@ task spark() {
     }
 }
 
+task amplab_shark() {
+    doLast() {
+        project.exec {
+            workingDir 'amplab-shark'
+            commandLine "sbt/sbt package".split().toList()
+        }
+    }
+}
+
 task all(dependsOn: [zookeeper, hadoop_common, hbase, hive]) {
     doLast {
         ant.mkdir(dir: "build/tar/ochadoop-${oc_version}")
