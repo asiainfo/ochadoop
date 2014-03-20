@@ -141,7 +141,7 @@ task hive() {
     }
 }
 
-task spark(){
+task spark() {
     doLast() {
 //        project.exec {
 //            workingDir 'spark'
@@ -150,7 +150,7 @@ task spark(){
         project.exec {
             workingDir 'spark'
 //            commandLine "mvn -Dcdh.hadoop.version=$hadoop_common_version -Dcdh.protobuf.version=2.5.0 -Dcdh.hbase.version=$hbase_version clean install"
-            commandLine "mvn clean install"
+            commandLine "mvn -Pyarn -Dhadoop.version=$hadoop_common_version -Dyarn.version=$hadoop_common_version -DskipTests clean install".split().toList()
         }
     }
 }
