@@ -141,6 +141,20 @@ task hive() {
     }
 }
 
+task spark(){
+    doLast() {
+//        project.exec {
+//            workingDir 'spark'
+//            commandLine './make-distribution.sh'
+//        }
+        project.exec {
+            workingDir 'spark'
+//            commandLine "mvn -Dcdh.hadoop.version=$hadoop_common_version -Dcdh.protobuf.version=2.5.0 -Dcdh.hbase.version=$hbase_version clean install"
+            commandLine "mvn clean install"
+        }
+    }
+}
+
 task all(dependsOn: [zookeeper, hadoop_common, hbase, hive]) {
     doLast {
         ant.mkdir(dir: "build/tar/ochadoop-${oc_version}")
