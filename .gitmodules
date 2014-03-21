@@ -34,3 +34,6 @@
 [submodule "amplab-shark"]
 	path = amplab-shark
 	url = https://github.com/amplab/shark.git
+[submodule "amplab-hive"]
+	path = amplab-hive
+	url = https://github.com/amplab/hive.git
