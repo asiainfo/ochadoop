@@ -160,7 +160,7 @@ task amplab_hive() {
     doLast() {
         project.exec {
             workingDir 'amplab-hive'
-            commandLine "ant tar -Drepo.maven.org=$privateRepo -Divy.mvn.repo=$privateRepo -Dmvnrepo=$privateRepo".split().toList()
+            commandLine "ant tar maven-publish -Drepo.maven.org=$privateRepo -Divy.mvn.repo=$privateRepo -Dmvnrepo=$privateRepo".split().toList()
         }
     }
 }
