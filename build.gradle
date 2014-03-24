@@ -168,7 +168,7 @@ task amplab_shark() {
     doLast() {
         project.exec {
             workingDir 'amplab-shark/project'
-            commandLine "sed", "-i", "'s/SHARK_VERSION = \\\"0.9.1-SNAPSHOT\\\"/SHARK_VERSION = \\\"0.9.1-och3.0.0-SNAPSHOT\\\"/'", "SharkBuild.scala"
+            commandLine "sed", "-i", "'s/SHARK_VERSION = \"0.9.1-SNAPSHOT\"/SHARK_VERSION = \"0.9.1-och3.0.0-SNAPSHOT\"/'", "SharkBuild.scala"
         }
         project.exec {
             workingDir 'amplab-shark/project'
