@@ -170,6 +170,7 @@ task amplab_shark() {
         contents = contents.replaceAll('SHARK_VERSION = "0.9.1-SNAPSHOT"', 'SHARK_VERSION = "0.9.1-och3.0.0-SNAPSHOT"')
         contents = contents.replaceAll('HIVE_VERSION = "0.11.0-shark-0.9.1-SNAPSHOT"', 'HIVE_VERSION = "0.11.0-shark-0.9.1"')
         contents = contents.replaceAll('SPARK_VERSION = "0.9.0-incubating"', 'SPARK_VERSION = "0.9.0-cdh5.0.0-beta-2"')
+        contents = contents.replaceAll('DEFAULT_HADOOP_VERSION = "1.0.4"', 'DEFAULT_HADOOP_VERSION = "2.2.0-cdh5.0.0-beta-2"')
         new File('amplab-shark/project/SharkBuild.scala').write(contents, 'UTF-8')
 
         project.exec {
