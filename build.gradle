@@ -159,7 +159,7 @@ task spark() {
 task amplab_hive() {
     doLast() {
         String contents = new File('amplab-hive/ivy/ivysettings.xml').getText('UTF-8')
-        contents = contents.replaceAll('http://repo1.maven.org/maven2/', $privateRepo)
+        contents = contents.replaceAll('http://repo1.maven.org/maven2/', "$privateRepo")
         new File('amplab-hive/ivy/ivysettings.xml').write(contents, 'UTF-8')
 
         contents = new File('amplab-hive/build.xml').getText('UTF-8')
