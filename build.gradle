@@ -158,6 +158,9 @@ task spark() {
 }
 task amplab_hive() {
     doLast() {
+        String contents = new File('amplab-hive/ivy/ivysettings.xml').getText('UTF-8')
+        contents = contents.replaceAll('http://repo1.maven.org/maven2/', $privateRepo)
+        new File('amplab-hive/ivy/ivysettings.xml').write(contents, 'UTF-8')
         project.exec {
             workingDir 'amplab-hive'
             commandLine "ant tar maven-publish -Drepo.maven.org=$privateRepo -Divy.mvn.repo=$privateRepo -Dmvnrepo=$privateRepo".split().toList()
