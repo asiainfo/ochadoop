@@ -168,7 +168,7 @@ task amplab_hive() {
 
         project.exec {
             workingDir 'amplab-hive'
-            commandLine "ant tar -buildfile build.skip.javadoc.xml -Dskip.javadoc=true maven-publish -Drepo.maven.org=$privateRepo -Divy.mvn.repo=$privateRepo -Dmvnrepo=$privateRepo".split().toList()
+            commandLine "ant tar maven-publish -buildfile build.skip.javadoc.xml -Dskip.javadoc=true -Drepo.maven.org=$privateRepo -Divy.mvn.repo=$privateRepo -Dmvnrepo=$privateRepo".split().toList()
         }
     }
 }
