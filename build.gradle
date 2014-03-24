@@ -161,9 +161,14 @@ task amplab_hive() {
         String contents = new File('amplab-hive/ivy/ivysettings.xml').getText('UTF-8')
         contents = contents.replaceAll('http://repo1.maven.org/maven2/', $privateRepo)
         new File('amplab-hive/ivy/ivysettings.xml').write(contents, 'UTF-8')
+
+        contents = new File('amplab-hive/build.xml').getText('UTF-8')
+        contents = contents.replaceAll('<target name="javadoc"', '<target name="javadoc" unless="skip.javadoc"')
+        new File('amplab-hive/build.skip.javadoc.xml').write(contents, 'UTF-8')
+
         project.exec {
             workingDir 'amplab-hive'
-            commandLine "ant tar maven-publish -Drepo.maven.org=$privateRepo -Divy.mvn.repo=$privateRepo -Dmvnrepo=$privateRepo".split().toList()
+            commandLine "ant tar -buildfile build.skip.javadoc.xml -Dskip.javadoc=true maven-publish -Drepo.maven.org=$privateRepo -Divy.mvn.repo=$privateRepo -Dmvnrepo=$privateRepo".split().toList()
         }
     }
 }
