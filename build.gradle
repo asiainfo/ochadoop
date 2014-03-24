@@ -166,22 +166,12 @@ task amplab_hive() {
 }
 task amplab_shark() {
     doLast() {
-        project.exec {
-            workingDir 'amplab-shark/project'
-            commandLine "sed", "-i", "'s/SHARK_VERSION = \"0.9.1-SNAPSHOT\"/SHARK_VERSION = \"0.9.1-och3.0.0-SNAPSHOT\"/'", "SharkBuild.scala"
-        }
-        project.exec {
-            workingDir 'amplab-shark/project'
-            commandLine "sed", "-i", "'s/HIVE_VERSION = \"0.11.0-shark-0.9.1-SNAPSHOT\"/HIVE_VERSION = \"0.11.0-shark-0.9.1\"/'", "SharkBuild.scala"
-        }
-        project.exec {
-            workingDir 'amplab-shark/project'
-            commandLine "sed", "-i", "'s/SPARK_VERSION = \"0.9.0-incubating\"/SPARK_VERSION = \"0.9.0-cdh5.0.0-beta-2\"'", "SharkBuild.scala"
-        }
-        project.exec {
-            workingDir 'amplab-shark'
-            commandLine "sbt/sbt package".split().toList()
-        }
+        String contents = new File('amplab-shark/project/SharkBuild.scala').getText('UTF-8')
+        contents = contents.replaceAll('SHARK_VERSION = "0.9.1-SNAPSHOT"', 'SHARK_VERSION = "0.9.1-och3.0.0-SNAPSHOT"')
+        contents = contents.replaceAll('HIVE_VERSION = "0.11.0-shark-0.9.1-SNAPSHOT"', 'HIVE_VERSION = "0.11.0-shark-0.9.1"')
+        contents = contents.replaceAll('SPARK_VERSION = "0.9.0-incubating"', 'SPARK_VERSION = "0.9.0-cdh5.0.0-beta-2"')
+        new File('amplab-shark/project/SharkBuild.scala').write(contents, 'UTF-8')
+
         project.exec {
             workingDir './'
             commandLine "tar -cvzf amplab-shark.tar.gz amplab-shark".split().toList()
