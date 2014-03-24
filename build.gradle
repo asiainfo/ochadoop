@@ -168,15 +168,15 @@ task amplab_shark() {
     doLast() {
         project.exec {
             workingDir 'amplab-shark/project'
-            commandLine "sed -i 's/SHARK_VERSION = \"0.9.1-SNAPSHOT\"/SHARK_VERSION = \"0.9.1-och3.0.0-SNAPSHOT\"/' SharkBuild.scala".split().toList()
+            commandLine "sed", "-i", "'s/SHARK_VERSION = \\\"0.9.1-SNAPSHOT\\\"/SHARK_VERSION = \\\"0.9.1-och3.0.0-SNAPSHOT\\\"/'", "SharkBuild.scala"
         }
         project.exec {
             workingDir 'amplab-shark/project'
-            commandLine "sed -i 's/HIVE_VERSION = \"0.11.0-shark-0.9.1-SNAPSHOT\"/HIVE_VERSION = \"0.11.0-shark-0.9.1\"/' SharkBuild.scala".split().toList()
+            commandLine "sed", "-i", "'s/HIVE_VERSION = \"0.11.0-shark-0.9.1-SNAPSHOT\"/HIVE_VERSION = \"0.11.0-shark-0.9.1\"/'", "SharkBuild.scala"
         }
         project.exec {
             workingDir 'amplab-shark/project'
-            commandLine "sed -i 's/SPARK_VERSION = \"0.9.0-incubating\"/SPARK_VERSION = \"0.9.0-cdh5.0.0-beta-2\"' SharkBuild.scala".split().toList()
+            commandLine "sed", "-i", "'s/SPARK_VERSION = \"0.9.0-incubating\"/SPARK_VERSION = \"0.9.0-cdh5.0.0-beta-2\"'", "SharkBuild.scala"
         }
         project.exec {
             workingDir 'amplab-shark'
