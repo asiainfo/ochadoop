@@ -79,7 +79,7 @@ task hadoop_common() {
     doLast() {
         project.exec {
             workingDir 'hadoop-common'
-            commandLine 'mvn', "-Pdist,native", "-DskipTests", "-Dmaven.javadoc.skip=true", "-Dprotoc.path=" + System.getProperty('PROTOBUF_HOME', "/home/jenkins/app/protobuf-2.5.0") + "/bin/protoc", "-Dtar", "clean", "install"
+            commandLine 'mvn', "-Pdist,native", "-DskipTests", "-Dmaven.javadoc.skip=true", "-Dprotoc.path=" + System.getProperty('PROTOBUF_HOME', "/home/jenkins/app/protobuf-2.5.0") + "/bin/protoc", "-Dtar", "-Drequire.snappy=true", "-Dsnappy.prefix=" + System.getProperty('SNAPPY_HOME', "/home/jenkins/app/snappy-1.1.2"), "clean", "install"
         }
         ant.delete(dir: 'hadoop-common/hadoop-dist/target/och')
         ant.mkdir(dir: 'hadoop-common/hadoop-dist/target/och')
