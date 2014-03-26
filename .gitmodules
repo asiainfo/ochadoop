@@ -13,9 +13,6 @@
 [submodule "hive"]
 	path = hive
 	url = https://github.com/cloudera/hive.git
-[submodule "spark"]
-	path = spark
-	url = https://github.com/cloudera/spark.git
 [submodule "amplab-shark"]
 	path = amplab-shark
 	url = https://github.com/amplab/shark.git
