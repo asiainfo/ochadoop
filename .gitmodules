@@ -7,14 +7,8 @@
 [submodule "hadoop-common-mr1"]
 	path = hadoop-common-mr1
 	url = https://github.com/cloudera/hadoop-common.git
-[submodule "apache-hbase"]
-	path = apache-hbase
-	url = https://github.com/apache/hbase.git
 [submodule "apache-hive"]
 	path = apache-hive
-	url = https://github.com/apache/hive.git
-[submodule "apache-hive-legacy"]
-	path = apache-hive-legacy
 	url = https://github.com/apache/hive.git
 [submodule "hadoop-lzo"]
 	path = hadoop-lzo
