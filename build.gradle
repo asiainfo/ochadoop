@@ -193,7 +193,7 @@ task amplab_shark() {
     }
 }
 
-task all(dependsOn: [zookeeper, hadoop_common, hbase, hive]) {
+task all(dependsOn: [zookeeper, hadoop_common, hbase, hive, spark]) {
     doLast {
         ant.mkdir(dir: "build/tar/ochadoop-${oc_version}")
         ant.move(file: "build/ochadoop", tofile: "build/tar/ochadoop-${oc_version}/ochadoop-${oc_version}")
