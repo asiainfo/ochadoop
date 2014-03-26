@@ -148,7 +148,7 @@ task spark() {
 //            commandLine './make-distribution.sh'
 //        }
         project.exec {
-            workingDir 'spark'
+            workingDir 'apache-spark'
 //            commandLine "mvn -Dcdh.hadoop.version=$hadoop_common_version -Dcdh.protobuf.version=2.5.0 -Dcdh.hbase.version=$hbase_version clean install"
             commandLine "mvn -Pyarn -Dhadoop.version=$hadoop_common_version -Dyarn.version=$hadoop_common_version -DskipTests clean install".split().toList()
             environment MAVEN_OPTS: "-Xmx2g -XX:MaxPermSize=512M -XX:ReservedCodeCacheSize=512m"
