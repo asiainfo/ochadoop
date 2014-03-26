@@ -19,3 +19,6 @@
 [submodule "amplab-hive"]
 	path = amplab-hive
 	url = https://github.com/amplab/hive.git
+[submodule "apache-spark"]
+	path = apache-spark
+	url = https://github.com/apache/spark.git
