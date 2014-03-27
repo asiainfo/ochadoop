@@ -21,6 +21,7 @@ ext {
     auditor_version = 'och2.0.0-beta'
     apache_hive_extension_version = '0.12.0-och2.0.0-beta'
     apache_hive_extension_legacy_version = '0.11.0-och2.0.0-beta'
+    apache_spark_version = "2.10-0.9.1"
 }
 
 repositories {
@@ -141,7 +142,7 @@ task hive() {
     }
 }
 
-task spark() {
+task apache_spark() {
     doLast() {
 //        project.exec {
 //            workingDir 'spark'
@@ -154,6 +155,7 @@ task spark() {
             environment MAVEN_OPTS: "-Xmx2g -XX:MaxPermSize=512M -XX:ReservedCodeCacheSize=512m"
             environment SCALA_HOME: "/home/jenkins/app/scala-2.10.3"
         }
+        ant.copy(file: "apache-spark/assembly/target/scala-2.10/spark-assembly_$apache_spark_version-${hadoop_common_version}.jar", todir: "build/ochadoop")
     }
 }
 task amplab_hive() {
@@ -180,7 +182,8 @@ task amplab_shark() {
         }
         String contents = new File('amplab-shark/project/SharkBuild.scala').getText('UTF-8')
         contents = contents.replaceAll('SHARK_VERSION = "0.9.1-SNAPSHOT"', 'SHARK_VERSION = "0.9.1-och3.0.0-SNAPSHOT"')
-        contents = contents.replaceAll('HIVE_VERSION = "0.11.0-shark-0.9.1-SNAPSHOT"', 'HIVE_VERSION = "0.11.0-shark-0.9.1-SNAPSHOT"')//TODO: shark 0.11.0-shark-0.9.1 not publish
+        contents = contents.replaceAll('HIVE_VERSION = "0.11.0-shark-0.9.1-SNAPSHOT"', 'HIVE_VERSION = "0.11.0-shark-0.9.1-SNAPSHOT"')
+//TODO: shark 0.11.0-shark-0.9.1 not publish
         contents = contents.replaceAll('SPARK_VERSION = "0.9.0-incubating"', 'SPARK_VERSION = "0.9.0-cdh5.0.0-beta-2"')
         contents = contents.replaceAll('DEFAULT_HADOOP_VERSION = "1.0.4"', 'DEFAULT_HADOOP_VERSION = "2.2.0-cdh5.0.0-beta-2"')
         new File('amplab-shark/project/SharkBuild.scala').write(contents, 'UTF-8')
@@ -197,7 +200,7 @@ task amplab_shark() {
     }
 }
 
-task all(dependsOn: [zookeeper, hadoop_common, hbase, hive, spark]) {
+task all(dependsOn: [zookeeper, hadoop_common, hbase, hive, apache_spark]) {
     doLast {
         ant.mkdir(dir: "build/tar/ochadoop-${oc_version}")
         ant.move(file: "build/ochadoop", tofile: "build/tar/ochadoop-${oc_version}/ochadoop-${oc_version}")
