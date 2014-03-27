@@ -19,6 +19,7 @@ ext {
     apache_hive_legacy_version = '0.11.0'
     hadoop_lzo_version = '0.4.19'
     auditor_version = 'och2.0.0-beta'
+    amplab_hive_version = '0.11.0-shark-0.9.1'
     apache_hive_extension_version = '0.12.0-och2.0.0-beta'
     apache_hive_extension_legacy_version = '0.11.0-och2.0.0-beta'
     apache_spark_version = "2.10-0.9.1"
@@ -170,7 +171,7 @@ task amplab_hive() {
 
         project.exec {
             workingDir 'amplab-hive'
-            commandLine "ant maven-build maven-publish -buildfile build.skip.javadoc.xml -Dskip.javadoc=true -Drepo.maven.org=$privateRepo -Divy.mvn.repo=$privateRepo -Dmvnrepo=$privateRepo -Dmvn.deploy.url=$privateRepo -Dmvn.publish.repo=ailk".split().toList()
+            commandLine "ant maven-build maven-publish -buildfile build.skip.javadoc.xml -Dskip.javadoc=true -Drepo.maven.org=$privateRepo -Divy.mvn.repo=$privateRepo -Dmvnrepo=$privateRepo -Dmvn.deploy.url=$privateDeployRepo -Dmvn.publish.repo=ailk -Dversion=$amplab_hive_version-$oc_version".split().toList()
         }
     }
 }
