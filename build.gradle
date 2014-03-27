@@ -155,7 +155,7 @@ task apache_spark() {
             environment MAVEN_OPTS: "-Xmx2g -XX:MaxPermSize=512M -XX:ReservedCodeCacheSize=512m"
             environment SCALA_HOME: "/home/jenkins/app/scala-2.10.3"
         }
-        ant.copy(file: "apache-spark/assembly/target/scala-2.10/spark-assembly_$apache_spark_version-${hadoop_common_version}.jar", tofile: "build/ochadoop/spark-assembly_$apache_spark_version-${hadoop_common_version}-${oc_version}.jar")
+        ant.copy(file: "apache-spark/assembly/target/scala-2.10/spark-assembly_$apache_spark_version-hadoop${hadoop_common_version}.jar", tofile: "build/ochadoop/spark-assembly_$apache_spark_version-hadoop${hadoop_common_version}-${oc_version}.jar")
     }
 }
 task amplab_hive() {
