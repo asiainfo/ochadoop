@@ -179,6 +179,7 @@ task amplab_hive() {
         }
         contents = new File('amplab-hive/hcatalog/build.xml').getText('UTF-8')
         contents = contents.replaceAll('(<remoteRepository.*)/>', '$1><authentication username="\\${mvn.deploy.username}" password="\\${mvn.deploy.password}" /></remoteRepository>')
+        contents = contents.replaceAll('<attach file="pom.xml.asc" type="pom.asc"/>', '')
         new File('amplab-hive/hcatalog/build.xml').write(contents, 'UTF-8')
 
         project.exec {
