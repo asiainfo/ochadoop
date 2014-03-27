@@ -187,7 +187,7 @@ task amplab_hive() {
         }
         contents = new File('amplab-hive/hcatalog/pom.xml').getText('UTF-8')
         contents = contents.replaceAll('<version>0.11.0-shark</version>', '<version>0.11.0-shark-0.9.1-och3.0.0-SNAPSHOT</version>')
-        new File('amplab-hive/hcatalog/build.xml').write(contents, 'UTF-8')
+        new File('amplab-hive/hcatalog/pom.xml').write(contents, 'UTF-8')
 
         project.exec {
             workingDir 'amplab-hive'
