@@ -194,7 +194,7 @@ task amplab_shark() {
         ant.delete(file: "shark-$amplab_shark_version-${oc_version}/lib_managed/jars/edu.berkeley.cs.shark/hive-exec/hive-exec-0.11.0-shark-0.9.1-och3.0.0-SNAPSHOT.jar")
 
         contents = new File("shark-$amplab_shark_version-${oc_version}/run").getText('UTF-8')
-        contents = contents.replaceAll('(exec \\$RUNNER \\$EXTRA_ARGS .*)', 'CLASSPATH+=":\\$SPARK_ASSEMBLY_JAR"\nCLASSPATH+=":\\$SHARK_ASSEMBLY_JAR\n$1')
+        contents = contents.replaceAll('(exec \\$RUNNER \\$EXTRA_ARGS .*)', 'CLASSPATH+=":\\$SPARK_ASSEMBLY_JAR"\nCLASSPATH+=":\\$SHARK_ASSEMBLY_JAR"\n$1')
         new File("shark-$amplab_shark_version-${oc_version}/run").write(contents, 'UTF-8')
 
         project.exec {
