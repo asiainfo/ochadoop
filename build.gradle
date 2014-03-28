@@ -207,7 +207,7 @@ task amplab_shark() {
         }
         project.exec {
             workingDir './'
-            commandLine "tar -cvzf amplab-shark shark-$amplab_shark_version-${oc_version}.tar.gz amplab-shark shark-$amplab_shark_version-${oc_version}".split().toList()
+            commandLine "tar -cvzf shark-$amplab_shark_version-${oc_version}.tar.gz amplab-shark shark-$amplab_shark_version-${oc_version}".split().toList()
         }
         ant.move(file: "amplab-shark shark-$amplab_shark_version-${oc_version}.tar.gz", todir: "build/ochadoop")
     }
