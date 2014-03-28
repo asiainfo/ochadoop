@@ -201,7 +201,7 @@ task amplab_shark() {
             workingDir 'amplab-shark'
             commandLine "sbt/sbt clean package".split().toList()
         }
-        ant.delete(dir: 'shark-$amplab_shark_version-${oc_version}')
+        ant.delete(dir: "shark-$amplab_shark_version-${oc_version}")
         project.exec {
             workingDir './'
             commandLine "cp -r amplab-shark shark-$amplab_shark_version-${oc_version}".split().toList()
