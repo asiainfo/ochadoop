@@ -9,22 +9,13 @@ ext {
     privateDeployRepo = 'http://103.31.200.123:8081/nexus/content/repositories/ailk-snapshots'
     deploy_username = System.getProperty('DEPLOY_USERNAME')
     deploy_password = System.getProperty('DEPLOY_PASSWORD')
-    forrest_home = System.getProperty('FORREST_HOME', "/home/cloudetl/apache-forrest-0.9")
     oc_version = 'och3.0.0-SNAPSHOT'
     zookeeper_version = '3.4.5-cdh5.0.0-beta-2'
     hadoop_common_version = '2.2.0-cdh5.0.0-beta-2'
     hbase_version = '0.96.1.1-cdh5.0.0-beta-2'
     hive_version = '0.12.0-cdh5.0.0-beta-2'
-    hadoop_common_mr1_version = '2.0.0-mr1-cdh4.2.1'
-    apache_hbase_version = '0.94.12-security'
-    apache_hive_version = '0.12.0'
-    apache_hive_legacy_version = '0.11.0'
-    hadoop_lzo_version = '0.4.19'
-    auditor_version = 'och2.0.0-beta'
     amplab_hive_version = '0.11.0-shark-0.9.1'
     amplab_shark_version = '0.9.1'
-    apache_hive_extension_version = '0.12.0-och2.0.0-beta'
-    apache_hive_extension_legacy_version = '0.11.0-och2.0.0-beta'
     apache_spark_version = "0.9.1"
 }
 
@@ -37,7 +28,6 @@ configurations {
     auditor_plugin
 }
 dependencies {
-    auditor_plugin "com.ailk.oci.auditor:auditor-plugin:$auditor_version"
 }
 
 def getFromMaven(src, destDir) {
@@ -46,13 +36,6 @@ def getFromMaven(src, destDir) {
     ant.echo("downloading:$srcUrl to:$destDir/${s[1]}-${s[2]}.${s[3]}")
     ant.mkdir(dir: destDir)
     ant.get(src: srcUrl, dest: "$destDir/${s[1]}-${s[2]}.${s[3]}", verbose: true)
-}
-
-
-task auditor() {
-    doLast {
-        getFromMaven("com.ailk.oci.auditor:auditor-server:$auditor_version@jar", "$buildDir/ochadoop")
-    }
 }
 
 task zookeeper() {
