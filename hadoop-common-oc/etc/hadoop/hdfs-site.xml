@@ -18,6 +18,207 @@
 
 <configuration>
 
+<property>
+  <name>dfs.nameservices</name>
+  <value>cdh5cluster</value>
+  <description>
+    Comma-separated list of nameservices.
+  </description>
+</property>
+
+<property>
+  <name>dfs.datanode.address</name>
+  <value>0.0.0.0:50011</value>
+  <description>
+    The datanode server address and port for data transfer.
+    If the port is 0 then the server will start on a free port.
+  </description>
+</property>
+
+<property>
+  <name>dfs.datanode.http.address</name>
+  <value>0.0.0.0:50076</value>
+  <description>
+    The datanode http server address and port.
+    If the port is 0 then the server will start on a free port.
+  </description>
+</property>
+
+<property>
+  <name>dfs.datanode.ipc.address</name>
+  <value>0.0.0.0:50021</value>
+  <description>
+    The datanode ipc server address and port.
+    If the port is 0 then the server will start on a free port.
+  </description>
+</property>
+
+<property>
+  <name>dfs.nameservices</name>
+  <value>cdh5cluster</value>
+</property>
+
+<property>
+  <name>dfs.ha.namenodes.cdh5cluster</name>
+  <value>nn1,nn2</value>
+<description></description>
+</property>
+
+<property>
+  <name>dfs.namenode.name.dir</name>
+  <value>file:///data1/cdh5/dfs/name</value>
+  <description>Determines where on the local filesystem the DFS name node should store the name table.If this is a comma-delimited list of directories,then name table is replicated in all of the directories,for redundancy.</description>
+  <final>true</final>
+ </property>
+ 
+ <property>
+    <name>dfs.datanode.data.dir</name>
+    <value>file:///data1/cdh5/dfs/data,file:///data2/cdh5/dfs/data,file:///data3/cdh5/dfs/data</value>
+    <description>Determines where on the local filesystem an DFS data node should store its blocks.If this is a comma-delimited list of directories,then data will be stored in all named directories,typically on different devices.Directories that do not exist are ignored.
+    </description>
+    <final>true</final>
+ </property>
+
+ <property>
+    <name>dfs.replication</name>
+    <value>3</value>
+ </property>
+ 
+ <property>
+    <name>dfs.permission</name>
+    <value>true</value>
+ </property>
+
+<property>
+  <name>dfs.datanode.hdfs-blocks-metadata.enabled</name>
+  <value>true</value>
+  <description>
+    Boolean which enables backend datanode-side support for the experimental DistributedFileSystem#getFileVBlockStorageLocations API.
+  </description>
+</property>
+
+<property>
+  <name>dfs.permissions.enabled</name>
+  <value>false</value>
+  <description>
+    If "true", enable permission checking in HDFS.
+    If "false", permission checking is turned off,
+    but all other behavior is unchanged.
+    Switching from one parameter value to the other does not change the mode,
+    owner or group of files or directories.
+  </description>
+</property>
+
+<property>
+  <name>dfs.namenode.rpc-address.cdh5cluster.nn1</name>
+  <value>ocdata09:8030</value>
+  <description>节点NN1的RPC地址</description>
+</property>
+
+<property>
+  <name>dfs.namenode.rpc-address.cdh5cluster.nn2</name>
+  <value>ocdata08:8030</value>
+  <description>节点NN2的RPC地址</description>
+</property>
+
+<property>
+  <name>dfs.namenode.http-address.cdh5cluster.nn1</name>
+  <value>ocdata09:50082</value>
+  <description>节点NN1的HTTP地址</description>
+</property>
+
+<property>
+  <name>dfs.namenode.http-address.cdh5cluster.nn2</name>
+  <value>ocdata08:50082</value>
+  <description>节点NN2的HTTP地址</description>
+</property>
+
+<property>
+  <name>dfs.namenode.shared.edits.dir</name>
+  <value>qjournal://ocdata05:8488;ocdata06:8488;ocdata07:8488/cdh5cluster</value>
+  <description>采用3个journalnode节点存储元数据，这是IP与端口</description>
+</property>
+
+
+<property>
+  <name>dfs.journalnode.edits.dir</name>
+  <value>/home/cdh5/journaldata/jn</value>
+  <description>journaldata的存储路径</description>
+</property>
+
+<property>
+  <name>dfs.journalnode.rpc-address</name>
+  <value>0.0.0.0:8488</value>
+</property>
+
+<property>
+  <name>dfs.journalnode.http-address</name>
+  <value>0.0.0.0:8483</value>
+</property>
+
+<property>
+  <name>dfs.client.failover.proxy.provider.cdh5cluster</name>
+  <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+  <description>该类用来判断哪个namenode处于生效状态</description>
+</property>
+
+<property>
+  <name>dfs.ha.fencing.methods</name>
+  <value>shell(/bin/true)</value>
+</property>
+
+<property>
+  <name>dfs.ha.fencing.ssh.connect-timeout</name>
+  <value>10000</value>
+</property>
+
+<property>
+  <name>dfs.ha.automatic-failover.enabled</name>
+  <value>true</value>
+  <description>
+    Whether automatic failover is enabled. See the HDFS High
+    Availability documentation for details on automatic HA
+    configuration.
+  </description>
+</property>
+
+<property>
+  <name>ha.zookeeper.quorum</name>
+  <value>ocdata09:2183</value>
+  <description>1个zookeeper节点</description>
+</property>
+
+<property>
+  <name>dfs.datanode.max.xcievers</name>
+  <value>4096</value>
+</property>
+
+<property>
+  <name>dfs.datanode.max.transfer.threads</name>
+  <value>4096</value>
+  <description>
+        Specifies the maximum number of threads to use for transferring data
+        in and out of the DN.
+  </description>
+</property>
+
+<property>
+  <name>dfs.blocksize</name>
+  <value>64m</value>
+  <description>
+      The default block size for new files, in bytes.
+      You can use the following suffix (case insensitive):
+      k(kilo), m(mega), g(giga), t(tera), p(peta), e(exa) to specify the size (such as 128k, 512m, 1g, etc.),
+      Or provide complete size in bytes (such as 134217728 for 128 MB).
+  </description>
+</property>
+
+<property>
+  <name>dfs.namenode.handler.count</name>
+  <value>20</value>
+  <description>The number of server threads for the namenode.</description>
+</property>
+
 <!--
 <property>
 <name>dfs.nameservices</name>
