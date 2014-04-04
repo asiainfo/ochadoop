@@ -6,7 +6,7 @@ apply plugin: 'java'
 apply plugin: 'github-pages'
 ext {
     privateRepo = 'http://103.31.200.123:8081/nexus/content/groups/ailk'
-    privateDeployRepo = 'http://103.31.200.123:8081/nexus/content/repositories/ailk-snapshots'
+    privateDeployRepo = 'http://103.31.200.123:8081/nexus/content/repositories/ailk-releases'
     deploy_username = System.getProperty('DEPLOY_USERNAME')
     deploy_password = System.getProperty('DEPLOY_PASSWORD')
     oc_version = 'och3.0.0'
