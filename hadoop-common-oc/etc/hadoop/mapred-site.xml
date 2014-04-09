@@ -1,23 +1,51 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
 
 <!-- Put site-specific property overrides in this file. -->
 
 <configuration>
-    <property>
-        <name>mapred.child.java.opts</name>
-        <value>-Xmx200m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp/dump_@taskid@.hprof</value>
-        <description>Java opts for the task tracker child processes.
-            The following symbol, if present, will be interpolated: @taskid@ is replaced
-            by current TaskID. Any other occurrences of '@' will go unchanged.
-            For example, to enable verbose gc logging to a file named for the taskid in
-            /tmp and to set the heap maximum to be a gigabyte, pass a 'value' of:
-            -Xmx1024m -verbose:gc -Xloggc:/tmp/@taskid@.gc
 
-            Usage of -Djava.library.path can cause programs to no longer function if
-            hadoop native libraries are used. These values should instead be set as part
-            of LD_LIBRARY_PATH in the map / reduce JVM env using the mapreduce.map.env and
-            mapreduce.reduce.env config settings.
-        </description>
-    </property>
+<property>
+  <name>mapreduce.framework.name</name>
+  <value>yarn</value>
+</property>
+
+<property>
+  <name>mapreduce.shuffle.port</name>
+  <value>8350</value>
+</property>
+
+<property>
+  <name>mapreduce.jobhistory.address</name>
+  <value>0.0.0.0:10121</value>
+</property>
+
+<property>
+  <name>mapreduce.jobhistory.webapp.address</name>
+  <value>0.0.0.0:19868</value>
+</property>
+
+<property>
+  <name>mapreduce.jobtracker.http.address</name>
+  <value>0.0.0.0:50330</value>
+</property>
+
+<property>
+  <name>mapreduce.tasktracker.http.address</name>
+  <value>0.0.0.0:50360</value>
+</property>
+
 </configuration>

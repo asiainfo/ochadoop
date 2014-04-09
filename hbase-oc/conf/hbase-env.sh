@@ -21,51 +21,58 @@
 
 # Set environment variables here.
 
-# The java implementation to use.  Java 1.6 required.
-export JAVA_HOME=/home_app/ocnosql/app/java
-export   HBASE_HOME=/home_app/ocnosql/app/hbase
-export   PATH=$PATH:$HBASE_HOME/bin
+# This script sets variables multiple times over the course of starting an hbase process,
+# so try to keep things idempotent unless you want to take an even deeper look
+# into the startup scripts (bin/hbase, etc.)
 
-export HADOOP_HOME=/home_app/ocnosql/app/hadoop-mr1
+# The java implementation to use.  Java 1.6 required.
+export JAVA_HOME=/home/cdh5/app/jdk1.7.0_21
+
+# Extra Java CLASSPATH elements.  Optional.
+export HBASE_CLASSPATH=/home/cdh5/app/hadoop/etc/hadoop
+
+# add for test
+export HBASE_HOME=/home/cdh5/app/hbase
+
+export HADOOP_HOME=/home/cdh5/app/hadoop
 export HADOOP_CONF_DIR=${HADOOP_HOME}/conf
 export HBASE_LIBRARY_PATH=${HBASE_HOME}/lib/native
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HBASE_HOME}/lib/native
-export   PATH=$PATH:${HADOOP_HOME}/bin
-
-export HBASE_MANAGES_ZK=false
-# Extra Java CLASSPATH elements.  Optional.
-# export HBASE_CLASSPATH=
-
-#hadoop home
-# export HBASE_HADOOP_HOME=
-# export HBASE_HADOOP_MR1_HOME=
-
-#hdfs-site.xml dir
-#export HDFS_CONF_DIR=
 
 # The maximum amount of heap to use, in MB. Default is 1000.
- export HBASE_HEAPSIZE=4096
+# export HBASE_HEAPSIZE=1000
 
 # Extra Java runtime options.
 # Below are what we set by default.  May only work with SUN JVM.
 # For more on why as well as other possible settings,
 # see http://wiki.apache.org/hadoop/PerformanceTuning
-export HBASE_OPTS="$HBASE_OPTS -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=70"
-#export HBASE_OPTS="$HBASE_OPTS -XX:+UseConcMarkSweepGC -Dcom.sun.sdp.conf=/home/ocnosql/bin/sdp.conf  -Dcom.sun.sdp.debug=/home/ocnosql/hbase_debug.log  -Djava.net.preferIPv4Stack=true"
-#export HBASE_OPTS="$HBASE_OPTS -XX:+UseConcMarkSweepGC"
+export HBASE_OPTS="-XX:+UseConcMarkSweepGC"
 
-# Uncomment below to enable java garbage collection logging in the .out file.
-#export HBASE_OPTS="$HBASE_OPTS -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:$HBASE_HOME/logs/gc-$(hostname)-hbase.log" 
+# Uncomment one of the below three options to enable java garbage collection logging for the server-side processes.
 
-# Uncomment below (along with above GC logging) to put GC information in its own logfile (will set HBASE_GC_OPTS)
-# export HBASE_USE_GC_LOGFILE=true
+# This enables basic gc logging to the .out file.
+# export SERVER_GC_OPTS="-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps"
 
-export HBASE_JMX_BASE="-Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false"
-export HBASE_MASTER_OPTS="$HBASE_JMX_BASE -Xms4096m -Xmx4096m -Dcom.sun.management.jmxremote.port=10121"
-export HBASE_REGIONSERVER_OPTS="$HBASE_JMX_BASE -Xms8192m -Xmx8192m -Xmn256m -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:$HBASE_HOME/logs/gc-regionserver-$(hostname)-hbase.log -Dcom.sun.management.jmxremote.port=10122"
-#export HBASE_REGIONSERVER_OPTS="$HBASE_JMX_BASE -Xms14336m -Xmx14336m -Xmn256m -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:$HBASE_HOME/logs/gc-regionserver-$(hostname)-hbase.log -Dcom.sun.management.jmxremote.port=10122"
-#export HBASE_THRIFT_OPTS="$HBASE_JMX_BASE -Dcom.sun.management.jmxremote.port=10123"
-#export HBASE_ZOOKEEPER_OPTS="$HBASE_JMX_BASE -Dcom.sun.management.jmxremote.port=1014"
+# This enables basic gc logging to its own file.
+# If FILE-PATH is not replaced, the log file(.gc) would still be generated in the HBASE_LOG_DIR .
+# export SERVER_GC_OPTS="-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:<FILE-PATH>"
+
+# This enables basic GC logging to its own file with automatic log rolling. Only applies to jdk 1.6.0_34+ and 1.7.0_2+.
+# If FILE-PATH is not replaced, the log file(.gc) would still be generated in the HBASE_LOG_DIR .
+# export SERVER_GC_OPTS="-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:<FILE-PATH> -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=1 -XX:GCLogFileSize=512M"
+
+# Uncomment one of the below three options to enable java garbage collection logging for the client processes.
+
+# This enables basic gc logging to the .out file.
+# export CLIENT_GC_OPTS="-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps"
+
+# This enables basic gc logging to its own file.
+# If FILE-PATH is not replaced, the log file(.gc) would still be generated in the HBASE_LOG_DIR .
+# export CLIENT_GC_OPTS="-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:<FILE-PATH>"
+
+# This enables basic GC logging to its own file with automatic log rolling. Only applies to jdk 1.6.0_34+ and 1.7.0_2+.
+# If FILE-PATH is not replaced, the log file(.gc) would still be generated in the HBASE_LOG_DIR .
+# export CLIENT_GC_OPTS="-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:<FILE-PATH> -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=1 -XX:GCLogFileSize=512M"
 
 # Uncomment below if you intend to use the EXPERIMENTAL off heap cache.
 # export HBASE_OPTS="$HBASE_OPTS -XX:MaxDirectMemorySize="
@@ -76,9 +83,9 @@ export HBASE_REGIONSERVER_OPTS="$HBASE_JMX_BASE -Xms8192m -Xmx8192m -Xmn256m -ve
 # See jmxremote.password and jmxremote.access in $JRE_HOME/lib/management to configure remote password access.
 # More details at: http://java.sun.com/javase/6/docs/technotes/guides/management/agent.html
 #
-# export HBASE_JMX_BASE="-Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false"
-# export HBASE_MASTER_OPTS="$HBASE_MASTER_OPTS $HBASE_JMX_BASE -Dcom.sun.management.jmxremote.port=10101"
-# export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS $HBASE_JMX_BASE -Dcom.sun.management.jmxremote.port=10102"
+export HBASE_JMX_BASE="-Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false"
+export HBASE_MASTER_OPTS="$HBASE_MASTER_OPTS $HBASE_JMX_BASE -Dcom.sun.management.jmxremote.port=10101"
+export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS $HBASE_JMX_BASE -Dcom.sun.management.jmxremote.port=10102"
 # export HBASE_THRIFT_OPTS="$HBASE_THRIFT_OPTS $HBASE_JMX_BASE -Dcom.sun.management.jmxremote.port=10103"
 # export HBASE_ZOOKEEPER_OPTS="$HBASE_ZOOKEEPER_OPTS $HBASE_JMX_BASE -Dcom.sun.management.jmxremote.port=10104"
 # export HBASE_REST_OPTS="$HBASE_REST_OPTS $HBASE_JMX_BASE -Dcom.sun.management.jmxremote.port=10105"
@@ -112,7 +119,7 @@ export HBASE_REGIONSERVER_OPTS="$HBASE_JMX_BASE -Xms8192m -Xmx8192m -Xmn256m -ve
 # export HBASE_NICENESS=10
 
 # The directory where pid files are stored. /tmp by default.
- export HBASE_PID_DIR=/hdfs/data1/tmp
+# export HBASE_PID_DIR=/var/hadoop/pids
 
 # Seconds to sleep between slave commands.  Unset by default.  This
 # can be useful in large clusters, where, e.g., slave rsyncs can
@@ -120,7 +127,8 @@ export HBASE_REGIONSERVER_OPTS="$HBASE_JMX_BASE -Xms8192m -Xmx8192m -Xmn256m -ve
 # export HBASE_SLAVE_SLEEP=0.1
 
 # Tell HBase whether it should manage it's own instance of Zookeeper or not.
-# export HBASE_MANAGES_ZK=true
+export HBASE_MANAGES_ZK=false
+
 # The default log rolling policy is RFA, where the log file is rolled as per the size defined for the 
 # RFA appender. Please refer to the log4j.properties file to see more details on this appender.
 # In case one needs to do log rolling on a date change, one should set the environment property
