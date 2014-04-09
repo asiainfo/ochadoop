@@ -17,70 +17,39 @@
 <!-- Put site-specific property overrides in this file. -->
 
 <configuration>
-<!--
-<property>
-  <name>fs.defaultFS</name>
-    <value>hdfs://OCNoSQLBJ</value>
-    <description>The name of the default file system.Either the literal string 鈥渓ocal鈥?or a host:port for NDFS.</description>
-    <final>true</final>
-</property>
-<property>
-   <name>io.native.lib.available</name>
-   <value>true</value>
-</property>
-<property>
-   <name>hadoop.tmp.dir</name>
-   <value>/hdfs/data1/tmp</value> 
-   <description>A base for other temporary directories.</description>
-</property>
+    <!--
+	<property>
+	  <name>fs.defaultFS</name>
+	    <value>hdfs://OCNoSQLBJ</value>
+	    <description>The name of the default file system.Either the literal string 鈥渓ocal鈥?or a host:port for NDFS.</description>
+	    <final>true</final>
+	</property>
+	<property>
+	   <name>io.native.lib.available</name>
+	   <value>true</value>
+	</property>
+	<property>
+	   <name>hadoop.tmp.dir</name>
+	   <value>/hdfs/data1/tmp</value> 
+	   <description>A base for other temporary directories.</description>
+	</property>
+	
+	<property>
+	  <name>io.compression.codecs</name>
+	  <value>org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.SnappyCodec</value>
+	</property>
+       -->
 
-<property>
-  <name>io.compression.codecs</name>
-  <value>org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.SnappyCodec</value>
-</property>
--->
-
-   <property>
-  <name>fs.defaultFS</name>
-  <value>hdfs://cdh5cluster</value>
-  <description>The name of the default file system.  A URI whose
-  scheme and authority determine the FileSystem implementation.  The
-  uri's scheme determines the config property (fs.SCHEME.impl) naming
-  the FileSystem implementation class.  The uri's authority is used to
-  determine the host, port, etc. for a filesystem.</description>
-</property>
-
-<property>
-  <name>hadoop.tmp.dir</name>
-  <value>/home/cdh5/tmp/hadoop/hadoop-${user.name}</value>
-  <description>A base for other temporary directories.</description>
-</property>
-
-<property>
-  <name>io.native.lib.available</name>
-  <value>true</value>
-  <description>Should native hadoop libraries, if present, be used.</description>
-</property>
-
-<property>
-  <name>io.compression.codecs</name>
-  <value>org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.SnappyCodec</value>
-  <description>A comma-separated list of the compression codec classes that can
-  be used for compression/decompression. In addition to any classes specified
-  with this property (which take precedence), codec classes on the classpath
-  are discovered using a Java ServiceLoader.</description>
-</property>
-
-<property>
-    <name>fs.trash.interval</name>
-    <value>1440</value>
-    <description>Number of minutes after which the checkpoint
-        gets deleted.  If zero, the trash feature is disabled.
-        This option may be configured both on the server and the
-        client. If trash is disabled server side then the client
-        side configuration is checked. If trash is enabled on the
-        server side then the value configured on the server is
-        used and the client configuration value is ignored.
-    </description>
-</property>
+    <property>
+        <name>fs.trash.interval</name>
+        <value>1440</value>
+        <description>Number of minutes after which the checkpoint
+            gets deleted.  If zero, the trash feature is disabled.
+            This option may be configured both on the server and the
+            client. If trash is disabled server side then the client
+            side configuration is checked. If trash is enabled on the
+            server side then the value configured on the server is
+            used and the client configuration value is ignored.
+        </description>
+    </property>
 </configuration>

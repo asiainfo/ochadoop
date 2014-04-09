@@ -22,106 +22,75 @@
  * limitations under the License.
  */
 -->
-<configuration>
-
-<property>
-  <name>hbase.rootdir</name>
-  <value>hdfs://cdh5cluster/hbase</value>
-</property>
-
-<property>
-  <name>hbase.cluster.distributed</name>
-  <value>true</value>
-</property>
-
-<property>
-  <name>hbase.zookeeper.quorum</name>
-  <value>ocdata09</value>
-</property>
-
-<property>
-  <name>hbase.zookeeper.property.clientPort</name>
-  <value>2183</value>
-</property>
-
-<property>
-  <name>hbase.regionserver.port</name>
-  <value>60328</value>
-</property>
-
-<property>
-  <name>hbase.regionserver.info.port</name>
-  <value>62131</value>
-</property>
-
+<configuration> 
 <!--
-  <property>
-    <name>hbase.cluster.distributed</name>
-    <value>true</value>
-  </property>
-  <property>
-    <name>hbase.rootdir</name>
-    <value>hdfs://OCNoSQLBJ/hbase</value>
-  </property>
-  <property>
-    <name>hbase.master</name>
-    <value>xfxwmager1</value>
-  </property>
+  <property> 
+    <name>hbase.cluster.distributed</name>  
+    <value>true</value> 
+  </property>  
+  <property> 
+    <name>hbase.rootdir</name>  
+    <value>hdfs://OCNoSQLBJ/hbase</value> 
+  </property>  
+  <property> 
+    <name>hbase.master</name>  
+    <value>xfxwmager1</value> 
+  </property>  
   <property>
     <name>hbase.master.info.port</name>
     <value>60010</value>
   </property>
-  <property>
-    <name>hbase.zookeeper.quorum</name>
-    <value>xfxwdnod6,xfxwdnod7,xfxwdnod8,xfxwdnod9,xfxwdnod10</value>
-  </property>
-  <property>
-    <name>hbase.zookeeper.property.clientPort</name>
-    <value>2383</value>
-  </property>
-  <property>
-    <name>hbase.regionserver.info.port</name>
-    <value>60030</value>
-    <description>The port for the HBase RegionServer web UI Set to -1 if you do not want the RegionServer UI to run.</description>
-  </property>
-  <property>
-    <name>hbase.regionserver.port</name>
-    <value>60020</value>
-    <description>The port the HBase RegionServer binds to.</description>
-  </property>
-  <property>
-    <name>hbase.client.scanner.caching</name>
-    <value>100</value>
-    <description>Number of rows that will be fetched when calling next on a scanner if it is not served from (local, client) memory. Higher caching values will enable faster scanners but will eat up more memory and some calls of next may take longer and longer times when the cache is empty. Do not set this value such that the time between invocations is greater than the scanner timeout; i.e. hbase.regionserver.lease.period</description>
-  </property>
-  <property>
-    <name>hbase.regionserver.lease.period</name>
-    <value>180000</value>
-    <description>HRegion server lease period in milliseconds. Default is 60 seconds. Clients must report in within this period else they are considered dead.</description>
-  </property>
-  <property>
-    <name>hbase.regionserver.handler.count</name>
-    <value>60</value>
-    <description>Count of RPC Server instances spun up on RegionServers Same property is used by the Master for count of master handlers. Default is 10.</description>
-  </property>
-  <property>
-    <name>hbase.hregion.memstore.block.multiplier</name>
-    <value>3</value>
-  </property>
-  <property>
-    <name>hbase.hregion.memstore.mslab.enabled</name>
-    <value>true</value>
-  </property>
-  <property>
-    <name>hbase.hregion.memstore.flush.size</name>
-    <value>268435456</value>
-    <description>Memstore will be flushed to disk if size of the memstore exceeds this number of bytes. Value is checked by a thread that runs every hbase.server.thread.wakefrequency.</description>
-  </property>
-  <property>
-    <name>hbase.hregion.majorcompaction</name>
-    <value>0</value>
-    <description>The time (in miliseconds) between 'major' compactions of all HStoreFiles in a region. Default: 1 day. Set to 0 to disable automated major compactions.</description>
-  </property>
+  <property> 
+    <name>hbase.zookeeper.quorum</name>  
+    <value>xfxwdnod6,xfxwdnod7,xfxwdnod8,xfxwdnod9,xfxwdnod10</value> 
+  </property>  
+  <property> 
+    <name>hbase.zookeeper.property.clientPort</name>  
+    <value>2383</value> 
+  </property>  
+  <property> 
+    <name>hbase.regionserver.info.port</name>  
+    <value>60030</value>  
+    <description>The port for the HBase RegionServer web UI Set to -1 if you do not want the RegionServer UI to run.</description> 
+  </property>  
+  <property> 
+    <name>hbase.regionserver.port</name>  
+    <value>60020</value>  
+    <description>The port the HBase RegionServer binds to.</description> 
+  </property>  
+  <property> 
+    <name>hbase.client.scanner.caching</name>  
+    <value>100</value>  
+    <description>Number of rows that will be fetched when calling next on a scanner if it is not served from (local, client) memory. Higher caching values will enable faster scanners but will eat up more memory and some calls of next may take longer and longer times when the cache is empty. Do not set this value such that the time between invocations is greater than the scanner timeout; i.e. hbase.regionserver.lease.period</description> 
+  </property>  
+  <property> 
+    <name>hbase.regionserver.lease.period</name>  
+    <value>180000</value>  
+    <description>HRegion server lease period in milliseconds. Default is 60 seconds. Clients must report in within this period else they are considered dead.</description> 
+  </property>  
+  <property> 
+    <name>hbase.regionserver.handler.count</name>  
+    <value>60</value>  
+    <description>Count of RPC Server instances spun up on RegionServers Same property is used by the Master for count of master handlers. Default is 10.</description> 
+  </property>  
+  <property> 
+    <name>hbase.hregion.memstore.block.multiplier</name>  
+    <value>3</value> 
+  </property>  
+  <property> 
+    <name>hbase.hregion.memstore.mslab.enabled</name>  
+    <value>true</value> 
+  </property>  
+  <property> 
+    <name>hbase.hregion.memstore.flush.size</name>  
+    <value>268435456</value>  
+    <description>Memstore will be flushed to disk if size of the memstore exceeds this number of bytes. Value is checked by a thread that runs every hbase.server.thread.wakefrequency.</description> 
+  </property>  
+  <property> 
+    <name>hbase.hregion.majorcompaction</name>  
+    <value>0</value>  
+    <description>The time (in miliseconds) between 'major' compactions of all HStoreFiles in a region. Default: 1 day. Set to 0 to disable automated major compactions.</description> 
+  </property> 
   <property>
   <name>hbase.regionserver.thread.compaction.large</name>
   <value>5</value>
@@ -130,59 +99,59 @@
 <name>hbase.regionserver.thread.compaction.small</name>
 <value>5</value>
 </property>
-
-  <property>
-    <name>hbase.client.write.buffer</name>
-    <value>4194304</value>
-    <description>The time (in miliseconds) between 'major' compactions of all HStoreFiles in a region. Default: 1 day. Set to 0 to disable automated major compactions.</description>
-  </property>
+ 
+  <property> 
+    <name>hbase.client.write.buffer</name>  
+    <value>4194304</value>  
+    <description>The time (in miliseconds) between 'major' compactions of all HStoreFiles in a region. Default: 1 day. Set to 0 to disable automated major compactions.</description> 
+  </property>  
   -->
   <!--
 <property>
 <name>hbase.regionserver.codecs</name>
 <value>snappy</value>
 </property>
--->
+-->  
 <!--
-  <property>
-    <name>zookeeper.session.timeout</name>
-    <value>360000</value>
-    <description>ZooKeeper session timeout. HBase passes this to the zk quorum as suggested maximum time for a session (This setting becomes zookeeper's 'maxSessionTimeout'). See http://hadoop.apache.org/zookeeper/docs/current/zookeeperProgrammers.html#ch_zkSessions "The client sends a requested timeout, the server responds with the timeout that it can give the client. " In milliseconds.</description>
-  </property>
-  <property>
-    <name>hbase.master.loadbalance.bytable</name>
-    <value>true</value>
-  </property>
-  <property>
-    <name>hbase.regionserver.wal.enablecompression</name>
-    <value>true</value>
-  </property>
+  <property> 
+    <name>zookeeper.session.timeout</name>  
+    <value>360000</value>  
+    <description>ZooKeeper session timeout. HBase passes this to the zk quorum as suggested maximum time for a session (This setting becomes zookeeper's 'maxSessionTimeout'). See http://hadoop.apache.org/zookeeper/docs/current/zookeeperProgrammers.html#ch_zkSessions "The client sends a requested timeout, the server responds with the timeout that it can give the client. " In milliseconds.</description> 
+  </property>  
+  <property> 
+    <name>hbase.master.loadbalance.bytable</name>  
+    <value>true</value> 
+  </property>  
+  <property> 
+    <name>hbase.regionserver.wal.enablecompression</name>  
+    <value>true</value> 
+  </property>  
   -->
-<!--  <property>
-    <name>hbase.hregion.memstore.mslab.chunksize</name>
-    <value>10485760</value>
-  </property>-->
+<!--  <property> 
+    <name>hbase.hregion.memstore.mslab.chunksize</name>  
+    <value>10485760</value> 
+  </property>--> 
  <!--
-  <property>
-    <name>hfile.block.cache.size</name>
-    <value>0.2</value>
-  </property>
-  <property>
-    <name>hbase.hregion.max.filesize</name>
-    <value>21474836480</value>
-    <description>Maximum HStoreFile size. If any one of a column families' HStoreFiles has grown to exceed this value, the hosting HRegion is split in two. Default: 10G.</description>
-  </property>
-  <property>
-    <name>hbase.snapshot.enabled</name>
-    <value>true</value>
-  </property>
-  <property>
-    <name>phoenix.query.rowKeyOrderSaltedTable</name>
-    <value>true</value>
-  </property>
-  <property>
-    <name>phoenix.query.maxGlobalMemoryPercentage</name>
-    <value>50</value>
-  </property>
+  <property> 
+    <name>hfile.block.cache.size</name>  
+    <value>0.2</value> 
+  </property>  
+  <property> 
+    <name>hbase.hregion.max.filesize</name>  
+    <value>21474836480</value>  
+    <description>Maximum HStoreFile size. If any one of a column families' HStoreFiles has grown to exceed this value, the hosting HRegion is split in two. Default: 10G.</description> 
+  </property>  
+  <property> 
+    <name>hbase.snapshot.enabled</name>  
+    <value>true</value> 
+  </property>  
+  <property> 
+    <name>phoenix.query.rowKeyOrderSaltedTable</name>  
+    <value>true</value> 
+  </property> 
+  <property> 
+    <name>phoenix.query.maxGlobalMemoryPercentage</name>  
+    <value>50</value> 
+  </property>  
   -->
 </configuration>
