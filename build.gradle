@@ -9,11 +9,11 @@ ext {
     privateDeployRepo = 'http://103.31.200.123:8081/nexus/content/repositories/ailk-releases'
     deploy_username = System.getProperty('DEPLOY_USERNAME')
     deploy_password = System.getProperty('DEPLOY_PASSWORD')
-    oc_version = 'och3.0.0'
-    zookeeper_version = '3.4.5-cdh5.0.0-beta-2'
-    hadoop_common_version = '2.2.0-cdh5.0.0-beta-2'
-    hbase_version = '0.96.1.1-cdh5.0.0-beta-2'
-    hive_version = '0.12.0-cdh5.0.0-beta-2'
+    oc_version = 'och3.1.0'
+    zookeeper_version = '3.4.5-cdh5.0.0'
+    hadoop_common_version = '2.3.0-cdh5.0.0'
+    hbase_version = '0.96.1.1-cdh5.0.0' 
+    hive_version = '0.12.0-cdh5.0.0'
     amplab_hive_version = '0.11.0-shark-0.9.1'
     amplab_shark_version = '0.9.1'
     apache_spark_version = "0.9.1"
