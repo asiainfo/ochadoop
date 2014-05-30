@@ -5,8 +5,8 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'github-pages'
 ext {
-    privateRepo = 'http://http://115.29.40.120:8181/nexus/content/groups/ailk'
-    privateDeployRepo = 'http://http://115.29.40.120:8181/nexus/content/repositories/ailk-releases'
+    privateRepo = 'http://115.29.40.120:8181/nexus/content/groups/ailk'
+    privateDeployRepo = 'http://115.29.40.120:8181/nexus/content/repositories/ailk-releases'
     deploy_username = System.getProperty('DEPLOY_USERNAME')
     deploy_password = System.getProperty('DEPLOY_PASSWORD')
     oc_version = 'och3.2.0'
