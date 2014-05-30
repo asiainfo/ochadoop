@@ -5,18 +5,18 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'github-pages'
 ext {
-    privateRepo = 'http://103.31.200.123:8081/nexus/content/groups/ailk'
-    privateDeployRepo = 'http://103.31.200.123:8081/nexus/content/repositories/ailk-releases'
+    privateRepo = 'http://http://115.29.40.120:8181/nexus/content/groups/ailk'
+    privateDeployRepo = 'http://http://115.29.40.120:8181/nexus/content/repositories/ailk-releases'
     deploy_username = System.getProperty('DEPLOY_USERNAME')
     deploy_password = System.getProperty('DEPLOY_PASSWORD')
-    oc_version = 'och3.1.0'
-    zookeeper_version = '3.4.5-cdh5.0.0'
-    hadoop_common_version = '2.3.0-cdh5.0.0'
-    hbase_version = '0.96.1.1-cdh5.0.0' 
-    hive_version = '0.12.0-cdh5.0.0'
-    amplab_hive_version = '0.11.0-shark-0.9.1'
-    amplab_shark_version = '0.9.1'
-    apache_spark_version = "0.9.1"
+    oc_version = 'och3.2.0'
+    zookeeper_version = '3.4.5-cdh5.0.1'
+    hadoop_common_version = '2.3.0-cdh5.0.1'
+    hbase_version = '0.96.1.1-cdh5.0.1' 
+    hive_version = '0.12.0-cdh5.0.1'
+    amplab_hive_version = '0.11.0-shark-0.9.2'
+    amplab_shark_version = 'v0.9.2'
+    apache_spark_version = "v1.0.0-rc11"
 }
 
 repositories {
