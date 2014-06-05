@@ -195,9 +195,9 @@ task amplab_shark() {
         ant.delete{
          	 fileset(dir: "shark-$amplab_shark_version-${oc_version}/lib_managed/jars", excludes: 'org.datanucleus')
          }
-     	ant.delete(dir: '"shark-$amplab_shark_version-${oc_version}/lib_managed/tast_jars')
-    	ant.delete(dir: '"shark-$amplab_shark_version-${oc_version}/lib_managed/orbits')
-	    ant.delete(dir: '"shark-$amplab_shark_version-${oc_version}/lib_managed/bundles')
+ 
+    	ant.delete(dir: "shark-$amplab_shark_version-${oc_version}/lib_managed/orbits")
+        ant.delete(dir: "shark-$amplab_shark_version-${oc_version}/lib_managed/bundles")
        
         ant.copy(file: "shark-$amplab_shark_version-${oc_version}/conf/shark-env.sh.template", tofile: "shark-$amplab_shark_version-${oc_version}/conf/shark-env.sh")
 
