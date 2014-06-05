@@ -192,13 +192,11 @@ task amplab_shark() {
         }
         //ant.delete(file: "shark-$amplab_shark_version-${oc_version}/lib_managed/jars/org.spark-project.protobuf/protobuf-java/protobuf-java-2.4.1-shaded.jar")
 //        ant.delete(file: "shark-$amplab_shark_version-${oc_version}/lib_managed/jars/edu.berkeley.cs.shark/hive-exec/hive-exec-0.11.0-shark-0.9.1-och3.0.0-SNAPSHOT.jar")
-        ant.delete{
-         	 fileset(dir: "shark-$amplab_shark_version-${oc_version}/lib_managed/jars", excludes: 'org.datanucleus')
-         }
-        ant.mkdir(dir:  "shark-$amplab_shark_version-${oc_version}/lib_managed/jars_bak")
-        ant.move(file: "shark-$amplab_shark_version-${oc_version}/lib_managed/jars/org.datanucleus" tofile: "shark-$amplab_shark_version-${oc_version}/lib_managed/jars_bak/")
-        ant.delete(dir: "shark-$amplab_shark_version-${oc_version}/lib_managed/jars")
-         ant.move(file: "shark-$amplab_shark_version-${oc_version}/lib_managed/jars_bak" tofile: "shark-$amplab_shark_version-${oc_version}/lib_managed/jars")
+        
+          ant.move(file: "shark-$amplab_shark_version-${oc_version}/lib_managed/jars/org.datanucleus", todir: "shark-$amplab_shark_version-${oc_version}/lib_managed/")
+         ant.delete(dir: "shark-$amplab_shark_version-${oc_version}/lib_managed/jars")
+         ant.mkdir(dir: "shark-$amplab_shark_version-${oc_version}/lib_managed/jars")
+         ant.move(file: "shark-$amplab_shark_version-${oc_version}/lib_managed/org.datanucleus", todir: "shark-$amplab_shark_version-${oc_version}/lib_managed/jars/")
     	ant.delete(dir: "shark-$amplab_shark_version-${oc_version}/lib_managed/orbits")
         ant.delete(dir: "shark-$amplab_shark_version-${oc_version}/lib_managed/bundles")
        
