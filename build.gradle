@@ -17,6 +17,7 @@ ext {
     amplab_hive_version = '0.11.0-shark-0.9.1'
     amplab_shark_version = '0.9.1'
     apache_spark_version = "0.9.1"
+    hadoop-extension_version = "och3.1.1"
 }
 
 repositories {
@@ -81,6 +82,9 @@ task hadoop_common() {
             commandLine "tar -cvzf hadoop-${hadoop_common_version}-${oc_version}.tar.gz hadoop-${hadoop_common_version}-${oc_version}".split().toList()
         }
         ant.mkdir(dir: "build/ochadoop")
+        
+        ant.mkdir(dir: 'build/ochadoop/hadoop-extension')
+        getFromMaven("com.ailk.oci.hadoop:hadoop-extension:$hadoop-extension_version@jar",'build/ochadoop/hadoop-extension')
         ant.move(file: "hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}-${oc_version}.tar.gz", todir: "build/ochadoop")
     }
 }
