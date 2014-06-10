@@ -17,7 +17,7 @@ ext {
     amplab_hive_version = '0.11.0-shark-0.9.1'
     amplab_shark_version = '0.9.1'
     apache_spark_version = '0.9.1'
-    hadoop-extension_version =  'och3.1.1'
+    hadoop-extension_version = 'och3.1.1'
 }
 
 repositories {
