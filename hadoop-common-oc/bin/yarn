@@ -128,9 +128,12 @@ if [ ! -d "$HADOOP_CONF_DIR" ]; then
 fi
 
 CLASSPATH="${HADOOP_CONF_DIR}:${YARN_CONF_DIR}:${CLASSPATH}"
+
+#hadoop-extension add to classpath
 for f in ${HADOOP_HOME}/hadoop-extension/*.jar; do
   CLASSPATH=$f:${CLASSPATH};
 done
+
 
 # for developers, add Hadoop classes to CLASSPATH
 if [ -d "$HADOOP_YARN_HOME/yarn-api/target/classes" ]; then

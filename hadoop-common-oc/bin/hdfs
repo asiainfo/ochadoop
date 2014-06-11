@@ -15,6 +15,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Environment Variables
+#
+#   JSVC_HOME  home directory of jsvc binary.  Required for starting secure
+#              datanode.
+#
+#   JSVC_OUTFILE  path to jsvc output file.  Defaults to
+#                 $HADOOP_LOG_DIR/jsvc.out.
+#
+#   JSVC_ERRFILE  path to jsvc error file.  Defaults to $HADOOP_LOG_DIR/jsvc.err.
+
 bin=`which $0`
 bin=`dirname ${bin}`
 bin=`cd "$bin"; pwd`
@@ -43,7 +53,13 @@ function print_usage(){
   echo "  fetchdt              fetch a delegation token from the NameNode"
   echo "  getconf              get config values from configuration"
   echo "  groups               get the groups which users belong to"
+  echo "  snapshotDiff         diff two snapshots of a directory or diff the"
+  echo "                       current directory contents with a snapshot"
+  echo "  lsSnapshottableDir   list all snapshottable dirs owned by the current user"
   echo "						Use -help to see options"
+  echo "  portmap              run a portmap service"
+  echo "  nfs3                 run an NFS version 3 gateway"
+  echo "  cacheadmin           configure the HDFS cache"
   echo ""
   echo "Most commands print help when invoked w/o parameters."
 }
@@ -56,6 +72,19 @@ fi
 COMMAND=$1
 shift
 
+case $COMMAND in
+  # usage flags
+  --help|-help|-h)
+    print_usage
+    exit
+    ;;
+esac
+
+for f in ${HADOOP_HOME}/hadoop-extension/*.jar; do
+  CLASSPATH=$f:${CLASSPATH};
+done
+
+
 # Determine if we're starting a secure datanode, and if so, redefine appropriate variables
 if [ "$COMMAND" == "datanode" ] && [ "$EUID" -eq 0 ] && [ -n "$HADOOP_SECURE_DN_USER" ]; then
   if [ -n "$JSVC_HOME" ]; then
@@ -65,26 +94,17 @@ if [ "$COMMAND" == "datanode" ] && [ "$EUID" -eq 0 ] && [ -n "$HADOOP_SECURE_DN_
   
     if [ -n "$HADOOP_SECURE_DN_LOG_DIR" ]; then
       HADOOP_LOG_DIR=$HADOOP_SECURE_DN_LOG_DIR
+      HADOOP_OPTS="$HADOOP_OPTS -Dhadoop.log.dir=$HADOOP_LOG_DIR"
     fi
    
     HADOOP_IDENT_STRING=$HADOOP_SECURE_DN_USER
+    HADOOP_OPTS="$HADOOP_OPTS -Dhadoop.id.str=$HADOOP_IDENT_STRING"
     starting_secure_dn="true"
   else
     echo "It looks like you're trying to start a secure DN, but \$JSVC_HOME"\
       "isn't set. Falling back to starting insecure DN."
   fi
 fi
-
-#AUDITOR  Add libs to CLASSPATH
-for f in ${HADOOP_HOME}/share/hadoop/auditor/*.jar; do
-  CLASSPATH=${CLASSPATH}:$f;
-done
-for f in ${HADOOP_HOME}/share/hadoop/auditor/lib/*.jar; do
-  CLASSPATH=${CLASSPATH}:$f;
-done
-for f in ${HADOOP_HOME}/hadoop-extension/*.jar; do
-  CLASSPATH=$f:${CLASSPATH};
-done
 
 if [ "$COMMAND" = "namenode" ] ; then
   CLASS='org.apache.hadoop.hdfs.server.namenode.NameNode'
@@ -124,7 +144,7 @@ elif [ "$COMMAND" = "balancer" ] ; then
 elif [ "$COMMAND" = "jmxget" ] ; then
   CLASS=org.apache.hadoop.hdfs.tools.JMXGet
 elif [ "$COMMAND" = "oiv" ] ; then
-  CLASS=org.apache.hadoop.hdfs.tools.offlineImageViewer.OfflineImageViewer
+  CLASS=org.apache.hadoop.hdfs.tools.offlineImageViewer.OfflineImageViewerPB
 elif [ "$COMMAND" = "oev" ] ; then
   CLASS=org.apache.hadoop.hdfs.tools.offlineEditsViewer.OfflineEditsViewer
 elif [ "$COMMAND" = "fetchdt" ] ; then
@@ -133,13 +153,20 @@ elif [ "$COMMAND" = "getconf" ] ; then
   CLASS=org.apache.hadoop.hdfs.tools.GetConf
 elif [ "$COMMAND" = "groups" ] ; then
   CLASS=org.apache.hadoop.hdfs.tools.GetGroups
+elif [ "$COMMAND" = "snapshotDiff" ] ; then
+  CLASS=org.apache.hadoop.hdfs.tools.snapshot.SnapshotDiff
+elif [ "$COMMAND" = "lsSnapshottableDir" ] ; then
+  CLASS=org.apache.hadoop.hdfs.tools.snapshot.LsSnapshottableDir
+elif [ "$COMMAND" = "portmap" ] ; then
+  CLASS=org.apache.hadoop.portmap.Portmap
+elif [ "$COMMAND" = "nfs3" ] ; then
+  CLASS=org.apache.hadoop.hdfs.nfs.nfs3.Nfs3
+elif [ "$COMMAND" = "cacheadmin" ] ; then
+  CLASS=org.apache.hadoop.hdfs.tools.CacheAdmin
 else
   CLASS="$COMMAND"
 fi
 
-if $cygwin; then
-  CLASSPATH=`cygpath -p -w "$CLASSPATH"`
-fi
 export CLASSPATH=$CLASSPATH
 
 HADOOP_OPTS="$HADOOP_OPTS -Dhadoop.security.logger=${HADOOP_SECURITY_LOGGER:-INFO,NullAppender}"
@@ -159,9 +186,18 @@ if [ "$starting_secure_dn" = "true" ]; then
       "and set JSVC_HOME to the directory containing the jsvc binary."
     exit
   fi
+
+  if [[ ! $JSVC_OUTFILE ]]; then
+    JSVC_OUTFILE="$HADOOP_LOG_DIR/jsvc.out"
+  fi
+
+  if [[ ! $JSVC_ERRFILE ]]; then
+    JSVC_ERRFILE="$HADOOP_LOG_DIR/jsvc.err"
+  fi
+
   exec "$JSVC" \
-           -Dproc_$COMMAND -outfile "$HADOOP_LOG_DIR/jsvc.out" \
-           -errfile "$HADOOP_LOG_DIR/jsvc.err" \
+           -Dproc_$COMMAND -outfile "$JSVC_OUTFILE" \
+           -errfile "$JSVC_ERRFILE" \
            -pidfile "$HADOOP_SECURE_DN_PID" \
            -nodetach \
            -user "$HADOOP_SECURE_DN_USER" \

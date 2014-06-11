@@ -77,6 +77,12 @@ task hadoop_common() {
             commandLine "tar -xvzf  hadoop-${hadoop_common_version}.tar.gz -C ./och".split().toList()
         }
         ant.move(file: "hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}", tofile: "hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}-${oc_version}")
+        
+         rootdir = "hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}-${oc_version}"
+        ant.delete(file: "$rootdir/bin/hdfs")
+        ant.delete(file: "$rootdir/bin/yarn")
+        ant.copy(file: "hadoop-common-oc/bin/hdfs", todir: "$rootdir/bin/")
+        ant.copy(file: "hadoop-common-oc/bin/yarn", todir: "$rootdir/bin/")
         project.exec {
             workingDir 'hadoop-common/hadoop-dist/target/och'
             commandLine "tar -cvzf hadoop-${hadoop_common_version}-${oc_version}.tar.gz hadoop-${hadoop_common_version}-${oc_version}".split().toList()
