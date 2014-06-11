@@ -83,6 +83,9 @@ for f in ${HADDOP_HOME}/share/hadoop/auditor/lib/*.jar; do
   CLASSPATH=${CLASSPATH}:$f;
 done
 
+for f in ${HADDOP_HOME}/hadoop-extension/lib/*.jar; do
+  CLASSPATH=${CLASSPATH}:$f;
+done
 
 if [ "$COMMAND" = "namenode" ] ; then
   CLASS='org.apache.hadoop.hdfs.server.namenode.NameNode'
