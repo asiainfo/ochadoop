@@ -76,13 +76,15 @@ if [ "$COMMAND" == "datanode" ] && [ "$EUID" -eq 0 ] && [ -n "$HADOOP_SECURE_DN_
 fi
 
 #AUDITOR  Add libs to CLASSPATH
-for f in ${HADDOP_HOME}/share/hadoop/auditor/*.jar; do
+for f in ${HADOOP_HOME}/share/hadoop/auditor/*.jar; do
   CLASSPATH=${CLASSPATH}:$f;
 done
-for f in ${HADDOP_HOME}/share/hadoop/auditor/lib/*.jar; do
+for f in ${HADOOP_HOME}/share/hadoop/auditor/lib/*.jar; do
   CLASSPATH=${CLASSPATH}:$f;
 done
-
+for f in ${HADOOP_HOME}/hadoop-extension/*.jar; do
+  CLASSPATH=$f:${CLASSPATH};
+done
 
 if [ "$COMMAND" = "namenode" ] ; then
   CLASS='org.apache.hadoop.hdfs.server.namenode.NameNode'
