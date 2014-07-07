@@ -10,3 +10,6 @@
 [submodule "apache-spark"]
 	path = apache-spark
 	url = https://github.com/apache/spark.git
+[submodule "hive"]
+	path = hive
+	url = https://github.com/apache/hive.git
