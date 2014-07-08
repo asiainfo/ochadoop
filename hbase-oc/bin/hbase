@@ -31,19 +31,20 @@
 #
 #   HBASE_CLASSPATH  Extra Java CLASSPATH entries.
 #
+#   HBASE_CLASSPATH_PREFIX Extra Java CLASSPATH entries that should be
+#                    prefixed to the system classpath.
+#
 #   HBASE_HEAPSIZE   The maximum amount of heap to use, in MB. 
 #                    Default is 1000.
 #
 #   HBASE_LIBRARY_PATH  HBase additions to JAVA_LIBRARY_PATH for adding
-#                    native libaries.
+#                    native libraries.
 #
 #   HBASE_OPTS       Extra Java runtime options.
 #
 #   HBASE_CONF_DIR   Alternate conf dir. Default is ${HBASE_HOME}/conf.
 #
 #   HBASE_ROOT_LOGGER The root appender. Default is INFO,console
-#
-#   MAVEN_HOME       Where mvn is installed.
 #
 #   JRUBY_HOME       JRuby path: $JRUBY_HOME/lib/jruby.jar should exist.
 #                    Defaults to the jar packaged with HBase.
@@ -70,32 +71,30 @@ fi
 
 # if no args specified, show usage
 if [ $# = 0 ]; then
-  echo "Usage: hbase <command>"
-  echo "where <command> an option from one of these categories:"
+  echo "Usage: hbase [<options>] <command> [<args>]"
+  echo "Options:"
+  echo "  --config DIR    Configuration direction to use. Default: ./conf"
+  echo "  --hosts HOSTS   Override the list in 'regionservers' file"
   echo ""
-  echo "DBA TOOLS"
-  echo "  shell            run the HBase shell"
-  echo "  hbck             run the hbase 'fsck' tool"
-  echo "  hlog             write-ahead-log analyzer"
-  echo "  hfile            store file analyzer"
-  echo "  zkcli            run the ZooKeeper shell"
-  echo ""
-  echo "PROCESS MANAGEMENT"
-  echo "  master           run an HBase HMaster node" 
-  echo "  regionserver     run an HBase HRegionServer node" 
-  echo "  zookeeper        run a Zookeeper server"
-  echo "  rest             run an HBase REST server" 
-  echo "  thrift           run the HBase Thrift server" 
-  echo "  thrift2          run the HBase Thrift2 server" 
-  echo "  avro             run an HBase Avro server" 
-  echo ""
-  echo "PACKAGE MANAGEMENT"
-  echo "  classpath        dump hbase CLASSPATH"
-  echo "  version          print the version"
-  echo ""
-  echo " or"
-  echo "  CLASSNAME        run the class named CLASSNAME"
-  echo "Most commands print help when invoked w/o parameters."
+  echo "Commands:"
+  echo "Some commands take arguments. Pass no args or -h for usage."
+  echo "  shell           Run the HBase shell"
+  echo "  hbck            Run the hbase 'fsck' tool"
+  echo "  hlog            Write-ahead-log analyzer"
+  echo "  hfile           Store file analyzer"
+  echo "  zkcli           Run the ZooKeeper shell"
+  echo "  upgrade         Upgrade hbase"
+  echo "  master          Run an HBase HMaster node" 
+  echo "  regionserver    Run an HBase HRegionServer node" 
+  echo "  zookeeper       Run a Zookeeper server"
+  echo "  rest            Run an HBase REST server" 
+  echo "  thrift          Run the HBase Thrift server" 
+  echo "  thrift2         Run the HBase Thrift2 server"
+  echo "  clean           Run the HBase clean up script"
+  echo "  classpath       Dump hbase CLASSPATH"
+  echo "  mapredcp        Dump CLASSPATH entries required by mapreduce"
+  echo "  version         Print the version"
+  echo "  CLASSNAME       Run the class named CLASSNAME"
   exit 1
 fi
 
@@ -106,11 +105,6 @@ shift
 JAVA=$JAVA_HOME/bin/java
 JAVA_HEAP_MAX=-Xmx1000m 
 
-MVN="mvn"
-if [ "$MAVEN_HOME" != "" ]; then
-  MVN=${MAVEN_HOME}/bin/mvn
-fi
-
 # override default settings for this command, if applicable
 if [ -f "$HBASE_HOME/conf/hbase-env-$COMMAND.sh" ]; then
   . "$HBASE_HOME/conf/hbase-env-$COMMAND.sh"
@@ -118,62 +112,61 @@ fi
 
 # check envvars which might override default args
 if [ "$HBASE_HEAPSIZE" != "" ]; then
+  SUFFIX="m"
+  if [ "${HBASE_HEAPSIZE: -1}" == "m" ] || [ "${HBASE_HEAPSIZE: -1}" == "M" ]; then
+    SUFFIX=""
+  fi
+  if [ "${HBASE_HEAPSIZE: -1}" == "g" ] || [ "${HBASE_HEAPSIZE: -1}" == "G" ]; then
+    SUFFIX=""
+  fi
   #echo "run with heapsize $HBASE_HEAPSIZE"
-  JAVA_HEAP_MAX="-Xmx""$HBASE_HEAPSIZE""m"
+  JAVA_HEAP_MAX="-Xmx""$HBASE_HEAPSIZE""$SUFFIX"
   #echo $JAVA_HEAP_MAX
 fi
 
 # so that filenames w/ spaces are handled correctly in loops below
+ORIG_IFS=$IFS
 IFS=
 
 # CLASSPATH initially contains $HBASE_CONF_DIR
 CLASSPATH="${HBASE_CONF_DIR}"
-CLASSPATH=${CLASSPATH}:$HDFS_CONF_DIR
 CLASSPATH=${CLASSPATH}:$JAVA_HOME/lib/tools.jar
 
-add_maven_deps_to_classpath() {
-  # Need to generate classpath from maven pom. This is costly so generate it
-  # and cache it. Save the file into our target dir so a mvn clean will get
-  # clean it up and force us create a new one.
-  f="${HBASE_HOME}/target/cached_classpath.txt"
-  if [ ! -f "${f}" ]
-  then
-    ${MVN} -f "${HBASE_HOME}/pom.xml" dependency:build-classpath -Dmdep.outputFile="${f}" &> /dev/null
-  fi
-  CLASSPATH=${CLASSPATH}:`cat "${f}"`
-}
-
-add_maven_main_classes_to_classpath() {
-  if [ -d "$HBASE_HOME/target/classes" ]; then
-    CLASSPATH=${CLASSPATH}:$HBASE_HOME/target/classes
+add_to_cp_if_exists() {
+  if [ -d "$@" ]; then
+    CLASSPATH=${CLASSPATH}:"$@"
   fi
 }
-
-add_maven_test_classes_to_classpath() {
-  # For developers, add hbase classes to CLASSPATH
-  f="$HBASE_HOME/target/test-classes"
-  if [ -d "${f}" ]; then
-    CLASSPATH=${CLASSPATH}:${f}
-  fi
-}
-
-# Add maven target directory
-if $in_dev_env; then
-  add_maven_deps_to_classpath
-  add_maven_main_classes_to_classpath
-  add_maven_test_classes_to_classpath
-fi
 
 # For releases, add hbase & webapps to CLASSPATH
 # Webapps must come first else it messes up Jetty
 if [ -d "$HBASE_HOME/hbase-webapps" ]; then
-  CLASSPATH=${CLASSPATH}:$HBASE_HOME
+  add_to_cp_if_exists "${HBASE_HOME}"
 fi
-if [ -d "$HBASE_HOME/target/hbase-webapps" ]; then
-  CLASSPATH="${CLASSPATH}:${HBASE_HOME}/target"
+#add if we are in a dev environment
+if [ -d "$HBASE_HOME/hbase-server/target/hbase-webapps" ]; then
+  add_to_cp_if_exists "${HBASE_HOME}/hbase-server/target"
 fi
-for f in $HBASE_HOME/hbase*.jar; do
-  if [[ $f = *sources.jar ]]
+
+add_maven_deps_to_classpath() {
+  f="${HBASE_HOME}/target/cached_classpath.txt"
+  if [ ! -f "${f}" ]
+  then
+      echo "As this is a development environment, we need ${f} to be generated from maven (command: mvn install -DskipTests)"
+      exit 1
+  fi
+  CLASSPATH=${CLASSPATH}:`cat "${f}"`
+}
+
+
+#Add the development env class path stuff
+if $in_dev_env; then
+  add_maven_deps_to_classpath
+fi
+
+#add the hbase jars for each module
+for f in $HBASE_HOME/hbase-jars/hbase*.jar; do
+	if [[ $f = *sources.jar ]]
   then
     : # Skip sources.jar
   elif [ -f $f ]
@@ -187,40 +180,22 @@ for f in $HBASE_HOME/lib/*.jar; do
   CLASSPATH=${CLASSPATH}:$f;
 done
 
-# Add libs to CLASSPATH
-for f in $HBASE_HOME/auditor/*.jar; do
-  CLASSPATH=${CLASSPATH}:$f;
-done
-for f in $HBASE_HOME/auditor/lib/*.jar; do
-  CLASSPATH=${CLASSPATH}:$f;
-done
-
 #add hadoop path to CLASSPATH
-for f in $HBASE_HADOOP_HOME/share/hadoop/common/*.jar; do
+for f in $HADOOP_HOME/share/hadoop/common/*.jar; do
   CLASSPATH=${CLASSPATH}:$f;
 done
-for f in $HBASE_HADOOP_HOME/share/hadoop/hdfs/*.jar; do
+for f in $HADOOP_HOME/share/hadoop/hdfs/*.jar; do
   CLASSPATH=${CLASSPATH}:$f;
 done
-for f in $HBASE_HADOOP_HOME/share/hadoop/mapreduce/*.jar; do
+for f in $HADOOP_HOME/share/hadoop/mapreduce/*.jar; do
   CLASSPATH=${CLASSPATH}:$f;
 done
-for f in $HBASE_HADOOP_HOME/share/hadoop/yarn/*.jar; do
+for f in $HADOOP_HOME/share/hadoop/yarn/*.jar; do
   CLASSPATH=${CLASSPATH}:$f;
 done
-for f in $HBASE_HADOOP_HOME/share/hadoop/yarn/lib/*.jar; do
+for f in $HADOOP_HOME/share/hadoop/yarn/lib/*.jar; do
   CLASSPATH=${CLASSPATH}:$f;
 done
-
-for f in $HBASE_HADOOP_MR1_HOME/lib/*.jar; do
-  CLASSPATH=${CLASSPATH}:$f;
-done
-
-
-# Add user-specified CLASSPATH first
-if [ "$HBASE_CLASSPATH" != "" ]; then
-  CLASSPATH=${HBASE_CLASSPATH}:${CLASSPATH}
-fi
 
 # default log directory & file
 if [ "$HBASE_LOG_DIR" = "" ]; then
@@ -271,6 +246,16 @@ if [ -d "${HBASE_HOME}/build/native" -o -d "${HBASE_HOME}/lib/native" ]; then
   fi
 fi
 
+# Add user-specified CLASSPATH last
+if [ "$HBASE_CLASSPATH" != "" ]; then
+  CLASSPATH=${CLASSPATH}:${HBASE_CLASSPATH}
+fi
+
+# Add user-specified CLASSPATH prefix first
+if [ "$HBASE_CLASSPATH_PREFIX" != "" ]; then
+  CLASSPATH=${HBASE_CLASSPATH_PREFIX}:${CLASSPATH}
+fi
+
 # cygwin path translation
 if $cygwin; then
   JAVA_LIBRARY_PATH=`cygpath -p "$JAVA_LIBRARY_PATH"`
@@ -301,6 +286,12 @@ if [ "$COMMAND" = "shell" ] ; then
     CLASSPATH="$JRUBY_HOME/lib/jruby.jar:$CLASSPATH"
     HBASE_OPTS="$HBASE_OPTS -Djruby.home=$JRUBY_HOME -Djruby.lib=$JRUBY_HOME/lib"
   fi
+	#find the hbase ruby sources
+  if [ -d "$HBASE_HOME/lib/ruby" ]; then
+    HBASE_OPTS="$HBASE_OPTS -Dhbase.ruby.sources=$HBASE_HOME/lib/ruby"
+  else
+    HBASE_OPTS="$HBASE_OPTS -Dhbase.ruby.sources=$HBASE_HOME/hbase-shell/src/main/ruby"
+  fi
   CLASS="org.jruby.Main -X+O ${JRUBY_OPTS} ${HBASE_HOME}/bin/hirb.rb"
 elif [ "$COMMAND" = "hbck" ] ; then
   CLASS='org.apache.hadoop.hbase.util.HBaseFsck'
@@ -309,13 +300,12 @@ elif [ "$COMMAND" = "hlog" ] ; then
 elif [ "$COMMAND" = "hfile" ] ; then
   CLASS='org.apache.hadoop.hbase.io.hfile.HFile'
 elif [ "$COMMAND" = "zkcli" ] ; then
-  # ZooKeeperMainServerArg returns '-server HOST:PORT' or empty string.
-  SERVER_ARG=`"$bin"/hbase org.apache.hadoop.hbase.zookeeper.ZooKeeperMainServerArg`
-  CLASS="org.apache.zookeeper.ZooKeeperMain ${SERVER_ARG}"
-
+  CLASS="org.apache.hadoop.hbase.zookeeper.ZooKeeperMainServer"
+elif [ "$COMMAND" = "upgrade" ] ; then
+  CLASS="org.apache.hadoop.hbase.migration.UpgradeTo96"
 elif [ "$COMMAND" = "master" ] ; then
   CLASS='org.apache.hadoop.hbase.master.HMaster'
-  if [ "$1" != "stop" ] ; then
+  if [ "$1" != "stop" ] && [ "$1" != "clear" ] ; then
     HBASE_OPTS="$HBASE_OPTS $HBASE_MASTER_OPTS"
   fi
 elif [ "$COMMAND" = "regionserver" ] ; then
@@ -334,21 +324,33 @@ elif [ "$COMMAND" = "thrift2" ] ; then
     HBASE_OPTS="$HBASE_OPTS $HBASE_THRIFT_OPTS"
   fi
 elif [ "$COMMAND" = "rest" ] ; then
-  CLASS='org.apache.hadoop.hbase.rest.Main'
+  CLASS='org.apache.hadoop.hbase.rest.RESTServer'
   if [ "$1" != "stop" ] ; then
     HBASE_OPTS="$HBASE_OPTS $HBASE_REST_OPTS"
-  fi
-elif [ "$COMMAND" = "avro" ] ; then
-  CLASS='org.apache.hadoop.hbase.avro.AvroServer'
-  if [ "$1" != "stop" ] ; then
-    HBASE_OPTS="$HBASE_OPTS $HBASE_AVRO_OPTS"
   fi
 elif [ "$COMMAND" = "zookeeper" ] ; then
   CLASS='org.apache.hadoop.hbase.zookeeper.HQuorumPeer'
   if [ "$1" != "stop" ] ; then
     HBASE_OPTS="$HBASE_OPTS $HBASE_ZOOKEEPER_OPTS"
   fi
-
+elif [ "$COMMAND" = "clean" ] ; then
+  case $1 in
+    --cleanZk|--cleanHdfs|--cleanAll) 
+      matches="yes" ;;
+    *) ;;
+  esac
+  if [ $# -ne 1 -o "$matches" = "" ]; then
+    echo "Usage: hbase clean (--cleanZk|--cleanHdfs|--cleanAll)"
+    echo "Options: "
+    echo "        --cleanZk   cleans hbase related data from zookeeper."
+    echo "        --cleanHdfs cleans hbase related data from hdfs."
+    echo "        --cleanAll  cleans hbase related data from both zookeeper and hdfs."
+    exit 1;
+  fi
+  "$bin"/hbase-cleanup.sh --config ${HBASE_CONF_DIR} $@
+  exit $?
+elif [ "$COMMAND" = "mapredcp" ] ; then
+  CLASS='org.apache.hadoop.hbase.util.MapreduceDependencyClasspathTool'
 elif [ "$COMMAND" = "classpath" ] ; then
   echo $CLASSPATH
   exit 0
@@ -374,14 +376,15 @@ fi
 
 # Enable security logging on the master and regionserver only
 if [ "$COMMAND" = "master" ] || [ "$COMMAND" = "regionserver" ]; then
-  HBASE_OPTS="$HBASE_OPTS -Dhbase.security.logger=${HBASE_SECURITY_LOGGER:-INFO,DRFAS}"
+  HBASE_OPTS="$HBASE_OPTS -Dhbase.security.logger=${HBASE_SECURITY_LOGGER:-INFO,RFAS}"
 else
   HBASE_OPTS="$HBASE_OPTS -Dhbase.security.logger=${HBASE_SECURITY_LOGGER:-INFO,NullAppender}"
 fi
 
 # Exec unless HBASE_NOEXEC is set.
+export CLASSPATH
 if [ "${HBASE_NOEXEC}" != "" ]; then
-  "$JAVA" -XX:OnOutOfMemoryError="kill -9 %p" $JAVA_HEAP_MAX $HBASE_OPTS -classpath "$CLASSPATH" $CLASS "$@"
+  "$JAVA" -Dproc_$COMMAND -XX:OnOutOfMemoryError="kill -9 %p" $JAVA_HEAP_MAX $HBASE_OPTS $CLASS "$@"
 else
-  exec "$JAVA" -XX:OnOutOfMemoryError="kill -9 %p" $JAVA_HEAP_MAX $HBASE_OPTS -classpath "$CLASSPATH" $CLASS "$@"
+  exec "$JAVA" -Dproc_$COMMAND -XX:OnOutOfMemoryError="kill -9 %p" $JAVA_HEAP_MAX $HBASE_OPTS $CLASS "$@"
 fi
