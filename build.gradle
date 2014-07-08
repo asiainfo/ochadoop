@@ -103,7 +103,7 @@ task hbase() {
              fileset(dir: "$rootdir/lib", includes: 'hadoop*.jar')
         }   
         ant.delete(file: "$rootdir/bin/hbase")
-        ant.copy(file: "apache-hbase-oc/bin/hbase", todir: "$rootdir/bin/")
+        ant.copy(file: "hbase-oc/bin/hbase", todir: "$rootdir/bin/")
                 
         project.exec {
             workingDir 'hbase/hbase-assembly/target/och'
