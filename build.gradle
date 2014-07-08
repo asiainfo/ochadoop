@@ -118,9 +118,8 @@ task hive() {
     doLast() {
         project.exec {
             workingDir 'hive'
-            commandLine 'mvn', "-T", "2C", "-Dmaven.javadoc.skip=true", "-Dmaven.test.skip=true", "-Phadoop-2,dist", "-Dcdh.hadoop.version=$hadoop_common_version", "clean", 'install'
-                commandLine 'ant', 'clean', "-Drepo.maven.org=$privateRepo", "-Divy.mvn.repo=$privateRepo", "-Dmvnrepo=$privateRepo", "-Dskip.javadoc=true", "tar"
-
+            //commandLine 'mvn', "-T", "2C", "-Dmaven.javadoc.skip=true", "-Dmaven.test.skip=true", "-Phadoop-2,dist", "-Dcdh.hadoop.version=$hadoop_common_version", "clean", 'install'
+            commandLine "mvn clean install -Dmaven.javadoc.skip=true -DskipTests -Phadoop-2,dist".split().toList()
         }
 
         ant.delete(dir: 'hive/packaging/target/och')
