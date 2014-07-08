@@ -12,11 +12,9 @@ ext {
     oc_version = 'och3.2.0'
     zookeeper_version = '3.4.5-cdh5.0.2'
     hadoop_common_version = '2.3.0-cdh5.0.2'
-    hbase_version = '0.96.1.1-cdh5.0.2' 
-    hive_version = '0.12.0-cdh5.0.2'
-    amplab_hive_version = '0.11.0-shark-0.9.1'
-    amplab_shark_version = '0.9.2'
-    apache_spark_version = "1.0.0"
+    hbase_version = '0.98.1' 
+    hive_version = '0.13.0'
+    apache_spark_version = "branch-1.0-jdbc"
 }
 
 repositories {
@@ -88,7 +86,8 @@ task hbase() {
     doLast() {
         project.exec {
             workingDir 'hbase'
-            commandLine "mvn -DskipTests -Pcdh5 -Dmaven.javadoc.skip=false -Dhadoop.profile=2.0 -Dcdh.hadoop.version=$hadoop_common_version clean install assembly:single".split().toList()
+            //commandLine "mvn -DskipTests -Pcdh5 -Dmaven.javadoc.skip=false -Dhadoop.profile=2.0 -Dcdh.hadoop.version=$hadoop_common_version clean install assembly:single".split().toList()
+            commandLine "mvn clean install -DskipTests site assembly:single -Prelease -Phadoop-2.0".split().toList()
         }
         ant.delete(dir: 'hbase/hbase-assembly/target/och')
         ant.mkdir(dir: 'hbase/hbase-assembly/target/och')
@@ -145,76 +144,8 @@ task apache_spark() {
         ant.copy(file: "apache-spark/assembly/target/scala-2.10/spark-assembly-$apache_spark_version-hadoop${hadoop_common_version}.jar", tofile: "build/ochadoop/spark-assembly_$apache_spark_version-hadoop${hadoop_common_version}-${oc_version}.jar")
     }
 }
-task amplab_hive() {
-    doLast() {
-        String contents = new File('amplab-hive/ivy/ivysettings.xml').getText('UTF-8')
-        contents = contents.replaceAll('http://repo1.maven.org/maven2/', "$privateRepo")
-        new File('amplab-hive/ivy/ivysettings.xml').write(contents, 'UTF-8')
 
-        contents = new File('amplab-hive/build.xml').getText('UTF-8')
-        contents = contents.replaceAll('<target name="javadoc"', '<target name="javadoc" unless="skip.javadoc"')
-        contents = contents.replaceAll('(<remoteRepository.*)/>', '$1><authentication username="\\${mvn.deploy.username}" password="\\${mvn.deploy.password}" /></remoteRepository>')
-        // skip hcatalog
-        contents = contents.replaceAll('<ant dir="hcatalog"[^/]*/[^/]*/[^/]*/ant>', '')
-        new File('amplab-hive/build.skip.javadoc.xml').write(contents, 'UTF-8')
-
-
-        project.exec {
-            workingDir 'amplab-hive'
-            commandLine "ant package maven-build maven-publish -buildfile build.skip.javadoc.xml -Dskip.javadoc=true -Drepo.maven.org=$privateRepo -Divy.mvn.repo=$privateRepo -Dmvnrepo=$privateRepo -Dmvn.deploy.url=$privateDeployRepo -Dmvn.deploy.id=ailk -Dversion=$amplab_hive_version-$oc_version -Dmvn.deploy.username=$deploy_username -Dmvn.deploy.password=$deploy_password -Dhive.version=0.11.0-shark-0.9.1-och3.0.0-SNAPSHOT -Dprotobuf.version=2.5.0".split().toList()
-        }
-    }
-}
-task amplab_shark() {
-    doLast() {
-        project.exec {
-            workingDir 'amplab-shark'
-            commandLine "git checkout -f project/SharkBuild.scala".split().toList()
-        }
-        String contents = new File('amplab-shark/project/SharkBuild.scala').getText('UTF-8')
-        contents = contents.replaceAll('SHARK_VERSION = "1.0.0-PREVIEW-SNAPSHOT"', "SHARK_VERSION = \"$amplab_shark_version-${oc_version}\"")
-        //TODO: shark 0.11.0-shark-0.9.1 not publish
-        contents = contents.replaceAll("HIVE_VERSION = \"$amplab_hive_version-SNAPSHOT\"", "HIVE_VERSION = \"$amplab_hive_version-${oc_version}\"")
-        contents = contents.replaceAll('SPARK_VERSION = "1.0.0-SNAPSHOT"', "SPARK_VERSION = \"${apache_spark_version}\"")
-        contents = contents.replaceAll('DEFAULT_HADOOP_VERSION = "1.0.4"', "DEFAULT_HADOOP_VERSION = \"$hadoop_common_version\"")
-        contents = contents.replaceAll('resolvers \\+\\+= Seq\\(', "resolvers ++= Seq(\n      \"ailk Repository\" at \"$privateRepo\",")
-        new File('amplab-shark/project/SharkBuild.scala').write(contents, 'UTF-8')
-
-        project.exec {
-            workingDir 'amplab-shark'
-            commandLine "sbt/sbt clean package assembly".split().toList()
-        }
-        ant.delete(dir: "shark-$amplab_shark_version-${oc_version}")
-
-        project.exec {
-            workingDir './'
-            commandLine "cp -r amplab-shark shark-$amplab_shark_version-${oc_version}".split().toList()
-        }
-        //ant.delete(file: "shark-$amplab_shark_version-${oc_version}/lib_managed/jars/org.spark-project.protobuf/protobuf-java/protobuf-java-2.4.1-shaded.jar")
-//        ant.delete(file: "shark-$amplab_shark_version-${oc_version}/lib_managed/jars/edu.berkeley.cs.shark/hive-exec/hive-exec-0.11.0-shark-0.9.1-och3.0.0-SNAPSHOT.jar")
-        
-          ant.move(file: "shark-$amplab_shark_version-${oc_version}/lib_managed/jars/org.datanucleus", todir: "shark-$amplab_shark_version-${oc_version}/lib_managed/")
-         ant.delete(dir: "shark-$amplab_shark_version-${oc_version}/lib_managed/jars")
-         ant.mkdir(dir: "shark-$amplab_shark_version-${oc_version}/lib_managed/jars")
-         ant.move(file: "shark-$amplab_shark_version-${oc_version}/lib_managed/org.datanucleus", todir: "shark-$amplab_shark_version-${oc_version}/lib_managed/jars/")
-    	ant.delete(dir: "shark-$amplab_shark_version-${oc_version}/lib_managed/orbits")
-        ant.delete(dir: "shark-$amplab_shark_version-${oc_version}/lib_managed/bundles")
-       
-        ant.copy(file: "shark-$amplab_shark_version-${oc_version}/conf/shark-env.sh.template", tofile: "shark-$amplab_shark_version-${oc_version}/conf/shark-env.sh")
-
-        contents = new File("shark-$amplab_shark_version-${oc_version}/run").getText('UTF-8')
-        contents = contents.replaceAll('(exec \\$RUNNER \\$EXTRA_ARGS .*)', 'CLASSPATH+=":\\$SPARK_ASSEMBLY_JAR"\nCLASSPATH+=":\\$SHARK_ASSEMBLY_JAR"\n$1')
-        new File("shark-$amplab_shark_version-${oc_version}/run").write(contents, 'UTF-8')
-
-        project.exec {
-            workingDir './'
-            commandLine "tar -cvzf shark-$amplab_shark_version-${oc_version}.tar.gz shark-$amplab_shark_version-${oc_version}".split().toList()
-        }
-        ant.move(file: "shark-$amplab_shark_version-${oc_version}.tar.gz", todir: "build/ochadoop")
-    }
-}
-
-task all(dependsOn: [zookeeper, hadoop_common, hbase, hive, apache_spark, amplab_hive, amplab_shark]) {
+task all(dependsOn: [zookeeper, hadoop_common, hbase, hive, apache_spark]) {
     doLast {
         ant.mkdir(dir: "build/tar/ochadoop-${oc_version}")
         ant.move(file: "build/ochadoop", tofile: "build/tar/ochadoop-${oc_version}/ochadoop-${oc_version}")
