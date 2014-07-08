@@ -13,3 +13,6 @@
 [submodule "hive"]
 	path = hive
 	url = https://github.com/apache/hive.git
+[submodule "hbase"]
+	path = hbase
+	url = https://github.com/apache/hbase.git
