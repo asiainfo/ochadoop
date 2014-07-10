@@ -148,7 +148,7 @@ task apache_spark() {
             workingDir 'apache-spark'
 //            commandLine "mvn -Dcdh.hadoop.version=$hadoop_common_version -Dcdh.protobuf.version=2.5.0 -Dcdh.hbase.version=$hbase_version clean install"
 //            commandLine "mvn -e -Pyarn -Phive -Dhadoop.version=$hadoop_common_version -Dyarn.version=$hadoop_common_version -DskipTests clean install".split().toList()
-            commandLine "./make-distribution.sh --hadoop ${hadoop_common_version} --with-yarn --with-hive --tgz"
+            commandLine "sh make-distribution.sh --hadoop ${hadoop_common_version} --with-yarn --with-hive --tgz --skip-java-test".split().toList()
             environment MAVEN_OPTS: "-Xmx2g -XX:MaxPermSize=512M -XX:ReservedCodeCacheSize=512m"
             environment SCALA_HOME: "/home/jenkins/app/scala-2.10.3"
         }
