@@ -147,11 +147,12 @@ task apache_spark() {
         project.exec {
             workingDir 'apache-spark'
 //            commandLine "mvn -Dcdh.hadoop.version=$hadoop_common_version -Dcdh.protobuf.version=2.5.0 -Dcdh.hbase.version=$hbase_version clean install"
-            commandLine "mvn -e -Pyarn -Phive -Dhadoop.version=$hadoop_common_version -Dyarn.version=$hadoop_common_version -DskipTests clean install".split().toList()
+//            commandLine "mvn -e -Pyarn -Phive -Dhadoop.version=$hadoop_common_version -Dyarn.version=$hadoop_common_version -DskipTests clean install".split().toList()
+            commandLine "./make-distribution.sh --hadoop ${hadoop_common_version} --with-yarn --with-hive --tgz".split().toList()
             environment MAVEN_OPTS: "-Xmx2g -XX:MaxPermSize=512M -XX:ReservedCodeCacheSize=512m"
             environment SCALA_HOME: "/home/jenkins/app/scala-2.10.3"
         }
-        ant.copy(file: "apache-spark/assembly/target/scala-2.10/spark-assembly-$apache_spark_version-hadoop${hadoop_common_version}.jar", tofile: "build/ochadoop/spark-assembly_$apache_spark_version-hadoop${hadoop_common_version}-${oc_version}.jar")
+        ant.move(file: "apache-spark/spark-${apache_spark_version}-bin-${hadoop_common_version}.tgz", tofile: "build/ochadoop/spark-${apache_spark_version}-${hadoop_common_version}.tar.gz")
     }
 }
 
