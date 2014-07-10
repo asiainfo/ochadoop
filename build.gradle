@@ -9,7 +9,7 @@ ext {
     privateDeployRepo = 'http://115.29.40.120:8181/nexus/content/repositories/ailk-releases'
     deploy_username = System.getProperty('DEPLOY_USERNAME')
     deploy_password = System.getProperty('DEPLOY_PASSWORD')
-    oc_version = 'och3.2.0-SNAPSHOT'
+    oc_version = 'och3.2.0'
     zookeeper_version = '3.4.5-cdh5.0.2'
     hadoop_common_version = '2.3.0-cdh5.0.2'
     hbase_version = '0.98.1' 
