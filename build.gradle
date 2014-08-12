@@ -182,6 +182,7 @@ task amplab_shark() {
 
         project.exec {
             workingDir 'amplab-shark'
+            commandLine "export SPARK_HADOOP_VERSION=2.3.0-cdh5.0.0"
             commandLine "sbt/sbt clean package assembly".split().toList()
         }
         ant.delete(dir: "shark-$amplab_shark_version-${oc_version}")
