@@ -75,6 +75,9 @@ task hadoop_common() {
         }
         ant.move(file: "hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}", tofile: "hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}-${oc_version}")
         project.exec {
+            ant.mkdir(dir: "hadoop-common/hadoop-dist/target/och/hadoop-extension")
+            getFromMaven("com.ailk.oci.hadoop:hadoop-extension:$oc_version@jar", "$rootdir/hadoop-extension")
+        
             workingDir 'hadoop-common/hadoop-dist/target/och'
             commandLine "tar -cvzf hadoop-${hadoop_common_version}-${oc_version}.tar.gz hadoop-${hadoop_common_version}-${oc_version}".split().toList()
         }
