@@ -13,7 +13,7 @@ ext {
     zookeeper_version = '3.4.5-cdh5.0.2'
     hadoop_common_version = '2.3.0-cdh5.0.2'
     hbase_version = '0.98.1' 
-    hive_version = '0.13.1'
+    hive_version = '0.13.0'
     apache_spark_version = "1.0.1" //branch-1.0-jdbc
 }
 
