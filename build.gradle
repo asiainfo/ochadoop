@@ -9,12 +9,12 @@ ext {
     privateDeployRepo = 'http://115.29.40.120:8181/nexus/content/repositories/ailk-releases'
     deploy_username = System.getProperty('DEPLOY_USERNAME')
     deploy_password = System.getProperty('DEPLOY_PASSWORD')
-    oc_version = 'och3.3.0'
+    oc_version = 'och3.3.1-SNAPSHOT'
     zookeeper_version = '3.4.5-cdh5.1.3'
     hadoop_common_version = '2.3.0-cdh5.1.3'
-    hbase_version = '0.98.6' 
-    hive_version = '0.13.0'
-    apache_spark_version = "1.1.0" //branch-1.0-jdbc
+    hbase_version = '0.98.6.1' 
+    hive_version = '0.13.1'
+    apache_spark_version = "1.1.0" 
 }
 
 repositories {
@@ -74,6 +74,9 @@ task hadoop_common() {
             commandLine "tar -xvzf  hadoop-${hadoop_common_version}.tar.gz -C ./och".split().toList()
         }
         ant.move(file: "hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}", tofile: "hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}-${oc_version}")
+        
+        ant.mkdir(dir: "hadoop-common/hadoop-dist/target/och/hadoop-extension")
+        getFromMaven("com.ailk.oci.hadoop:hadoop-extension:$oc_version@jar", "hadoop-common/hadoop-dist/target/och/hadoop-extension")
         project.exec {
             workingDir 'hadoop-common/hadoop-dist/target/och'
             commandLine "tar -cvzf hadoop-${hadoop_common_version}-${oc_version}.tar.gz hadoop-${hadoop_common_version}-${oc_version}".split().toList()
@@ -148,7 +151,7 @@ task apache_spark() {
             workingDir 'apache-spark'
 //            commandLine "mvn -Dcdh.hadoop.version=$hadoop_common_version -Dcdh.protobuf.version=2.5.0 -Dcdh.hbase.version=$hbase_version clean install"
 //            commandLine "mvn -e -Pyarn -Phive -Dhadoop.version=$hadoop_common_version -Dyarn.version=$hadoop_common_version -DskipTests clean install".split().toList()
-            commandLine "sh make-distribution.sh --hadoop ${hadoop_common_version} --with-yarn --with-hive --tgz --skip-java-test".split().toList()
+            commandLine "sh make-distribution.sh --tgz --skip-java-test  -Pyarn -Phive -Phadoop-2.3 -Dhadoop.version=$hadoop_common_version -Dyarn.version=$hadoop_common_version -DskipTests ".split().toList()
             environment MAVEN_OPTS: "-Xmx4g -XX:MaxPermSize=512M -XX:ReservedCodeCacheSize=512m"
             environment SCALA_HOME: "/home/jenkins/app/scala-2.10.3"
         }
