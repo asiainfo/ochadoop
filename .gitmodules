@@ -7,9 +7,6 @@
 [submodule "hadoop-lzo"]
 	path = hadoop-lzo
 	url = https://github.com/twitter/hadoop-lzo.git
-[submodule "apache-spark"]
-	path = apache-spark
-	url = https://github.com/apache/spark.git
 [submodule "hive"]
 	path = hive
 	url = https://github.com/apache/hive.git
