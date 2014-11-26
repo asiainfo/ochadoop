@@ -16,3 +16,6 @@
 [submodule "hbase"]
 	path = hbase
 	url = https://github.com/apache/hbase.git
+[submodule "spark"]
+	path = spark
+	url = https://github.com/cloudera/spark.git
