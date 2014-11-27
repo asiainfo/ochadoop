@@ -13,3 +13,6 @@
 [submodule "spark"]
 	path = spark
 	url = https://github.com/cloudera/spark.git
+[submodule "hive"]
+	path = hive
+	url = https://github.com/cloudera/hive.git
