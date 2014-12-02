@@ -145,7 +145,7 @@ task apache_spark() {
 //            commandLine './make-distribution.sh'
 //        }
         project.exec {
-            workingDir 'apache-spark'
+            workingDir 'spark'
 //            commandLine "mvn -Dcdh.hadoop.version=$hadoop_common_version -Dcdh.protobuf.version=2.5.0 -Dcdh.hbase.version=$hbase_version clean install"
 //            commandLine "mvn -e -Pyarn -Phive -Dhadoop.version=$hadoop_common_version -Dyarn.version=$hadoop_common_version -DskipTests clean install".split().toList()
             commandLine "sh make-distribution.sh --tgz --skip-java-test  -Pyarn -Phive -Phadoop-2.3 -Dhadoop.version=$hadoop_common_version -Dyarn.version=$hadoop_common_version -DskipTests ".split().toList()
