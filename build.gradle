@@ -9,11 +9,11 @@ ext {
     privateDeployRepo = 'http://115.29.40.120:8181/nexus/content/repositories/ailk-releases'
     deploy_username = System.getProperty('DEPLOY_USERNAME')
     deploy_password = System.getProperty('DEPLOY_PASSWORD')
-    oc_version = 'och3.3.1-SNAPSHOT'
+    oc_version = 'och3.3.0'
     zookeeper_version = '3.4.5-cdh5.1.3'
     hadoop_common_version = '2.3.0-cdh5.1.3'
     hbase_version = '0.98.6.1' 
-    hive_version = '0.13.1'
+    hive_version = '0.13.0'
     apache_spark_version = "1.1.0" 
 }
 
@@ -30,7 +30,7 @@ dependencies {
 
 def getFromMaven(src, destDir) {
     s = src.split("[:@]")
-    srcUrl = "http://115.29.40.120:8181/nexus/service/local/artifact/maven/redirect?r=ailk&g=${s[0]}&a=${s[1]}&v=${s[2]}&e=${s[3]}"
+    srcUrl = "http://10.1.253.223:8081/nexus/service/local/artifact/maven/redirect?r=ailk&g=${s[0]}&a=${s[1]}&v=${s[2]}&e=${s[3]}"
     ant.echo("downloading:$srcUrl to:$destDir/${s[1]}-${s[2]}.${s[3]}")
     ant.mkdir(dir: destDir)
     ant.get(src: srcUrl, dest: "$destDir/${s[1]}-${s[2]}.${s[3]}", verbose: true)
@@ -74,12 +74,6 @@ task hadoop_common() {
             commandLine "tar -xvzf  hadoop-${hadoop_common_version}.tar.gz -C ./och".split().toList()
         }
         ant.move(file: "hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}", tofile: "hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}-${oc_version}")
-        rootdir="hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}-${oc_version}"
-        ant.delete(file: "$rootdir/bin/yarn")
-        ant.copy(file: "hadoop-common-oc/bin/yarn",todir:"$rootdir/bin/")
-        
-        ant.mkdir(dir: "hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}-${oc_version}/hadoop-extension")
-        getFromMaven("com.ailk.oci.hadoop:hadoop-extension:$oc_version@jar", "hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}-${oc_version}/hadoop-extension")
         project.exec {
             workingDir 'hadoop-common/hadoop-dist/target/och'
             commandLine "tar -cvzf hadoop-${hadoop_common_version}-${oc_version}.tar.gz hadoop-${hadoop_common_version}-${oc_version}".split().toList()
