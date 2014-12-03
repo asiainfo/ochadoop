@@ -5,8 +5,8 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'github-pages'
 ext {
-    privateRepo = 'http://115.29.40.120:8181/nexus/content/groups/ailk'
-    privateDeployRepo = 'http://115.29.40.120:8181/nexus/content/repositories/ailk-releases'
+    privateRepo = 'http://210.14.153.178:8081/nexus/content/groups/ailk'
+    privateDeployRepo = 'http://210.14.153.178:8081/nexus/content/repositories/ailk-releases'
     deploy_username = System.getProperty('DEPLOY_USERNAME')
     deploy_password = System.getProperty('DEPLOY_PASSWORD')
     oc_version = 'och4.0.0'
@@ -30,7 +30,7 @@ dependencies {
 
 def getFromMaven(src, destDir) {
     s = src.split("[:@]")
-    srcUrl = "http://10.1.253.223:8081/nexus/service/local/artifact/maven/redirect?r=ailk&g=${s[0]}&a=${s[1]}&v=${s[2]}&e=${s[3]}"
+    srcUrl = "http://210.14.153.178:8081/nexus/service/local/artifact/maven/redirect?r=ailk&g=${s[0]}&a=${s[1]}&v=${s[2]}&e=${s[3]}"
     ant.echo("downloading:$srcUrl to:$destDir/${s[1]}-${s[2]}.${s[3]}")
     ant.mkdir(dir: destDir)
     ant.get(src: srcUrl, dest: "$destDir/${s[1]}-${s[2]}.${s[3]}", verbose: true)
