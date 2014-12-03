@@ -145,6 +145,20 @@ task apache_spark() {
 //            commandLine './make-distribution.sh'
 //        }
         project.exec {
+            workingDir 'apache-spark'
+//            commandLine "mvn -Dcdh.hadoop.version=$hadoop_common_version -Dcdh.protobuf.version=2.5.0 -Dcdh.hbase.version=$hbase_version clean install"
+//            commandLine "mvn -e -Pyarn -Phive -Dhadoop.version=$hadoop_common_version -Dyarn.version=$hadoop_common_version -DskipTests clean install".split().toList()
+            commandLine "sh make-distribution.sh --tgz --skip-java-test  -Pyarn -Phive -Phadoop-2.3 -Dhadoop.version=$hadoop_common_version -Dyarn.version=$hadoop_common_version -DskipTests ".split().toList()
+            environment MAVEN_OPTS: "-Xmx4g -XX:MaxPermSize=512M -XX:ReservedCodeCacheSize=512m"
+            environment SCALA_HOME: "/home/jenkins/app/scala-2.10.3"
+        }
+        ant.move(file: "apache-spark/spark-${apache_spark_version}-bin-${hadoop_common_version}.tgz", tofile: "build/ochadoop/spark-${apache_spark_version}-${hadoop_common_version}.tar.gz")
+    }
+}
+
+task spark() {
+    doLast() {
+        project.exec {
             workingDir 'spark'
 //            commandLine "mvn -Dcdh.hadoop.version=$hadoop_common_version -Dcdh.protobuf.version=2.5.0 -Dcdh.hbase.version=$hbase_version clean install"
 //            commandLine "mvn -e -Pyarn -Phive -Dhadoop.version=$hadoop_common_version -Dyarn.version=$hadoop_common_version -DskipTests clean install".split().toList()
@@ -156,7 +170,7 @@ task apache_spark() {
     }
 }
 
-task all(dependsOn: [zookeeper, hadoop_common, hbase, hive, apache_spark]) {
+task all(dependsOn: [zookeeper, hadoop_common, hbase, hive]) {
     doLast {
         ant.mkdir(dir: "build/tar/ochadoop-${oc_version}")
         ant.move(file: "build/ochadoop", tofile: "build/tar/ochadoop-${oc_version}/ochadoop-${oc_version}")
