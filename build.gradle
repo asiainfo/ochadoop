@@ -170,7 +170,7 @@ task spark() {
     }
 }
 
-task asiainfo-spark() {
+task asiainfo_spark() {
     doLast() {
         project.exec {
             workingDir 'asiainfo-spark'
