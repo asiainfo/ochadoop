@@ -16,3 +16,6 @@
 [submodule "hive"]
 	path = hive
 	url = https://github.com/cloudera/hive.git
+[submodule "asiainfo-spark"]
+	path = asiainfo-spark
+	url = https://github.com/asiainfo/spark.git
