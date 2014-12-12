@@ -16,3 +16,6 @@
 [submodule "hbase"]
 	path = hbase
 	url = https://github.com/apache/hbase.git
+[submodule "asiainfo-spark"]
+	path = asiainfo-spark
+	url = https://github.com/asiainfo/spark.git
