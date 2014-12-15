@@ -156,7 +156,19 @@ task apache_spark() {
     }
 }
 
-task all(dependsOn: [zookeeper, hadoop_common, hbase, hive, apache_spark]) {
+task asiainfo_spark() {
+    doLast() {
+        project.exec {
+            workingDir 'asiainfo-spark'
+            commandLine "sh make-distribution.sh --tgz --skip-java-test  -P hbase-hadoop2,hadoop-2.3,hive-0.12.0,yarn,hive,scala-2.10,sbt,hive-thriftserver -Dhadoop.version=$hadoop_common_version -Dyarn.version=$hadoop_common_version -DskipTests ".split().toList()
+            environment MAVEN_OPTS: "-Xmx4g -XX:MaxPermSize=512M -XX:ReservedCodeCacheSize=512m"
+            environment SCALA_HOME: "/home/jenkins/app/scala-2.10.3"
+        }
+        ant.move(file: "asiainfo-spark/spark-${apache_spark_version}-bin-${hadoop_common_version}.tgz", tofile: "build/ochadoop/spark-${apache_spark_version}-${hadoop_common_version}.tar.gz")
+    }
+}
+
+task all(dependsOn: [zookeeper, hadoop_common, hbase, hive, asiainfo_spark]) {
     doLast {
         ant.mkdir(dir: "build/tar/ochadoop-${oc_version}")
         ant.move(file: "build/ochadoop", tofile: "build/tar/ochadoop-${oc_version}/ochadoop-${oc_version}")
