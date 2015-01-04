@@ -176,7 +176,7 @@ task asiainfo_spark() {
     doLast() {
         project.exec {
             workingDir 'asiainfo-spark'
-            commandLine "sh make-distribution.sh --tgz --skip-java-test  -P hbase-hadoop2,hadoop-2.3,hive-0.12.0,yarn,hive,scala-2.10,sbt,hive-thriftserver -Dhadoop.version=$hadoop_common_version -Dyarn.version=$hadoop_common_version -DskipTests ".split().toList()
+            commandLine "sh make-distribution.sh --tgz --skip-java-test  -P hbase-hadoop2,hadoop-2.3,hive-0.13.1,yarn,hive,scala-2.10,sbt,hive-thriftserver -Dhadoop.version=$hadoop_common_version -Dyarn.version=$hadoop_common_version -DskipTests ".split().toList()
             environment MAVEN_OPTS: "-Xmx4g -XX:MaxPermSize=512M -XX:ReservedCodeCacheSize=512m"
             environment SCALA_HOME: "/home/jenkins/app/scala-2.10.3"
         }
