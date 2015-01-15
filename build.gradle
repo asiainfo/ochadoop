@@ -9,7 +9,7 @@ ext {
     privateDeployRepo = 'http://210.14.153.178:8081/nexus/content/repositories/ailk-releases'
     deploy_username = System.getProperty('DEPLOY_USERNAME')
     deploy_password = System.getProperty('DEPLOY_PASSWORD')
-    oc_version = 'och4.0.0'
+    oc_version = 'och4.0.1'
     zookeeper_version = '3.4.5-cdh5.2.1'
     hadoop_common_version = '2.5.0-cdh5.2.1'
     hbase_version = '0.98.6.1' 
@@ -129,6 +129,14 @@ task hive() {
             commandLine "tar -xvzf  apache-hive-${hive_version}-bin.tar.gz -C ./och".split().toList()
         }
         ant.move(file: "hive/packaging/target/och/apache-hive-${hive_version}-bin", tofile: "hive/packaging/target/och/hive-${hive_version}-${oc_version}")
+       
+       //add hive-extention
+        ant.mkdir(dir:"hive/packaging/target/och/hive-${hive_version}-${oc_version}/hive-extension")
+        project.exex{
+            workingDir 'hive/packaging/target/och/hive-${hive_version}-${oc_version}'
+            getFromMaven("com.ailk.oci.hive:hive-extension:${hive_version}-${oc_version}@jar", "hive-extension")
+        }
+        
         project.exec {
             workingDir 'hive/packaging/target/och'
             commandLine "tar -cvzf hive-${hive_version}-${oc_version}.tar.gz hive-${hive_version}-${oc_version}".split().toList()
