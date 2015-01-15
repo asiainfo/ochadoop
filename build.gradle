@@ -189,7 +189,7 @@ task asiainfo_spark() {
     }
 }
 
-task deploy(){
+task deploy_to_nexus(){
     doLast(){
         project.exec{
             commandLine "mvn clean deploy -DaltDeploymentRepository=ailk.releases::default::http://210.14.153.178:8081/nexus/content/repositories/ailk-releases/ ".split().toList()
