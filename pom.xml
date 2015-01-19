@@ -2,6 +2,6 @@
   <modelVersion>4.0.0</modelVersion>
      <groupId>com.ailk.oci.hadoop</groupId>
     <artifactId>ochadoop</artifactId>
-    <version>och4.0.0</version>
+    <version>och4.0.1</version>
     <packaging>jar</packaging>
 </project>
