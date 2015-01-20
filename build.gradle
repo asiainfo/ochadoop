@@ -77,7 +77,7 @@ task hadoop_common() {
         
         //add hadoop-extention
         ant.mkdir(dir:"hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}-${oc_version}/hadoop-extension")
-        project.exex{
+        project.exec{
             workingDir 'hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}-${oc_version}/hadoop-extension'
             getFromMaven("com.ailk.oci.hadoop:hadoop-extension:${oc_version}@jar", "hadoop-extension")
         }
