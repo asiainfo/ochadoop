@@ -77,7 +77,7 @@ task hadoop_common() {
         
         //add hadoop-extention
         ant.mkdir(dir:"hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}-${oc_version}/hadoop-extension")
-        workingDir 'hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}-${oc_version}'
+        //workingDir 'hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}-${oc_version}'
         getFromMaven("com.ailk.oci.hadoop:hadoop-extension:${oc_version}@jar", "hadoop-common/hadoop-dist/target/och/hadoop-${hadoop_common_version}-${oc_version}/hadoop-extension")
         
         
@@ -139,8 +139,9 @@ task hive() {
        
        //add hive-extention
         ant.mkdir(dir:"hive/packaging/target/och/hive-${hive_version}-${oc_version}/hive-extension")
-        workingDir 'hive/packaging/target/och/hive-${hive_version}-${oc_version}'
-        getFromMaven("com.ailk.oci.hive:hive-extension:${hive_version}-${oc_version}@jar", "hive/packaging/target/och/hive-${hive_version}-${oc_version/hive-extension")
+        //workingDir 'hive/packaging/target/och/hive-${hive_version}-${oc_version}'
+        rootdir="hive/packaging/target/och/hive-${hive_version}-${oc_version}";
+        getFromMaven("com.ailk.oci.hive:hive-extension:${hive_version}-${oc_version}@jar", "$rootdir/hive-extension/")
         
         
         project.exec {
