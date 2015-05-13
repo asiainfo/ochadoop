@@ -193,7 +193,7 @@ task asiainfo_spark() {
             environment MAVEN_OPTS: "-Xmx4g -XX:MaxPermSize=512M -XX:ReservedCodeCacheSize=512m"
             environment SCALA_HOME: "/home/jenkins/app/scala-2.10.3"
         }
-        ant.move(file: "asiainfo-spark/spark-${apache_spark_version}-bin-${hadoop_common_version}.tgz", tofile: "build/ochadoop/spark-${apache_spark_version}-${hadoop_common_version}.tar.gz")
+        ant.move(file: "asiainfo-spark/spark-${apache_spark_version}-bin-${hadoop_common_version}.tgz", tofile: "build/ochadoop/spark-${apache_spark_version}-${hadoop_common_version}-${oc_version}.tar.gz")
     }
 }
 
